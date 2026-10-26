@@ -548,7 +548,7 @@ TEST_F(RhythmTest, FinishedBookEstimatesOnlyGlobalReadDaysInWindow) {
   }
   BookRhythm rhythm;
   ASSERT_TRUE(BookRhythm::build(bookStats({2026, 10, 1}, {2026, 10, 7}, 40 * 60, 2), day(2026, 10, 16), history.anchor,
-                                history.bits, BookDailyMinutes{}, rhythm));
+                                history.bits, BookDailyMinutes{}, 0, rhythm));
   // k = min(2 sessions, 4 read days) = 2, evenly spaced: Oct 1 and Oct 5, 20 min each.
   EXPECT_EQ(rhythm.daysRead, 2);
   EXPECT_EQ(rhythm.totalMinutes, 40u);
@@ -564,6 +564,32 @@ TEST_F(RhythmTest, FinishedBookEstimatesOnlyGlobalReadDaysInWindow) {
   EXPECT_TRUE(rhythm.anyEstimated);
 }
 
+TEST_F(RhythmTest, SundayFirstWeeksAlignToSunday) {
+  History history;
+  history.mark(day(2026, 10, 3));
+  BookRhythm rhythm;
+  // Sat Oct 3 - Sun Oct 4: one Monday-first week, two Sunday-first weeks.
+  ASSERT_TRUE(BookRhythm::build(bookStats({2026, 10, 3}, {2026, 10, 4}, 600, 1), day(2026, 10, 16), history.anchor,
+                                history.bits, BookDailyMinutes{}, 6, rhythm));
+  EXPECT_EQ(rhythm.weekCount, 2);
+  EXPECT_EQ(rhythm.firstShownDay, day(2026, 9, 27));  // Sunday
+  EXPECT_EQ(rhythm.dayAt(day(2026, 10, 3)).minutes, 10);
+
+  ASSERT_TRUE(BookRhythm::build(bookStats({2026, 10, 3}, {2026, 10, 4}, 600, 1), day(2026, 10, 16), history.anchor,
+                                history.bits, BookDailyMinutes{}, 0, rhythm));
+  EXPECT_EQ(rhythm.weekCount, 1);
+  EXPECT_EQ(rhythm.firstShownDay, day(2026, 9, 28));  // Monday
+}
+
+TEST_F(RhythmTest, WeekStartDayHonorsFirstWeekday) {
+  // Wed Oct 7 2026.
+  EXPECT_EQ(readingStatsWeekStartDay(day(2026, 10, 7), 0), day(2026, 10, 5));
+  EXPECT_EQ(readingStatsWeekStartDay(day(2026, 10, 7), 6), day(2026, 10, 4));
+  // A Sunday starts its own Sunday-first week but ends a Monday-first one.
+  EXPECT_EQ(readingStatsWeekStartDay(day(2026, 10, 4), 6), day(2026, 10, 4));
+  EXPECT_EQ(readingStatsWeekStartDay(day(2026, 10, 4), 0), day(2026, 9, 28));
+}
+
 TEST_F(RhythmTest, OngoingBookWindowEndsTodayAndRealOverridesEstimates) {
   History history;
   for (const uint32_t d : {day(2026, 10, 10), day(2026, 10, 11), day(2026, 10, 14), day(2026, 10, 15)}) {
@@ -576,7 +602,7 @@ TEST_F(RhythmTest, OngoingBookWindowEndsTodayAndRealOverridesEstimates) {
 
   BookRhythm rhythm;
   ASSERT_TRUE(BookRhythm::build(bookStats({2026, 10, 10}, {}, (30 + 15 + 60) * 60, 6, false), day(2026, 10, 16),
-                                history.anchor, history.bits, real, rhythm));
+                                history.anchor, history.bits, real, 0, rhythm));
   EXPECT_EQ(rhythm.endDay, day(2026, 10, 16));
   // Real days use real minutes.
   EXPECT_EQ(rhythm.dayAt(day(2026, 10, 14)).minutes, 30);
@@ -597,7 +623,7 @@ TEST_F(RhythmTest, LongBookShowsLastThirteenWeeks) {
   for (uint32_t d = day(2026, 3, 1); d <= day(2026, 10, 1); d += 3) history.mark(d);
   BookRhythm rhythm;
   ASSERT_TRUE(BookRhythm::build(bookStats({2026, 3, 1}, {2026, 10, 1}, 3600 * 40, 80), day(2026, 10, 16),
-                                history.anchor, history.bits, BookDailyMinutes{}, rhythm));
+                                history.anchor, history.bits, BookDailyMinutes{}, 0, rhythm));
   EXPECT_TRUE(rhythm.truncated);
   EXPECT_EQ(rhythm.weekCount, BookRhythm::MAX_WEEKS);
   EXPECT_GT(rhythm.daysRead, 40);                       // summary covers the whole window, not just the shown weeks
@@ -606,8 +632,8 @@ TEST_F(RhythmTest, LongBookShowsLastThirteenWeeks) {
 
 TEST_F(RhythmTest, BookWithoutStartDateHasNoRhythm) {
   BookRhythm rhythm;
-  EXPECT_FALSE(
-      BookRhythm::build(bookStats({}, {2026, 10, 1}, 3600, 2), day(2026, 10, 16), 0, {}, BookDailyMinutes{}, rhythm));
+  EXPECT_FALSE(BookRhythm::build(bookStats({}, {2026, 10, 1}, 3600, 2), day(2026, 10, 16), 0, {}, BookDailyMinutes{},
+                                0, rhythm));
   EXPECT_FALSE(rhythm.valid());
 }
 

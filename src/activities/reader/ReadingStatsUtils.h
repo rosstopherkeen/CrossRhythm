@@ -38,6 +38,8 @@ void addSecondsToReadingStatsDateTime(ReadingStatsDateTime& dt, uint32_t seconds
 uint32_t readingStatsDayIndex(const ReadingStatsDate& date);
 bool readingStatsDateFromDayIndex(uint32_t dayIndex, ReadingStatsDate& outDate);
 uint8_t readingStatsDayOfWeekIndex(const ReadingStatsDate& date);  // Monday = 0
+// First day of the week holding dayIndex; firstWeekday is a Monday = 0 index (6 = Sunday).
+uint32_t readingStatsWeekStartDay(uint32_t dayIndex, uint8_t firstWeekday);
 ReadingTimeBucket readingTimeBucketForHour(uint8_t hour);
 bool getCurrentLocalReadingStatsDateTime(ReadingStatsDateTime& outDateTime);
 uint16_t readingSpanDaysInclusive(const ReadingStatsDate& start, const ReadingStatsDate& end);

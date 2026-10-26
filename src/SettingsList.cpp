@@ -373,6 +373,9 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
         StrId::STR_DATE_SEPARATOR, &CrossPointSettings::dateSeparator,
         {StrId::STR_DATE_SEPARATOR_PERIOD, StrId::STR_DATE_SEPARATOR_HYPHEN, StrId::STR_DATE_SEPARATOR_SLASH},
         "dateSeparator", StrId::STR_CAT_SYSTEM));
+    add(SettingInfo::Enum(StrId::STR_FIRST_DAY_OF_WEEK, &CrossPointSettings::firstDayOfWeek,
+                          {StrId::STR_FIRST_DAY_MONDAY, StrId::STR_FIRST_DAY_SUNDAY}, "firstDayOfWeek",
+                          StrId::STR_CAT_SYSTEM));
     // Persistence flag for NTP debounce. Resetting from the web UI forces a re-sync
     // on next WiFi connect, which is useful when crossing time zones.
     add(SettingInfo::Toggle(StrId::STR_CLOCK_SYNCED, &CrossPointSettings::clockHasBeenSynced, "clockHasBeenSynced",
