@@ -6,14 +6,14 @@
 - Books Finished page in Reading Stats: totals plus a scrollable list (with scroll bar) of finished books with start and finish dates and time spent. Tap a book, or select it and press Confirm, to open its stats. Ported from XPoint. Finished books that dropped out of Recent Books are found by scanning existing book caches.
 - Book detail view from Books Finished: an Overview page (that book's stats, time of day and day of week) and a Book Rhythm page (reading days across the book's span, daily or weekly reading time, days read, average per day, longest streak). Per-book daily minutes are now recorded; earlier days are estimated and shown lighter. The same book view opens from a book's Reading Stats action in the Library and File Browser long-press menu.
 - First Day of Week setting (Settings > System > Device): start the Reading Stats calendars, weekly totals and day-of-week bars on Monday or Sunday.
-- New CrossInk-Rhythm boot screen.
+- New CrossRhythm boot screen.
 - Daily reading minutes are now recorded for the Reading Rhythm screen. Minutes for days read before updating are estimated once from each book's reading time and shown lighter.
 
 ### Changed
 
-- Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a bar under the dot.
-- Over-the-air updates now check this fork's releases (rosstopherkeen/CrossInk-Rhythm).
-- Settings shows the firmware as "CrossInk-Rhythm v<version>".
+- Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
+- Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
+- Settings shows the firmware as "CrossRhythm v<version>".
 
 ## [v1.6.1] - 2026-10-03
 

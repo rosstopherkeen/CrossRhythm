@@ -1,8 +1,8 @@
-# CrossInk-Rhythm
+# CrossRhythm
 
 > A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages: **Reading Rhythm** and **Books Finished**.
 
-Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), its own boot screen, and shows **CrossInk-Rhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
+Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), its own boot screen, and shows **CrossRhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
 
 <table>
   <tr>
@@ -27,7 +27,7 @@ Everything else is stock CrossInk: the same fonts, themes, reader features, sett
 
 How often and how much you read, at a glance:
 
-- **Recent Activity**: a dot for each day over the last 13 weeks, with bigger, darker dots for longer reading days. Today has a ring around it. Below it, the last 7 days show the time read each day.
+- **Recent Activity**: a dot for each day over the last 13 weeks. Dots get bigger and darker in five steps (under 30 min, 30 min, 1h, 2h, and 4h+ with an outer ring), with a legend under the grid. Today has a square around it. Below it, the last 7 days show the time read each day.
 - **Weekly Reading Time**: one bar per week for the same 13 weeks. The current week is solid, and a dashed line marks your average.
 - **Reading Days by Month**: how many days you read in each of the last 12 months, plus the total and the monthly average.
 
@@ -60,21 +60,21 @@ How often and how much you read, at a glance:
 
 <img src="./docs/images/rhythm/book-rhythm.png" width="200" align="right" alt="Book Rhythm page for a single book" />
 
-Each finished book has its own Overview and Book Rhythm pages. The same view opens from **Reading Stats** in a book's long-press menu in the Library or File Browser. Per-book reading minutes are recorded from this firmware on, in `rhythm_days.bin` next to the book's `stats_v5.bin`, which is never changed. Days before that are estimated from your real read days between the book's start and finish dates and drawn lighter. Short books (up to 3 weeks) show daily bars; longer ones show weekly bars for up to the last 13 weeks.
+Each finished book has its own Overview and Book Rhythm pages. The same view opens from **Reading Stats** in a book's long-press menu in the Library or File Browser. Per-book reading minutes are recorded from this firmware on, in `rhythm_days.bin` next to the book's `stats_v5.bin`, which is never changed. Days before that are estimated from your real read days between the book's start and finish dates and drawn lighter. The dots use the same five steps as Reading Rhythm, and the book's first and last days have a square around them. Short books (up to 3 weeks) show daily bars; longer ones show weekly bars for up to the last 13 weeks.
 
 <br clear="right"/>
 
 ### Boot screen and version
 
-<img src="./docs/images/rhythm/boot-screen.png" width="160" align="right" alt="CrossInk-Rhythm boot screen" />
+<img src="./docs/images/rhythm/boot-screen.png" width="160" align="right" alt="CrossRhythm boot screen" />
 
-The default boot screen is replaced by the CrossInk-Rhythm image above (`src/images/boot-rhythm.bmp`, run-length encoded by `scripts/bmp_to_boot_header.py` to about 22 KB of flash). CrossInk's custom boot screen setting still takes priority when it's on. Settings › System shows the firmware as **CrossInk-Rhythm v&lt;version&gt;**.
+The default boot screen is replaced by the CrossRhythm image above (`src/images/boot-rhythm.bmp`, run-length encoded by `scripts/bmp_to_boot_header.py` to about 22 KB of flash). CrossInk's custom boot screen setting still takes priority when it's on. Settings › System shows the firmware as **CrossRhythm v&lt;version&gt;**.
 
 <br clear="right"/>
 
 ### Where to find them
 
-Open **Reading Stats** the usual way. On the X4 Pro that's the frontlight panel, or the reader menu on button devices. Swipe left or press Right/Down past *This Device* (and *All Devices*, if you sync stats). The two new pages share the existing page dots, header and card layout.
+Open **Reading Stats** the usual way. On the X4 Pro that's the frontlight panel, or the reader menu on button devices. Swipe left or press Right/Down past *This Device* (and *All Devices*, if you sync stats). The two new pages share the existing page dots, header and card layout. Weeks start on Monday by default; set **First Day of Week** in Settings › System › Device to start them on Sunday.
 
 The pages need the device clock. On devices without one, Reading Stats keeps its single-screen layout.
 
@@ -100,7 +100,7 @@ Flash a CrossInk release. It ignores `daily_minutes.bin` and `finished_books.bin
 
 ## Installation
 
-1. Download `firmware-x4-pro.bin` from this fork's [releases](https://github.com/rosstopherkeen/CrossInk-Rhythm/releases), or build it yourself (see below).
+1. Download `firmware-x4-pro.bin` from this fork's [releases](https://github.com/rosstopherkeen/CrossRhythm/releases), or build it yourself (see below).
 2. Back up `/.crosspoint/` on your SD card.
 3. Copy the `.bin` to the SD card and install it from **Settings › System › SD Card Firmware Update**.
 
@@ -142,4 +142,4 @@ The fork's code lives in `src/activities/reader/rhythm/`. The hooks into existin
 - **[XPoint](https://github.com/Belphemur/XPoint)** (MIT License, Copyright (c) 2025 CrossPoint Reader organization), where the Reading Rhythm and Books Finished screens and the finished-books file format come from: `ReadingRhythmActivity`, `FinishedBooksActivity`, `FinishedBooksIndex`, and `renderReadingRhythmPage` / `renderFinishedBooksPage` from `BookStatsView.cpp`.
 - **[CrossPoint Reader](https://github.com/crosspoint-reader/crosspoint-reader)**, the upstream firmware for both.
 
-This is a personal fork. Issues with CrossInk itself belong in the [CrossInk repo](https://github.com/uxjulia/CrossInk); issues with the two stats pages belong [here](https://github.com/rosstopherkeen/CrossInk-Rhythm/issues).
+This is a personal fork. Issues with CrossInk itself belong in the [CrossInk repo](https://github.com/uxjulia/CrossInk); issues with the two stats pages belong [here](https://github.com/rosstopherkeen/CrossRhythm/issues).

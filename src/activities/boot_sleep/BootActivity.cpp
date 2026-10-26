@@ -114,7 +114,7 @@ bool tryDrawRotatingBootImage(const GfxRenderer& renderer) {
   return pickAndDraw(true);
 }
 
-// CrossInk-Rhythm boot screen: full-screen 1-bit image (src/images/boot-rhythm.bmp)
+// CrossRhythm boot screen: full-screen 1-bit image (src/images/boot-rhythm.bmp)
 // stored as per-row run lengths by scripts/bmp_to_boot_header.py (~22 KB of
 // flash instead of 48 KB). Each black run is one fillRect.
 void drawDefaultBootLogo(const GfxRenderer& renderer) {

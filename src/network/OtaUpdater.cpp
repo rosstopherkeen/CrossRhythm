@@ -28,7 +28,7 @@ OtaUpdater::OtaUpdaterError OtaUpdater::installUpdate(ProgressCallback, void*, s
 
 namespace {
 #ifndef CROSSINK_OTA_RELEASE_URL
-#define CROSSINK_OTA_RELEASE_URL "https://api.github.com/repos/rosstopherkeen/CrossInk-Rhythm/releases/latest"
+#define CROSSINK_OTA_RELEASE_URL "https://api.github.com/repos/rosstopherkeen/CrossRhythm/releases/latest"
 #endif
 
 constexpr char latestReleaseUrl[] = CROSSINK_OTA_RELEASE_URL;
