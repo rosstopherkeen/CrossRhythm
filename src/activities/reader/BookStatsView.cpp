@@ -9,6 +9,7 @@
 #include <array>
 #include <cstdio>
 
+#include "CrossPointSettings.h"
 #include "MappedInputManager.h"
 #include "components/CompactHeader.h"
 #include "components/TouchActionButtons.h"
@@ -287,6 +288,21 @@ void drawHorizontalBars(GfxRenderer& renderer, const int x, const int y, const i
   }
 }
 
+// Day-of-week totals are stored Monday-first; rows follow the first-day-of-week setting.
+void drawDayOfWeekBars(GfxRenderer& renderer, const int x, const int y, const int w, const int h,
+                       const std::array<uint32_t, READING_DAY_OF_WEEK_COUNT>& mondayFirstSeconds,
+                       const StatsLayout& layout) {
+  const uint8_t firstWeekday = statsFirstWeekday();
+  std::array<uint32_t, READING_DAY_OF_WEEK_COUNT> values{};
+  std::array<StrId, READING_DAY_OF_WEEK_COUNT> labels{};
+  for (size_t row = 0; row < READING_DAY_OF_WEEK_COUNT; ++row) {
+    const size_t weekday = (row + firstWeekday) % READING_DAY_OF_WEEK_COUNT;
+    values[row] = mondayFirstSeconds[weekday];
+    labels[row] = DAY_LABELS[weekday];
+  }
+  drawHorizontalBars(renderer, x, y, w, h, values, labels, layout);
+}
+
 void drawPerBookStatsCard(GfxRenderer& renderer, const int x, const int y, const int w, const int h,
                           const std::string& bookTitle, const BookReadingStats& stats, const float progressPercent,
                           const bool hasEstimatedTimeLeft, const uint32_t estimatedTimeLeftSeconds,
@@ -508,7 +524,7 @@ void renderPerBookStatsPage(GfxRenderer& renderer, const MappedInputManager* map
     y += timeOfDayCardH + layout.cardGap;
 
     drawSectionCard(renderer, cardX, y, cardW, dayOfWeekCardH, tr(STR_STATS_DAY_OF_WEEK), layout);
-    drawHorizontalBars(renderer, cardX, y, cardW, dayOfWeekCardH, stats.dayOfWeekSeconds, DAY_LABELS, layout);
+    drawDayOfWeekBars(renderer, cardX, y, cardW, dayOfWeekCardH, stats.dayOfWeekSeconds, layout);
   } else {
     const int compactContentHeight = headerHeight + layout.topGap + layout.topCardH;
     const int extraHeight = std::max(0, availableHeight - compactContentHeight);
@@ -582,7 +598,7 @@ void renderGlobalStatsPage(GfxRenderer& renderer, const MappedInputManager* mapp
     y += timeOfDayCardH + layout.cardGap;
 
     drawSectionCard(renderer, cardX, y, cardW, dayOfWeekCardH, tr(STR_STATS_DAY_OF_WEEK), layout);
-    drawHorizontalBars(renderer, cardX, y, cardW, dayOfWeekCardH, stats.dayOfWeekSeconds, DAY_LABELS, layout);
+    drawDayOfWeekBars(renderer, cardX, y, cardW, dayOfWeekCardH, stats.dayOfWeekSeconds, layout);
   } else {
     const int compactContentHeight = headerHeight + layout.topGap + layout.globalCardH;
     globalCardH += std::max(0, availableHeight - compactContentHeight);
@@ -755,6 +771,8 @@ void renderEditBookDatesPage(GfxRenderer& renderer, const MappedInputManager* ma
     GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4, true);
   }
 }
+
+uint8_t statsFirstWeekday() { return SETTINGS.firstDayOfWeek == CrossPointSettings::FIRST_DAY_SUNDAY ? 6 : 0; }
 
 StatsPageFrame statsPageFrame(const GfxRenderer& renderer, const MappedInputManager* mappedInput,
                               const bool showButtonHints, const int minContentHeight, const int cardCount) {

@@ -109,6 +109,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
     DATE_SEPARATOR_SLASH = 2,
     DATE_SEPARATOR_COUNT
   };
+  // First weekday of calendar rows and weekly totals on the stats pages. Display only.
+  enum FIRST_DAY_OF_WEEK { FIRST_DAY_MONDAY = 0, FIRST_DAY_SUNDAY = 1, FIRST_DAY_OF_WEEK_COUNT };
 
   enum ORIENTATION {
     PORTRAIT = 0,       // 480x800 logical coordinates (current default)
@@ -482,6 +484,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   uint8_t dateFormat = DATE_FORMAT_MONTH_DAY_YEAR_LONG;
   // Separator for numeric dates. Text-based date formats do not use it.
   uint8_t dateSeparator = DATE_SEPARATOR_SLASH;
+  // Stats calendars start their weeks on this day.
+  uint8_t firstDayOfWeek = FIRST_DAY_MONDAY;
   // Set once an NTP sync succeeds. Used to skip re-syncing on every WiFi connect.
   // Resetting to 0 (e.g. via the web UI) forces a re-sync on next WiFi connect.
   uint8_t clockHasBeenSynced = 0;

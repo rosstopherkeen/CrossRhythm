@@ -1,7 +1,8 @@
 // Ported from XPoint (https://github.com/Belphemur/XPoint, MIT):
 // src/activities/reader/BookStatsView.cpp renderReadingRhythmPage() and
-// renderFinishedBooksPage(). Chart math (dot intensities, weekly scale steps,
-// month buckets) is unchanged; layout follows the Reading Stats card frame.
+// renderFinishedBooksPage(). Chart math (weekly scale steps, month buckets) is
+// unchanged; dot intensities use a 5-level doubling scale instead of XPoint's
+// 15/30 min steps. Layout follows the Reading Stats card frame.
 #include "RhythmStatsView.h"
 
 #include <GfxRenderer.h>
@@ -25,8 +26,9 @@ namespace {
 constexpr int kReadingRhythmWeekCount = 13;
 constexpr size_t kReadingRhythmMonthCount = 12;
 constexpr int kRecentReadingDayCount = 7;
-constexpr uint16_t kMediumReadingMinutes = 15;
-constexpr uint16_t kHighReadingMinutes = 30;
+// Lower bounds of intensity levels 2..5; each doubles the last. Level 1 is any reading below the first.
+constexpr std::array<uint16_t, 4> kIntensityMinutes = {30, 60, 120, 240};
+constexpr int kIntensityLevelCount = static_cast<int>(kIntensityMinutes.size()) + 1;
 constexpr int kCardPadding = 10;
 
 constexpr std::array<StrId, READING_DAY_OF_WEEK_COUNT> DAY_LABELS = {
@@ -76,20 +78,82 @@ void formatRhythmMinutes(const uint32_t minutes, char* buf, const size_t len) {
   }
 }
 
-void readingIntensityStyle(const uint16_t minutes, const int activeDotSize, const int inactiveDotSize, int& dotSize,
-                           Color& color) {
-  if (minutes == 0) {
-    dotSize = inactiveDotSize;
-    color = Color::LightGray;
-  } else if (minutes < kMediumReadingMinutes) {
-    dotSize = std::max(inactiveDotSize + 1, activeDotSize - 4);
-    color = Color::LightGray;
-  } else if (minutes < kHighReadingMinutes) {
-    dotSize = std::max(inactiveDotSize + 2, activeDotSize - 2);
-    color = Color::DarkGray;
+int readingIntensityLevel(const uint16_t minutes) {
+  if (minutes == 0) return 0;
+  int level = 1;
+  for (const uint16_t threshold : kIntensityMinutes) {
+    if (minutes >= threshold) ++level;
+  }
+  return level;
+}
+
+// Dot sizes for one grid: level 0 is the small unread dot; levels 1-4 grow from
+// a few pixels above it to the full active size; level 5 is full size plus a ring.
+struct DotSizes {
+  int active;
+  int inactive;
+};
+
+void drawIntensityDot(const GfxRenderer& renderer, const int centerX, const int centerY, const int level,
+                      const bool estimated, const DotSizes& sizes) {
+  int dotSize = sizes.inactive;
+  Color color = Color::LightGray;
+  if (level > 0) {
+    const int smallest = std::min(sizes.active, sizes.inactive + 3);
+    const int step = std::min(level, kIntensityLevelCount - 1) - 1;
+    dotSize = smallest + (sizes.active - smallest) * step / (kIntensityLevelCount - 2);
+    color = level == 1 ? Color::LightGray : level == 2 ? Color::DarkGray : Color::Black;
+  }
+  const int dotX = centerX - dotSize / 2;
+  const int dotY = centerY - dotSize / 2;
+  if (estimated) {
+    renderer.drawRoundedRect(dotX, dotY, dotSize, dotSize, 1, dotSize / 2, true);
   } else {
-    dotSize = activeDotSize;
-    color = Color::Black;
+    renderer.fillRoundedRect(dotX, dotY, dotSize, dotSize, dotSize / 2, color);
+  }
+  if (level >= kIntensityLevelCount) {
+    const int ringSize = sizes.active + 4;
+    renderer.drawRoundedRect(centerX - ringSize / 2, centerY - ringSize / 2, ringSize, ringSize, 1, ringSize / 2,
+                             true);
+  }
+}
+
+// Short bar under a dot (today, or a book's first/last day); clears the level-5 ring.
+void drawDayMarker(const GfxRenderer& renderer, const int centerX, const int centerY, const DotSizes& sizes) {
+  renderer.fillRect(centerX - sizes.active / 2, centerY + sizes.active / 2 + 4, sizes.active, 2);
+}
+
+int intensityLegendHeight(const GfxRenderer& renderer) {
+  return std::max(renderer.getLineHeight(SMALL_FONT_ID), 22) + 4;
+}
+
+// One row of sample dots with their lower bounds: "<30 min, 30 min, 1h, 2h, 4h+".
+void drawIntensityLegend(const GfxRenderer& renderer, const int x, const int w, const int centerY,
+                         const DotSizes& sizes) {
+  constexpr int kTextGap = 3;
+  constexpr int kItemGap = 10;
+  const int swatchW = sizes.active + 4;
+  std::array<std::array<char, 16>, kIntensityLevelCount> labels{};
+  int totalW = -kItemGap;
+  for (int level = 1; level <= kIntensityLevelCount; ++level) {
+    char duration[12];
+    auto& label = labels[static_cast<size_t>(level - 1)];
+    if (level == 1) {
+      formatRhythmMinutes(kIntensityMinutes.front(), duration, sizeof(duration));
+      snprintf(label.data(), label.size(), "<%s", duration);
+    } else {
+      formatRhythmMinutes(kIntensityMinutes[static_cast<size_t>(level - 2)], duration, sizeof(duration));
+      snprintf(label.data(), label.size(), level == kIntensityLevelCount ? "%s+" : "%s", duration);
+    }
+    totalW += swatchW + kTextGap + renderer.getTextWidth(SMALL_FONT_ID, label.data()) + kItemGap;
+  }
+  const int textY = centerY - renderer.getLineHeight(SMALL_FONT_ID) / 2;
+  int itemX = x + std::max(0, (w - totalW) / 2);
+  for (int level = 1; level <= kIntensityLevelCount; ++level) {
+    const char* label = labels[static_cast<size_t>(level - 1)].data();
+    drawIntensityDot(renderer, itemX + swatchW / 2, centerY, level, false, sizes);
+    renderer.drawText(SMALL_FONT_ID, itemX + swatchW + kTextGap, textY, label);
+    itemX += swatchW + kTextGap + renderer.getTextWidth(SMALL_FONT_ID, label) + kItemGap;
   }
 }
 
@@ -135,6 +199,7 @@ struct RhythmMetrics {
   int smallH;
   int monthLabelH;
   int recentH;
+  int legendH;
   int minRowStride;
   int maxRowStride;
   int rhythmMinH;
@@ -147,9 +212,10 @@ RhythmMetrics rhythmMetrics(const GfxRenderer& renderer, const int titleH, const
   m.smallH = renderer.getLineHeight(SMALL_FONT_ID);
   m.monthLabelH = m.smallH + 6;
   m.recentH = m.smallH * 2 + 12;
+  m.legendH = intensityLegendHeight(renderer);
   m.minRowStride = compactWidth ? 20 : 24;
   m.maxRowStride = compactWidth ? 34 : 40;
-  m.rhythmMinH = titleH + m.monthLabelH + 7 * m.minRowStride + m.recentH + kCardPadding;
+  m.rhythmMinH = titleH + m.monthLabelH + 7 * m.minRowStride + m.legendH + m.recentH + kCardPadding;
   m.weeklyMinH = titleH + 70 + m.smallH + 8;
   m.monthlyMinH = titleH + m.smallH * 3 + 46;
   return m;
@@ -250,16 +316,15 @@ void renderReadingRhythmPage(GfxRenderer& renderer, const MappedInputManager* ma
   const int cardW = frame.cardW;
   const int titleH = frame.titleH;
   const int weekdayLabelW = compactWidth ? 38 : 46;
-  const int activeDotSize = std::clamp(rowStride - 10, 12, 18);
-  const int inactiveDotSize = compactWidth ? 5 : 6;
+  const DotSizes dotSizes{std::clamp(rowStride - 10, 12, 18), compactWidth ? 5 : 6};
+  const uint8_t firstWeekday = statsFirstWeekday();
 
   ReadingStatsDateTime now;
   const bool hasToday = getCurrentLocalReadingStatsDateTime(now);
   const uint32_t displayDay = hasToday ? readingStatsDayIndex(now.date) : stats.readingHistoryAnchorDay;
   ReadingStatsDate displayDate;
-  const bool hasDisplayDate = readingStatsDateFromDayIndex(displayDay, displayDate);
-  const uint8_t displayDow = hasDisplayDate ? readingStatsDayOfWeekIndex(displayDate) : 0;
-  const uint32_t currentWeekStart = displayDay >= displayDow ? displayDay - displayDow : 0;
+  readingStatsDateFromDayIndex(displayDay, displayDate);
+  const uint32_t currentWeekStart = readingStatsWeekStartDay(displayDay, firstWeekday);
   const uint32_t historySpanBeforeCurrentWeek = static_cast<uint32_t>(kReadingRhythmWeekCount - 1) * 7u;
   const uint32_t firstDay =
       currentWeekStart >= historySpanBeforeCurrentWeek ? currentWeekStart - historySpanBeforeCurrentWeek : 0;
@@ -289,7 +354,7 @@ void renderReadingRhythmPage(GfxRenderer& renderer, const MappedInputManager* ma
   for (int weekday = 0; weekday < 7; ++weekday) {
     const int rowCenterY = gridTop + weekday * rowStride + rowStride / 2;
     renderer.drawText(SMALL_FONT_ID, cardX + kCardPadding, rowCenterY - m.smallH / 2,
-                      I18n::getInstance().get(DAY_LABELS[weekday]));
+                      I18n::getInstance().get(DAY_LABELS[(weekday + firstWeekday) % 7]));
 
     for (int week = 0; week < kReadingRhythmWeekCount; ++week) {
       const uint32_t dayIndex = firstDay + static_cast<uint32_t>(week) * 7u + static_cast<uint32_t>(weekday);
@@ -297,25 +362,12 @@ void renderReadingRhythmPage(GfxRenderer& renderer, const MappedInputManager* ma
 
       const int centerX = gridX + week * columnStride + columnStride / 2;
       const DayMinutes day = minutesOnDay(stats, minutesLog, dayIndex);
-      int dotSize = inactiveDotSize;
-      Color dotColor = Color::LightGray;
-      readingIntensityStyle(day.minutes, activeDotSize, inactiveDotSize, dotSize, dotColor);
-      const int dotX = centerX - dotSize / 2;
-      const int dotY = rowCenterY - dotSize / 2;
-      if (day.estimated) {
-        anyEstimated = true;
-        renderer.drawRoundedRect(dotX, dotY, dotSize, dotSize, 1, dotSize / 2, true);
-      } else {
-        renderer.fillRoundedRect(dotX, dotY, dotSize, dotSize, dotSize / 2, dotColor);
-      }
-
-      if (hasToday && dayIndex == displayDay) {
-        const int ringSize = activeDotSize + 6;
-        renderer.drawRoundedRect(centerX - ringSize / 2, rowCenterY - ringSize / 2, ringSize, ringSize, 2, ringSize / 2,
-                                 true);
-      }
+      if (day.estimated) anyEstimated = true;
+      drawIntensityDot(renderer, centerX, rowCenterY, readingIntensityLevel(day.minutes), day.estimated, dotSizes);
+      if (hasToday && dayIndex == displayDay) drawDayMarker(renderer, centerX, rowCenterY, dotSizes);
     }
   }
+  drawIntensityLegend(renderer, cardX, cardW, gridTop + rowStride * 7 + m.legendH / 2, dotSizes);
 
   if (anyEstimated) {
     // Legend in the title band, right of the centered title when it fits.
@@ -328,7 +380,7 @@ void renderReadingRhythmPage(GfxRenderer& renderer, const MappedInputManager* ma
     }
   }
 
-  const int recentDaysY = gridTop + rowStride * 7;
+  const int recentDaysY = gridTop + rowStride * 7 + m.legendH;
   renderer.drawLine(cardX, recentDaysY, cardX + cardW, recentDaysY);
   const int recentDayW = std::max(1, (cardW - kCardPadding * 2) / kRecentReadingDayCount);
   const int recentDayLabelY = recentDaysY + 5;
@@ -667,7 +719,10 @@ void renderBookRhythmPage(GfxRenderer& renderer, const MappedInputManager* mappe
   const int minRowStride = compactWidth ? 22 : 26;
   const int maxRowStride = compactWidth ? 40 : 46;
   const int summaryCellH = valueH + smallH + 22;
-  const auto daysMinH = [&](const int titleH) { return titleH + monthLabelH + 7 * minRowStride + kCardPadding; };
+  const int legendH = intensityLegendHeight(renderer);
+  const auto daysMinH = [&](const int titleH) {
+    return titleH + monthLabelH + 7 * minRowStride + legendH + kCardPadding;
+  };
   const auto weeklyMinH = [&](const int titleH) { return titleH + 70 + smallH + 8; };
   const StatsPageFrame frame =
       statsPageFrame(renderer, mappedInput, true, daysMinH(30) + weeklyMinH(30) + 30 + summaryCellH, 3);
@@ -696,7 +751,7 @@ void renderBookRhythmPage(GfxRenderer& renderer, const MappedInputManager* mappe
   const int daysCardH = daysMinH(titleH) + rowExtra * 7;
   const int weeklyCardH = weeklyMinH(titleH) + extraH;
 
-  // ---- Reading Days card: Mon-Sun rows x the book's weeks.
+  // ---- Reading Days card: weekday rows (from the first-day-of-week setting) x the book's weeks.
   const int daysY = frame.top;
   const char* note = rhythm.anyEstimated ? tr(STR_RHYTHM_ESTIMATED_NOTE) : "";
   const int noteW = rhythm.anyEstimated ? renderer.getTextWidth(SMALL_FONT_ID, note) + kCardPadding : 0;
@@ -715,8 +770,9 @@ void renderBookRhythmPage(GfxRenderer& renderer, const MappedInputManager* mappe
   // Short spans are centered in the grid area.
   const int gridX = gridAreaX + (gridAreaW - columnStride * rhythm.weekCount) / 2;
   const int gridTop = daysY + titleH + monthLabelH;
-  const int activeDotSize = std::clamp(rowStride - 10, 12, 18);
-  const int inactiveDotSize = compactWidth ? 5 : 6;
+  const DotSizes dotSizes{std::clamp(rowStride - 10, 12, 18), compactWidth ? 5 : 6};
+  // BookRhythm weeks were built from this same setting.
+  const uint8_t firstWeekday = statsFirstWeekday();
 
   uint8_t previousMonth = 0;
   for (int week = 0; week < rhythm.weekCount; ++week) {
@@ -733,30 +789,20 @@ void renderBookRhythmPage(GfxRenderer& renderer, const MappedInputManager* mappe
   for (int weekday = 0; weekday < 7; ++weekday) {
     const int rowCenterY = gridTop + weekday * rowStride + rowStride / 2;
     renderer.drawText(SMALL_FONT_ID, cardX + kCardPadding, rowCenterY - smallH / 2,
-                      I18n::getInstance().get(DAY_LABELS[weekday]));
+                      I18n::getInstance().get(DAY_LABELS[(weekday + firstWeekday) % 7]));
     for (int week = 0; week < rhythm.weekCount; ++week) {
       const uint32_t dayIndex =
           rhythm.firstShownDay + static_cast<uint32_t>(week) * 7u + static_cast<uint32_t>(weekday);
       if (dayIndex < rhythm.startDay || dayIndex > rhythm.endDay) continue;  // outside the book's span
       const int centerX = gridX + week * columnStride + columnStride / 2;
       const BookRhythm::Day day = rhythm.dayAt(dayIndex);
-      int dotSize = inactiveDotSize;
-      Color dotColor = Color::LightGray;
-      readingIntensityStyle(day.minutes, activeDotSize, inactiveDotSize, dotSize, dotColor);
-      if (day.estimated) {
-        renderer.drawRoundedRect(centerX - dotSize / 2, rowCenterY - dotSize / 2, dotSize, dotSize, 1, dotSize / 2,
-                                 true);
-      } else {
-        renderer.fillRoundedRect(centerX - dotSize / 2, rowCenterY - dotSize / 2, dotSize, dotSize, dotSize / 2,
-                                 dotColor);
-      }
+      drawIntensityDot(renderer, centerX, rowCenterY, readingIntensityLevel(day.minutes), day.estimated, dotSizes);
       if (dayIndex == rhythm.startDay || dayIndex == rhythm.endDay) {
-        const int ringSize = activeDotSize + 6;
-        renderer.drawRoundedRect(centerX - ringSize / 2, rowCenterY - ringSize / 2, ringSize, ringSize, 2, ringSize / 2,
-                                 true);
+        drawDayMarker(renderer, centerX, rowCenterY, dotSizes);
       }
     }
   }
+  drawIntensityLegend(renderer, cardX, cardW, gridTop + rowStride * 7 + legendH / 2, dotSizes);
 
   // ---- Reading time card: per day for short books (up to 3 weeks), else per week.
   const bool dailyBars = rhythm.spanDays <= 21;
