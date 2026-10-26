@@ -37,6 +37,9 @@ void renderNoRtcCombinedStatsPage(GfxRenderer& renderer, const MappedInputManage
 void renderEditBookDatesPage(GfxRenderer& renderer, const MappedInputManager* mappedInput, const std::string& bookTitle,
                              const BookReadingStats& stats, int selectedField, bool showButtonHints);
 
+// First weekday of stats calendars from the settings, as a Monday = 0 index (6 = Sunday).
+uint8_t statsFirstWeekday();
+
 // Shared frame for the Reading Rhythm and Books Finished pages so they use the
 // same header, insets and card metrics as the pages above.
 struct StatsPageFrame {

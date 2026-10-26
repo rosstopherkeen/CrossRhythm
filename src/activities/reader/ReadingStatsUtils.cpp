@@ -215,6 +215,12 @@ uint8_t readingStatsDayOfWeekIndex(const ReadingStatsDate& date) {
   return static_cast<uint8_t>((5u + dayIndex) % 7u);
 }
 
+uint32_t readingStatsWeekStartDay(const uint32_t dayIndex, const uint8_t firstWeekday) {
+  const uint32_t dow = (5u + dayIndex) % 7u;
+  const uint32_t offset = (dow + 7u - firstWeekday % 7u) % 7u;
+  return dayIndex >= offset ? dayIndex - offset : 0;
+}
+
 ReadingTimeBucket readingTimeBucketForHour(const uint8_t hour) {
   if (hour >= 5 && hour < 12) {
     return ReadingTimeBucket::Morning;
