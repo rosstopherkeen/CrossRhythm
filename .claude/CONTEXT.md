@@ -17,6 +17,7 @@ Refer to https://freeink.org/llms.txt for guidance.
   - `esp_deep_sleep_start()` is a no-op in simulator.
   - `HalStorage` uses POSIX file access under `./fs_` and allows multiple readers, unlike real hardware.
   - `lib/HalClockSim` always reports no date, so RTC-dependent stats paths (daily minutes, Reading Rhythm backfill) never run in the simulator; cover them with host tests.
+  - `x4-pro-simulator` has an RTC backed by the host clock (simulator lib `HalClock`), so Reading Rhythm/Book Rhythm pages render there. README screenshots come from it with hand-built `global_stats.bin`, `daily_minutes.bin`, `finished_books.bin` and per-book `stats_v5.bin`/`rhythm_days.bin` under `./fs_/.crosspoint/`, driven by `CROSSPOINT_SIM_INPUT_SCRIPT` + `CROSSPOINT_SIM_SCREENSHOTS`.
 
 ## Real Hardware / Storage
 

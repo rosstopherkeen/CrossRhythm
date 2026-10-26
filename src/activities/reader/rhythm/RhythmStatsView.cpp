@@ -118,9 +118,10 @@ void drawIntensityDot(const GfxRenderer& renderer, const int centerX, const int 
   }
 }
 
-// Short bar under a dot (today, or a book's first/last day); clears the level-5 ring.
+// 2px square frame around a dot (today, or a book's first/last day); clears the level-5 ring.
 void drawDayMarker(const GfxRenderer& renderer, const int centerX, const int centerY, const DotSizes& sizes) {
-  renderer.fillRect(centerX - sizes.active / 2, centerY + sizes.active / 2 + 4, sizes.active, 2);
+  const int frameSize = sizes.active + 8;
+  renderer.drawRect(centerX - frameSize / 2, centerY - frameSize / 2, frameSize, frameSize, 2, true);
 }
 
 int intensityLegendHeight(const GfxRenderer& renderer) {
