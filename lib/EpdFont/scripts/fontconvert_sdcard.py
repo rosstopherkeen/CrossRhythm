@@ -28,6 +28,7 @@ import struct
 import sys
 import os
 import re
+import json
 import math
 import argparse
 from collections import namedtuple
@@ -53,6 +54,7 @@ INTERVAL_PRESETS = {
     "cjk":         [(0x3000, 0x303F), (0x3040, 0x309F), (0x30A0, 0x30FF),
                     (0x4E00, 0x9FFF), (0xF900, 0xFAFF), (0xFF00, 0xFFEF)],
     "hangul":      [(0xAC00, 0xD7AF), (0x1100, 0x11FF), (0x3130, 0x318F)],
+    "kannada":     [(0x0C80, 0x0CFF)],
     "cherokee":    [(0x13A0, 0x13FF), (0xAB70, 0xABBF)],
     "tifinagh":    [(0x2D30, 0x2D7F)],
     # Symbol blocks commonly seen in scifi/popsci/literary fiction.
@@ -102,6 +104,37 @@ SYNTHETIC_BLANK_CODEPOINT_RANGES = (
 def is_synthetic_blank_codepoint(code_point: int) -> bool:
     return any(start <= code_point <= end for start, end in SYNTHETIC_BLANK_CODEPOINT_RANGES)
 
+
+# Shaped Kannada forms (conjuncts, below-base consonants, merged vowel signs)
+# exist only as GSUB outputs with no cmap entry, so they are addressed by
+# private-use codepoints assigned in gen_kannada_shaping.py. That script writes
+# the map below; this script rasterizes the named glyphs at those codepoints so
+# the device shaper has something to draw.
+KANNADA_PUA_MAP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                    "kannada_pua_map.json")
+
+
+def load_kannada_pua_forms():
+    """Return [(codepoint, glyph_name), ...], or [] when the map is absent."""
+    try:
+        with open(KANNADA_PUA_MAP_PATH, encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except FileNotFoundError:
+        return []
+    except (OSError, ValueError) as exc:
+        print(f"warning: ignoring unreadable {KANNADA_PUA_MAP_PATH}: {exc}", file=sys.stderr)
+        return []
+    return [(form["codepoint"], form["glyph"]) for form in payload.get("forms", [])]
+
+
+def kannada_pua_interval():
+    """The interval covering every assigned shaped-form codepoint, or None."""
+    forms = load_kannada_pua_forms()
+    if not forms:
+        return None
+    codepoints = [cp for cp, _ in forms]
+    return min(codepoints), max(codepoints)
+
 # Regex for parsing unnamed hex range intervals: (0xSTART-0xEND)
 _HEX_RANGE_PATTERN = re.compile(r'^\(0x([0-9a-fA-F]+)-0x([0-9a-fA-F]+)\)$')
 
@@ -135,6 +168,17 @@ def resolve_intervals(preset_str):
             all_intervals.append(unnamed_interval)
         else:
             all_intervals.extend(INTERVAL_PRESETS[name])
+            # Asking for Kannada means asking for readable Kannada, which needs
+            # the shaped forms too -- the block on its own renders conjuncts as
+            # separate letters with visible viramas.
+            if name == "kannada":
+                pua = kannada_pua_interval()
+                if pua is not None:
+                    all_intervals.append(pua)
+                else:
+                    print("warning: kannada requested but no shaped-form map found; "
+                          "run gen_kannada_shaping.py for correct conjunct rendering",
+                          file=sys.stderr)
 
     # Always add replacement character
     all_intervals.append((0xFFFD, 0xFFFD))
@@ -628,6 +672,20 @@ def rasterize_font_style(fontfile, size, intervals, style_id=0, force_autohint=F
     # Invalid_Size_Handle on some fonts.
     face.set_char_size(size << 6, size << 6, 150, 150)
     ligature_glyph_indices = extract_ligature_glyph_indices_fonttools(fontfile)
+    # Shaped Kannada forms are unencoded, so they reuse the same
+    # codepoint -> glyph-index override path as unencoded ligatures. Names are
+    # resolved against this face, so a font without them simply contributes
+    # nothing and the PUA interval validates away.
+    kannada_missing = []
+    for pua_code_point, glyph_name in load_kannada_pua_forms():
+        glyph_index = face.get_name_index(glyph_name.encode("ascii"))
+        if glyph_index:
+            ligature_glyph_indices[pua_code_point] = glyph_index
+        else:
+            kannada_missing.append(glyph_name)
+    if kannada_missing:
+        print(f"  [{style_label}] {len(kannada_missing)} shaped Kannada form(s) absent from this "
+              f"face (first: {kannada_missing[0]})", file=sys.stderr)
     # ``fallback_fontfile`` is retained as a compatibility alias for callers
     # that used the original single-fallback API. New callers should pass an
     # ordered list through ``fallback_fontfiles``.

@@ -137,6 +137,12 @@ class SdCardFontSystem {
   void setupUiFallbacks(GfxRenderer& renderer);
   void setupUiFallbacksDirect(GfxRenderer& renderer, const char* familyName);
 
+  /// Register a reader-side fallback for scripts the selected reader font cannot
+  /// draw, so a Kannada book renders without the reader changing their font. Does
+  /// nothing when the reader font already covers the script, or when no font
+  /// carrying it is installed.
+  void setupReaderScriptFallback(GfxRenderer& renderer);
+
   SdCardFontRegistry registry_;
   SdCardFontManager manager_;
   std::atomic<bool> registryDirty_{false};

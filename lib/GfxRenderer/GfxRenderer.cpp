@@ -7,6 +7,7 @@
 #include <BuildScratch.h>
 #include <FontDecompressor.h>
 #include <HalGPIO.h>
+#include <KannadaShape.h>
 #include <Logging.h>
 #include <SdCardFont.h>
 #include <Utf8.h>
@@ -358,16 +359,26 @@ int GfxRenderer::resolveTextFontId(const int fontId, const char* text, const Epd
   if (fontIt == fontMap.end() || fallbackIt == fontMap.end()) {
     return fontId;  // unknown primary or fallback not loaded — let the caller handle it
   }
+  // Every script worth redirecting is non-ASCII, so a string of plain ASCII
+  // bytes can be answered without decoding it. This is the common case for an
+  // English book once any fallback is registered, and it costs one byte scan
+  // instead of a full UTF-8 decode plus a range test per codepoint.
+  for (const unsigned char* q = reinterpret_cast<const unsigned char*>(text);; ++q) {
+    if (*q == '\0') return fontId;
+    if (*q >= 0x80) break;
+  }
+
   const EpdFontFamily& primary = fontIt->second;
   const EpdFontFamily& fallback = fallbackIt->second;
   const char* cursor = text;
   uint32_t cp;
   while ((cp = utf8NextCodepoint(reinterpret_cast<const uint8_t**>(&cursor)))) {
-    // Only redirect for CJK the primary font cannot draw but the fallback can.
-    // Latin/symbol strings the built-in UI fonts already cover are left
-    // untouched, and a partial-coverage fallback (e.g. kana-only) is not worth
-    // dragging the whole string into for glyphs it would also miss.
-    if (utf8IsCjkCodepoint(cp) && !primary.hasCodepoint(cp, style) && fallback.hasCodepoint(cp, style)) {
+    // Only redirect for a whole script the primary font cannot draw but the
+    // fallback can (CJK, Kannada). Latin/symbol strings the built-in UI fonts
+    // already cover are left untouched, and a partial-coverage fallback (e.g.
+    // kana-only) is not worth dragging the whole string into for glyphs it
+    // would also miss.
+    if (utf8IsFallbackScriptCodepoint(cp) && !primary.hasCodepoint(cp, style) && fallback.hasCodepoint(cp, style)) {
       return fallbackFontId;
     }
   }
@@ -1006,18 +1017,27 @@ uint32_t smallCapsUppercaseCodepoint(const uint32_t cp) {
 const char* resolveVisualText(const char* text, std::string& visualBuffer, const BidiUtils::BidiBaseDir baseDir) {
   if (!text || *text == '\0') return text;
 
-  if (baseDir != BidiUtils::BidiBaseDir::RTL) {
-    bool hasRtlBytes = false;
+  bool mayBeRtl = baseDir == BidiUtils::BidiBaseDir::RTL;
+  if (!mayBeRtl) {
     for (const unsigned char* q = reinterpret_cast<const unsigned char*>(text); *q; ++q) {
       if (*q >= 0xD6 && *q <= 0xDB) {
-        hasRtlBytes = true;
+        mayBeRtl = true;
         break;
       }
     }
-    if (!hasRtlBytes) return text;
   }
 
-  if (BidiUtils::applyBidiVisual(text, visualBuffer, static_cast<int>(baseDir)) && !visualBuffer.empty()) {
+  if (mayBeRtl && BidiUtils::applyBidiVisual(text, visualBuffer, static_cast<int>(baseDir)) &&
+      !visualBuffer.empty()) {
+    return visualBuffer.c_str();
+  }
+
+  // Kannada needs its conjuncts and vowel signs substituted for the shaped
+  // forms the font actually draws; the codepoints as authored render as
+  // separate letters with visible viramas. applyShaping() has its own UTF-8
+  // lead-byte prefilter, so other scripts pay one byte scan. RTL text cannot
+  // contain Kannada, so the two transforms never contend for visualBuffer.
+  if (KannadaShape::applyShaping(text, visualBuffer) && !visualBuffer.empty()) {
     return visualBuffer.c_str();
   }
   return text;

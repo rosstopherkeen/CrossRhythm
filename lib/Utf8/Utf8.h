@@ -100,6 +100,20 @@ inline bool utf8IsCjkCodepoint(const uint32_t cp) {
          || (cp >= 0x30000 && cp <= 0x323AF);  // CJK Extensions G-H
 }
 
+// Returns true for any codepoint in the Kannada block. Used for fallback font
+// selection: Latin reader fonts carry no Kannada glyphs, so a string containing
+// these has to be routed to a font that does.
+inline bool utf8IsKannadaCodepoint(const uint32_t cp) { return cp >= 0x0C80 && cp <= 0x0CFF; }
+
+// Returns true for a codepoint whose script a Latin reader font will not cover,
+// so a string containing it is worth routing to a fallback font. Kept separate
+// from the per-script helpers because resolveTextFontId() deliberately redirects
+// only for whole scripts a primary font is expected to miss -- never for Latin
+// or symbols the built-in fonts already draw.
+inline bool utf8IsFallbackScriptCodepoint(const uint32_t cp) {
+  return utf8IsCjkCodepoint(cp) || utf8IsKannadaCodepoint(cp);
+}
+
 // Returns true for CJK letters, syllables, and digits that can form a dictionary
 // lookup. Unlike utf8IsCjkCodepoint(), this deliberately excludes punctuation
 // and compatibility symbols so callers can continue to skip standalone marks.

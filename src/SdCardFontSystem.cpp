@@ -30,6 +30,11 @@ constexpr UiFontSize kUiFontSizes[] = {
     {UI_12_FONT_ID, 12},
 };
 
+// Installed families consulted, in order, to draw a script the selected reader
+// font is missing. Kept as names rather than a coverage scan so the lookup costs
+// one registry hit and no SD reads when the font is not installed.
+constexpr const char* kScriptFallbackFamilies[] = {"NotoSansKannada"};
+
 enum class FontFileSelection : uint8_t { Closest, Exact };
 
 // This is a cold setup path, not a render loop. The 320-byte stack footprint
@@ -245,6 +250,7 @@ void SdCardFontSystem::ensureLoaded(GfxRenderer& renderer) {
       fontReloadPending_ = false;
       loadedRegistryRevision_ = registry_.revision();
       setupUiFallbacks(renderer);
+      setupReaderScriptFallback(renderer);
       LOG_DBG("SDFS", "Loaded SD font family: %s", wantedFamily);
     } else {
       LOG_ERR("SDFS", "Failed to load SD font family: %s (preserving selection)", wantedFamily);
@@ -294,6 +300,7 @@ bool SdCardFontSystem::reloadActiveScalableFamily(GfxRenderer& renderer, const c
   const auto options = ttfRenderOptions(TTF_RENDER_PROFILES.profileFor(familyName));
   if (!manager_.setScalableRenderOptions(renderer, options)) return false;
   setupUiFallbacks(renderer);
+  setupReaderScriptFallback(renderer);
   scalableRenderOptionsGeneration_++;
   return true;
 #else
@@ -377,6 +384,40 @@ void SdCardFontSystem::setupUiFallbacks(GfxRenderer& renderer) {
     } else {
       LOG_DBG("SDFS", "No %u pt SD glyphs for UI fallback in %s", ui.pointSize, familyName.c_str());
     }
+  }
+}
+
+void SdCardFontSystem::setupReaderScriptFallback(GfxRenderer& renderer) {
+  const std::string& familyName = manager_.currentFamilyName();
+  if (familyName.empty()) return;
+
+  const int readerFontId = manager_.getFontId(familyName);
+  const auto readerIt = renderer.getFontMap().find(readerFontId);
+  if (readerIt == renderer.getFontMap().end()) return;
+
+  // ಕ: any font with real Kannada coverage carries this. If the reader font
+  // already draws it there is nothing to route elsewhere.
+  static constexpr uint32_t kKannadaProbe = 0x0C95;
+  if (readerIt->second.hasCodepoint(kKannadaProbe)) return;
+
+  for (const char* candidate : kScriptFallbackFamilies) {
+    if (familyName == candidate) continue;
+    const auto* family = registry_.findFamily(candidate);
+    if (!family) continue;
+
+    // Match the reader's physical size so fallback runs sit on the same baseline.
+    const int fallbackFontId = manager_.loadFamilyExtraSize(*family, renderer, manager_.currentPointSize());
+    if (fallbackFontId == 0) {
+      LOG_DBG("SDFS", "No %u pt file for script fallback family %s", manager_.currentPointSize(), candidate);
+      continue;
+    }
+    const auto fallbackIt = renderer.getFontMap().find(fallbackFontId);
+    if (fallbackIt == renderer.getFontMap().end() || !fallbackIt->second.hasCodepoint(kKannadaProbe)) continue;
+
+    renderer.setFallbackFont(readerFontId, fallbackFontId);
+    LOG_INF("SDFS", "Kannada fallback for %s -> %s @%upt", familyName.c_str(), candidate,
+            manager_.currentPointSize());
+    return;
   }
 }
 
@@ -566,6 +607,7 @@ int SdCardFontSystem::restoreReaderFont(GfxRenderer& renderer) {
     if (manager_.loadFamilyClosest(*family, renderer, SETTINGS.getSdFontTargetPointSize(), options)) {
       loadedFontPointSize_ = SETTINGS.getSdFontTargetPointSize();
       setupUiFallbacks(renderer);
+      setupReaderScriptFallback(renderer);
       return manager_.getFontId(familyName);
     }
     return ensureBuiltInReaderFont(renderer);

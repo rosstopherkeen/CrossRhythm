@@ -8,6 +8,7 @@
 - First Day of Week setting (Settings > System > Device): start the Reading Stats calendars, weekly totals and day-of-week bars on Monday or Sunday.
 - New CrossRhythm boot screen.
 - Daily reading minutes are now recorded for the Reading Rhythm screen. Minutes for days read before updating are estimated once from each book's reading time and shown lighter.
+- Kannada book support: install the Noto Sans Kannada font and Kannada text renders automatically, in any book, without changing your reading font. Conjuncts stack, vowel signs join the letter they belong to, and arkavattu sits where it should, so Kannada reads as Kannada rather than as separate letters. Books in your usual font keep using it, and only the Kannada parts switch.
 
 ### Changed
 
