@@ -1,0 +1,783 @@
+{
+  "comment": "Shaped Kannada forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "source_font": "NotoSansKannada.ttf",
+  "pua_base": 57344,
+  "forms": [
+    {
+      "codepoint": 57344,
+      "glyph": "rephknda"
+    },
+    {
+      "codepoint": 57345,
+      "glyph": "kasubscriptknda"
+    },
+    {
+      "codepoint": 57346,
+      "glyph": "khasubscriptknda"
+    },
+    {
+      "codepoint": 57347,
+      "glyph": "gasubscriptknda"
+    },
+    {
+      "codepoint": 57348,
+      "glyph": "ghasubscriptknda"
+    },
+    {
+      "codepoint": 57349,
+      "glyph": "ngasubscriptknda"
+    },
+    {
+      "codepoint": 57350,
+      "glyph": "casubscriptknda"
+    },
+    {
+      "codepoint": 57351,
+      "glyph": "chasubscriptknda"
+    },
+    {
+      "codepoint": 57352,
+      "glyph": "jasubscriptknda"
+    },
+    {
+      "codepoint": 57353,
+      "glyph": "jhasubscriptknda"
+    },
+    {
+      "codepoint": 57354,
+      "glyph": "nyasubscriptknda"
+    },
+    {
+      "codepoint": 57355,
+      "glyph": "ttasubscriptknda"
+    },
+    {
+      "codepoint": 57356,
+      "glyph": "tthasubscriptknda"
+    },
+    {
+      "codepoint": 57357,
+      "glyph": "ddasubscriptknda"
+    },
+    {
+      "codepoint": 57358,
+      "glyph": "ddhasubscriptknda"
+    },
+    {
+      "codepoint": 57359,
+      "glyph": "nnasubscriptknda"
+    },
+    {
+      "codepoint": 57360,
+      "glyph": "tasubscriptknda"
+    },
+    {
+      "codepoint": 57361,
+      "glyph": "thasubscriptknda"
+    },
+    {
+      "codepoint": 57362,
+      "glyph": "dasubscriptknda"
+    },
+    {
+      "codepoint": 57363,
+      "glyph": "dhasubscriptknda"
+    },
+    {
+      "codepoint": 57364,
+      "glyph": "nasubscriptknda"
+    },
+    {
+      "codepoint": 57365,
+      "glyph": "pasubscriptknda"
+    },
+    {
+      "codepoint": 57366,
+      "glyph": "phasubscriptknda"
+    },
+    {
+      "codepoint": 57367,
+      "glyph": "basubscriptknda"
+    },
+    {
+      "codepoint": 57368,
+      "glyph": "bhasubscriptknda"
+    },
+    {
+      "codepoint": 57369,
+      "glyph": "masubscriptknda"
+    },
+    {
+      "codepoint": 57370,
+      "glyph": "yasubscriptknda"
+    },
+    {
+      "codepoint": 57371,
+      "glyph": "rasubscriptknda"
+    },
+    {
+      "codepoint": 57372,
+      "glyph": "rrasubscriptknda"
+    },
+    {
+      "codepoint": 57373,
+      "glyph": "lasubscriptknda"
+    },
+    {
+      "codepoint": 57374,
+      "glyph": "llasubscriptknda"
+    },
+    {
+      "codepoint": 57375,
+      "glyph": "vasubscriptknda"
+    },
+    {
+      "codepoint": 57376,
+      "glyph": "shasubscriptknda"
+    },
+    {
+      "codepoint": 57377,
+      "glyph": "ssasubscriptknda"
+    },
+    {
+      "codepoint": 57378,
+      "glyph": "sasubscriptknda"
+    },
+    {
+      "codepoint": 57379,
+      "glyph": "hasubscriptknda"
+    },
+    {
+      "codepoint": 57380,
+      "glyph": "kanocrestknda"
+    },
+    {
+      "codepoint": 57381,
+      "glyph": "khanocrestknda"
+    },
+    {
+      "codepoint": 57382,
+      "glyph": "ganocrestknda"
+    },
+    {
+      "codepoint": 57383,
+      "glyph": "ghanocrestknda"
+    },
+    {
+      "codepoint": 57384,
+      "glyph": "canocrestknda"
+    },
+    {
+      "codepoint": 57385,
+      "glyph": "chanocrestknda"
+    },
+    {
+      "codepoint": 57386,
+      "glyph": "janocrestknda"
+    },
+    {
+      "codepoint": 57387,
+      "glyph": "jhanocrestknda"
+    },
+    {
+      "codepoint": 57388,
+      "glyph": "ttanocrestknda"
+    },
+    {
+      "codepoint": 57389,
+      "glyph": "tthanocrestknda"
+    },
+    {
+      "codepoint": 57390,
+      "glyph": "ddanocrestknda"
+    },
+    {
+      "codepoint": 57391,
+      "glyph": "ddhanocrestknda"
+    },
+    {
+      "codepoint": 57392,
+      "glyph": "nnanocrestknda"
+    },
+    {
+      "codepoint": 57393,
+      "glyph": "tanocrestknda"
+    },
+    {
+      "codepoint": 57394,
+      "glyph": "thanocrestknda"
+    },
+    {
+      "codepoint": 57395,
+      "glyph": "danocrestknda"
+    },
+    {
+      "codepoint": 57396,
+      "glyph": "dhanocrestknda"
+    },
+    {
+      "codepoint": 57397,
+      "glyph": "nanocrestknda"
+    },
+    {
+      "codepoint": 57398,
+      "glyph": "panocrestknda"
+    },
+    {
+      "codepoint": 57399,
+      "glyph": "phanocrestknda"
+    },
+    {
+      "codepoint": 57400,
+      "glyph": "banocrestknda"
+    },
+    {
+      "codepoint": 57401,
+      "glyph": "bhanocrestknda"
+    },
+    {
+      "codepoint": 57402,
+      "glyph": "manocrestknda"
+    },
+    {
+      "codepoint": 57403,
+      "glyph": "yanocrestknda"
+    },
+    {
+      "codepoint": 57404,
+      "glyph": "ranocrestknda"
+    },
+    {
+      "codepoint": 57405,
+      "glyph": "lanocrestknda"
+    },
+    {
+      "codepoint": 57406,
+      "glyph": "llanocrestknda"
+    },
+    {
+      "codepoint": 57407,
+      "glyph": "vanocrestknda"
+    },
+    {
+      "codepoint": 57408,
+      "glyph": "shanocrestknda"
+    },
+    {
+      "codepoint": 57409,
+      "glyph": "ssanocrestknda"
+    },
+    {
+      "codepoint": 57410,
+      "glyph": "sanocrestknda"
+    },
+    {
+      "codepoint": 57411,
+      "glyph": "hanocrestknda"
+    },
+    {
+      "codepoint": 57412,
+      "glyph": "kivowelknda"
+    },
+    {
+      "codepoint": 57413,
+      "glyph": "khivowelknda"
+    },
+    {
+      "codepoint": 57414,
+      "glyph": "givowelknda"
+    },
+    {
+      "codepoint": 57415,
+      "glyph": "ghivowelknda"
+    },
+    {
+      "codepoint": 57416,
+      "glyph": "civowelknda"
+    },
+    {
+      "codepoint": 57417,
+      "glyph": "chivowelknda"
+    },
+    {
+      "codepoint": 57418,
+      "glyph": "jivowelknda"
+    },
+    {
+      "codepoint": 57419,
+      "glyph": "jhivowelknda"
+    },
+    {
+      "codepoint": 57420,
+      "glyph": "ttivowelknda"
+    },
+    {
+      "codepoint": 57421,
+      "glyph": "tthivowelknda"
+    },
+    {
+      "codepoint": 57422,
+      "glyph": "ddivowelknda"
+    },
+    {
+      "codepoint": 57423,
+      "glyph": "ddhivowelknda"
+    },
+    {
+      "codepoint": 57424,
+      "glyph": "nnivowelknda"
+    },
+    {
+      "codepoint": 57425,
+      "glyph": "tivowelknda"
+    },
+    {
+      "codepoint": 57426,
+      "glyph": "thivowelknda"
+    },
+    {
+      "codepoint": 57427,
+      "glyph": "divowelknda"
+    },
+    {
+      "codepoint": 57428,
+      "glyph": "dhivowelknda"
+    },
+    {
+      "codepoint": 57429,
+      "glyph": "nivowelknda"
+    },
+    {
+      "codepoint": 57430,
+      "glyph": "pivowelknda"
+    },
+    {
+      "codepoint": 57431,
+      "glyph": "phivowelknda"
+    },
+    {
+      "codepoint": 57432,
+      "glyph": "bivowelknda"
+    },
+    {
+      "codepoint": 57433,
+      "glyph": "bhivowelknda"
+    },
+    {
+      "codepoint": 57434,
+      "glyph": "mivowelknda"
+    },
+    {
+      "codepoint": 57435,
+      "glyph": "yivowelknda"
+    },
+    {
+      "codepoint": 57436,
+      "glyph": "rivowelknda"
+    },
+    {
+      "codepoint": 57437,
+      "glyph": "livowelknda"
+    },
+    {
+      "codepoint": 57438,
+      "glyph": "llivowelknda"
+    },
+    {
+      "codepoint": 57439,
+      "glyph": "vivowelknda"
+    },
+    {
+      "codepoint": 57440,
+      "glyph": "shivowelknda"
+    },
+    {
+      "codepoint": 57441,
+      "glyph": "ssivowelknda"
+    },
+    {
+      "codepoint": 57442,
+      "glyph": "sivowelknda"
+    },
+    {
+      "codepoint": 57443,
+      "glyph": "hivowelknda"
+    },
+    {
+      "codepoint": 57444,
+      "glyph": "kevowelknda"
+    },
+    {
+      "codepoint": 57445,
+      "glyph": "khevowelknda"
+    },
+    {
+      "codepoint": 57446,
+      "glyph": "gevowelknda"
+    },
+    {
+      "codepoint": 57447,
+      "glyph": "ghevowelknda"
+    },
+    {
+      "codepoint": 57448,
+      "glyph": "cevowelknda"
+    },
+    {
+      "codepoint": 57449,
+      "glyph": "chevowelknda"
+    },
+    {
+      "codepoint": 57450,
+      "glyph": "jevowelknda"
+    },
+    {
+      "codepoint": 57451,
+      "glyph": "jhevowelknda"
+    },
+    {
+      "codepoint": 57452,
+      "glyph": "ttevowelknda"
+    },
+    {
+      "codepoint": 57453,
+      "glyph": "tthevowelknda"
+    },
+    {
+      "codepoint": 57454,
+      "glyph": "ddevowelknda"
+    },
+    {
+      "codepoint": 57455,
+      "glyph": "ddhevowelknda"
+    },
+    {
+      "codepoint": 57456,
+      "glyph": "nnevowelknda"
+    },
+    {
+      "codepoint": 57457,
+      "glyph": "tevowelknda"
+    },
+    {
+      "codepoint": 57458,
+      "glyph": "thevowelknda"
+    },
+    {
+      "codepoint": 57459,
+      "glyph": "devowelknda"
+    },
+    {
+      "codepoint": 57460,
+      "glyph": "dhevowelknda"
+    },
+    {
+      "codepoint": 57461,
+      "glyph": "nevowelknda"
+    },
+    {
+      "codepoint": 57462,
+      "glyph": "pevowelknda"
+    },
+    {
+      "codepoint": 57463,
+      "glyph": "phevowelknda"
+    },
+    {
+      "codepoint": 57464,
+      "glyph": "bevowelknda"
+    },
+    {
+      "codepoint": 57465,
+      "glyph": "bhevowelknda"
+    },
+    {
+      "codepoint": 57466,
+      "glyph": "mevowelknda"
+    },
+    {
+      "codepoint": 57467,
+      "glyph": "yevowelknda"
+    },
+    {
+      "codepoint": 57468,
+      "glyph": "revowelknda"
+    },
+    {
+      "codepoint": 57469,
+      "glyph": "levowelknda"
+    },
+    {
+      "codepoint": 57470,
+      "glyph": "llevowelknda"
+    },
+    {
+      "codepoint": 57471,
+      "glyph": "vevowelknda"
+    },
+    {
+      "codepoint": 57472,
+      "glyph": "shevowelknda"
+    },
+    {
+      "codepoint": 57473,
+      "glyph": "ssevowelknda"
+    },
+    {
+      "codepoint": 57474,
+      "glyph": "sevowelknda"
+    },
+    {
+      "codepoint": 57475,
+      "glyph": "hevowelknda"
+    },
+    {
+      "codepoint": 57476,
+      "glyph": "aavowelsignaltknda"
+    },
+    {
+      "codepoint": 57477,
+      "glyph": "evowelsignaltknda"
+    },
+    {
+      "codepoint": 57478,
+      "glyph": "uvowelsignaltknda"
+    },
+    {
+      "codepoint": 57479,
+      "glyph": "uuvowelsignaltknda"
+    },
+    {
+      "codepoint": 57480,
+      "glyph": "uvowelsignalt2knda"
+    },
+    {
+      "codepoint": 57481,
+      "glyph": "uuvowelsignalt2knda"
+    },
+    {
+      "codepoint": 57482,
+      "glyph": "uvowelsignlaknda"
+    },
+    {
+      "codepoint": 57483,
+      "glyph": "uuvowelsignlaknda"
+    },
+    {
+      "codepoint": 57484,
+      "glyph": "jhovowelknda"
+    },
+    {
+      "codepoint": 57485,
+      "glyph": "movowelknda"
+    },
+    {
+      "codepoint": 57486,
+      "glyph": "yovowelknda"
+    },
+    {
+      "codepoint": 57487,
+      "glyph": "kassaknda"
+    },
+    {
+      "codepoint": 57488,
+      "glyph": "kassanocrestknda"
+    },
+    {
+      "codepoint": 57489,
+      "glyph": "kassivowelknda"
+    },
+    {
+      "codepoint": 57490,
+      "glyph": "kassevowelknda"
+    },
+    {
+      "codepoint": 57491,
+      "glyph": "janyaknda"
+    },
+    {
+      "codepoint": 57492,
+      "glyph": "janyanocrestknda"
+    },
+    {
+      "codepoint": 57493,
+      "glyph": "janyivowelknda"
+    },
+    {
+      "codepoint": 57494,
+      "glyph": "janyevowelknda"
+    },
+    {
+      "codepoint": 57495,
+      "glyph": "tasubscriptrvocalicknda"
+    },
+    {
+      "codepoint": 57496,
+      "glyph": "masubscriptrvocalicknda"
+    },
+    {
+      "codepoint": 57497,
+      "glyph": "tasubscriptlengthmarkknda"
+    },
+    {
+      "codepoint": 57498,
+      "glyph": "masubscriptlengthmarkknda"
+    },
+    {
+      "codepoint": 57499,
+      "glyph": "rasubscriptlengthmarkknda"
+    },
+    {
+      "codepoint": 57500,
+      "glyph": "rvocalicvowelsignaltknda"
+    },
+    {
+      "codepoint": 57501,
+      "glyph": "rrvocalicvowelsignaltknda"
+    },
+    {
+      "codepoint": 57502,
+      "glyph": "ailengthmarkaltknda"
+    },
+    {
+      "codepoint": 57503,
+      "glyph": "kasubscriptrightknda"
+    },
+    {
+      "codepoint": 57504,
+      "glyph": "khasubscriptrightknda"
+    },
+    {
+      "codepoint": 57505,
+      "glyph": "gasubscriptrightknda"
+    },
+    {
+      "codepoint": 57506,
+      "glyph": "ghasubscriptrightknda"
+    },
+    {
+      "codepoint": 57507,
+      "glyph": "ngasubscriptrightknda"
+    },
+    {
+      "codepoint": 57508,
+      "glyph": "casubscriptrightknda"
+    },
+    {
+      "codepoint": 57509,
+      "glyph": "chasubscriptrightknda"
+    },
+    {
+      "codepoint": 57510,
+      "glyph": "jasubscriptrightknda"
+    },
+    {
+      "codepoint": 57511,
+      "glyph": "jhasubscriptrightknda"
+    },
+    {
+      "codepoint": 57512,
+      "glyph": "nyasubscriptrightknda"
+    },
+    {
+      "codepoint": 57513,
+      "glyph": "ttasubscriptrightknda"
+    },
+    {
+      "codepoint": 57514,
+      "glyph": "tthasubscriptrightknda"
+    },
+    {
+      "codepoint": 57515,
+      "glyph": "ddasubscriptrightknda"
+    },
+    {
+      "codepoint": 57516,
+      "glyph": "ddhasubscriptrightknda"
+    },
+    {
+      "codepoint": 57517,
+      "glyph": "nnasubscriptrightknda"
+    },
+    {
+      "codepoint": 57518,
+      "glyph": "tasubscriptrightknda"
+    },
+    {
+      "codepoint": 57519,
+      "glyph": "thasubscriptrightknda"
+    },
+    {
+      "codepoint": 57520,
+      "glyph": "dasubscriptrightknda"
+    },
+    {
+      "codepoint": 57521,
+      "glyph": "dhasubscriptrightknda"
+    },
+    {
+      "codepoint": 57522,
+      "glyph": "nasubscriptrightknda"
+    },
+    {
+      "codepoint": 57523,
+      "glyph": "pasubscriptrightknda"
+    },
+    {
+      "codepoint": 57524,
+      "glyph": "phasubscriptrightknda"
+    },
+    {
+      "codepoint": 57525,
+      "glyph": "basubscriptrightknda"
+    },
+    {
+      "codepoint": 57526,
+      "glyph": "bhasubscriptrightknda"
+    },
+    {
+      "codepoint": 57527,
+      "glyph": "masubscriptrightknda"
+    },
+    {
+      "codepoint": 57528,
+      "glyph": "yasubscriptrightknda"
+    },
+    {
+      "codepoint": 57529,
+      "glyph": "rasubscriptrightknda"
+    },
+    {
+      "codepoint": 57530,
+      "glyph": "rrasubscriptrightknda"
+    },
+    {
+      "codepoint": 57531,
+      "glyph": "lasubscriptrightknda"
+    },
+    {
+      "codepoint": 57532,
+      "glyph": "llasubscriptrightknda"
+    },
+    {
+      "codepoint": 57533,
+      "glyph": "vasubscriptrightknda"
+    },
+    {
+      "codepoint": 57534,
+      "glyph": "shasubscriptrightknda"
+    },
+    {
+      "codepoint": 57535,
+      "glyph": "ssasubscriptrightknda"
+    },
+    {
+      "codepoint": 57536,
+      "glyph": "sasubscriptrightknda"
+    },
+    {
+      "codepoint": 57537,
+      "glyph": "hasubscriptrightknda"
+    }
+  ]
+}

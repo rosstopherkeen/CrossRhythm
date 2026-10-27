@@ -372,6 +372,36 @@ families:
       bolditalic:
         { url: "https://raw.githubusercontent.com/uxjulia/crossink-fonts/main/fonts/NotoSans/NotoSans-BoldItalic.ttf" }
 
+  - name: NotoSansKannada
+    description: "Sans-serif with Kannada support"
+    languages: "Kannada, Latin"
+    intervals: latin-ext,kannada
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskannada/NotoSansKannada%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskannada/NotoSansKannada%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      # Noto Sans Kannada has no italic or slant axis (no Google Fonts Kannada
+      # family does), so the italic slots reuse the upright weights rather than
+      # synthesising an oblique that reads poorly on e-ink at reading sizes.
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskannada/NotoSansKannada%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanskannada/NotoSansKannada%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
   - name: SourceSans3
     description: "Adobe humanist sans-serif"
     languages: "Latin, Greek, Cyrillic"

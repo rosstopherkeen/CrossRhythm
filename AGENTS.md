@@ -41,7 +41,7 @@ SDK.
 - `freeink-sdk/` is a submodule providing the FreeInkUI, HAL-backed device drivers, board profiles, and network primitives. Check its pinned SHA with `git submodule status` before diagnosing or claiming an SDK integration.
 - `test/` is a native CMake/CTest suite with isolated target folders; `test/epubs-src/` contains fixture sources and `test/device/` contains device-oriented checks. `scripts/run_simulator_smoke_test.py` is the broad app-flow regression tripwire.
 - `web/templates/`, `web/pages/`, and `web/assets/` are the editable web portal sources. `site/` is repository website content, not firmware UI.
-- Do not edit generated outputs: `src/network/html/*.generated.h` (from `scripts/build_web.py`), `lib/I18n/I18nKeys.h`, `I18nStrings.h`, and `I18nStrings.cpp` (from `scripts/gen_i18n.py`), icon headers listed by `src/components/icons/*.manifest` (from `scripts/generate_icons.py`), or EPUB hyphenation tries under `lib/Epub/Epub/hyphenation/generated/`.
+- Do not edit generated outputs: `src/network/html/*.generated.h` (from `scripts/build_web.py`), `lib/I18n/I18nKeys.h`, `I18nStrings.h`, and `I18nStrings.cpp` (from `scripts/gen_i18n.py`), icon headers listed by `src/components/icons/*.manifest` (from `scripts/generate_icons.py`), or EPUB hyphenation tries under `lib/Epub/Epub/hyphenation/generated/`, `lib/KannadaShape/generated/KannadaTables.h`, `lib/EpdFont/scripts/kannada_pua_map.json`, and `test/kannada_shaping/generated/KannadaGolden.h` (all three from `lib/EpdFont/scripts/gen_kannada_shaping.py`).
 
 ### Target Selection
 
@@ -170,6 +170,7 @@ SDK.
 - Web portal headers under `src/network/html/*.generated.h` are built by `scripts/build_web.py` from sources in `web/`: pages compose `web/templates/base.html` (shared chrome) with `web/pages/<slug>.{html,css,js}`, plus shared assets `web/assets/style.css` (served at `/style.css`) and `web/assets/logo.png` (served at `/logo.png`). Edit the `web/` sources, never the generated headers.
 - I18n generated files under `lib/I18n/` come from `lib/I18n/translations/*.yaml` via `scripts/gen_i18n.py`.
 - Icon headers are generated from the manifests in `src/components/icons/` with `scripts/generate_icons.py`; hyphenation trie headers are generated under `lib/Epub/Epub/hyphenation/generated/`. Edit their source manifests/data and regenerate.
+- Kannada shaping tables come from `lib/EpdFont/scripts/gen_kannada_shaping.py`, which shapes the Kannada cluster space with HarfBuzz and emits three files that must be regenerated together from the same font: `lib/KannadaShape/generated/KannadaTables.h` (device tables), `lib/EpdFont/scripts/kannada_pua_map.json` (private-use codepoint -> glyph name, consumed by `fontconvert_sdcard.py`), and `test/kannada_shaping/generated/KannadaGolden.h` (HarfBuzz ground truth for `KannadaShapeTest`). The script refuses to emit unless its tables reproduce HarfBuzz for every cluster, and `KannadaShapeTest` catches a mismatched set, so changing the Kannada font means rerunning it with `--golden` and rebuilding the SD fonts.
 
 ## Cache Format
 
