@@ -1,8 +1,8 @@
 # CrossRhythm
 
-> A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages: **Reading Rhythm** and **Books Finished**.
+> A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages, **Reading Rhythm** and **Books Finished**, plus support for **Kannada** books.
 
-Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), its own boot screen, and shows **CrossRhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
+Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), renders Kannada text correctly when a Kannada font is installed, uses its own boot screen, and shows **CrossRhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
 
 <table>
   <tr>
@@ -72,6 +72,20 @@ The default boot screen is replaced by the CrossRhythm image above (`src/images/
 
 <br clear="right"/>
 
+### Kannada books
+
+Install the **Noto Sans Kannada** font and Kannada text in any book renders correctly, without changing your reading font. A mostly-English library keeps its usual font; only the Kannada parts switch, at the closest installed size to your reading size.
+
+Kannada stacks the consonants of a cluster under the first letter and joins vowel signs to the letter they belong to. Fonts do this with shapes that have no character codes of their own, so drawing text one character at a time shows separate letters with visible viramas (್). This fork works those shapes out ahead of time with [HarfBuzz](https://harfbuzz.github.io/) and stores the result as about 25 KB of lookup tables in flash (no extra RAM). The reader applies them as it measures and draws a line, so conjuncts stack, vowel signs join, and arkavattu (ರ್) sits where it should. The book's text itself is unchanged, so dictionary lookup, clippings and search still see real Kannada.
+
+**Installing the font:**
+
+1. Build the font files (see [Building](#building)), or use a copy you already have. You need the folder `NotoSansKannada/` with eight `NotoSansKannada_<size>.cpfont` files.
+2. Copy that folder to `/.fonts/` (or `/fonts/`) on the SD card, keeping the folder name exactly `NotoSansKannada`. On the X4 Pro, **Home › File Transfer › USB Drive** exposes the card to your computer. You can also upload the folder from the web portal's **Fonts** page.
+3. If you opened a Kannada book before installing the font, open it and choose **Delete Book Cache** from the reader menu, so its pages are laid out again with the Kannada font.
+
+Use the generated `.cpfont` files, not a Kannada `.ttf`. The shaped forms only exist in the `.cpfont` files, so a `.ttf` shows Kannada as separate letters. The font has no italic, so italic text in Kannada shows upright.
+
 ### Where to find them
 
 Open **Reading Stats** the usual way. On the X4 Pro that's the frontlight panel, or the reader menu on button devices. Swipe left or press Right/Down past *This Device* (and *All Devices*, if you sync stats). The two new pages share the existing page dots, header and card layout. Weeks start on Monday by default; set **First Day of Week** in Settings › System › Device to start them on Sunday.
@@ -130,6 +144,14 @@ Run the host tests, including `test/reading_rhythm/` for the new data files and 
 cmake -S test -B build-tests && cmake --build build-tests -j 8 && ctest --test-dir build-tests --output-on-failure
 ```
 
+Build the Kannada font files (needs the Python packages in `lib/EpdFont/scripts/requirements.txt`, including `uharfbuzz`):
+
+```bash
+python3 lib/EpdFont/scripts/build-sd-fonts.py --only NotoSansKannada --output-dir .pio/sd-fonts --no-package
+```
+
+The files end up in `.pio/sd-fonts/NotoSansKannada/`. The Kannada lookup tables are already committed. Regenerate them with `lib/EpdFont/scripts/gen_kannada_shaping.py` only when changing the Kannada font; that script refuses to write tables that don't match HarfBuzz, and `test/kannada_shaping/` checks the firmware against it.
+
 Simulator: `pio run -e x4-pro-simulator -t run_simulator`, with an SD card copied into `./fs_/`. The simulator has no clock, so the new pages only appear on real hardware.
 
 The fork's code lives in `src/activities/reader/rhythm/`. The hooks into existing CrossInk code are small: recording minutes when a reading session ends, recording a book when it's marked finished, adding the two pages to the stats screen, and pointing over-the-air updates at this fork. For general CrossInk development docs, see [Getting Started](./docs/development/getting-started.md).
@@ -141,5 +163,6 @@ The fork's code lives in `src/activities/reader/rhythm/`. The hooks into existin
 - **[CrossInk](https://github.com/uxjulia/CrossInk)** by uxjulia, the firmware this fork is built on. For CrossInk's own features (fonts, themes, Focus Reading, button remapping, stats sync and more), see its [README](https://github.com/uxjulia/CrossInk#readme) and [crossink.dev](https://www.crossink.dev). Please support CrossInk directly via its [Ko-fi](https://ko-fi.com/Q5Q01M6S7).
 - **[XPoint](https://github.com/Belphemur/XPoint)** (MIT License, Copyright (c) 2025 CrossPoint Reader organization), where the Reading Rhythm and Books Finished screens and the finished-books file format come from: `ReadingRhythmActivity`, `FinishedBooksActivity`, `FinishedBooksIndex`, and `renderReadingRhythmPage` / `renderFinishedBooksPage` from `BookStatsView.cpp`.
 - **[CrossPoint Reader](https://github.com/crosspoint-reader/crosspoint-reader)**, the upstream firmware for both.
+- **[Noto Sans Kannada](https://fonts.google.com/noto/specimen/Noto+Sans+Kannada)** (SIL Open Font License 1.1) for Kannada text, and **[HarfBuzz](https://harfbuzz.github.io/)**, used at build time to work out the Kannada shaping tables.
 
 This is a personal fork. Issues with CrossInk itself belong in the [CrossInk repo](https://github.com/uxjulia/CrossInk); issues with the two stats pages belong [here](https://github.com/rosstopherkeen/CrossRhythm/issues).
