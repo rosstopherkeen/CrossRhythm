@@ -402,21 +402,31 @@ void SdCardFontSystem::setupReaderScriptFallback(GfxRenderer& renderer) {
 
   for (const char* candidate : kScriptFallbackFamilies) {
     if (familyName == candidate) continue;
-    const auto* family = registry_.findFamily(candidate);
-    if (!family) continue;
 
-    // Match the reader's physical size so fallback runs sit on the same baseline.
-    const int fallbackFontId = manager_.loadFamilyExtraSize(*family, renderer, manager_.currentPointSize());
+    // Closest, not exact: the scalable reader offers every point size from 8 to
+    // 22, while an installed .cpfont family ships a subset (8/9/10/12/14/...).
+    // Requiring an exact match would leave the odd sizes with no fallback at
+    // all, which reads as "Kannada support is broken" rather than as a font a
+    // point size off.
+    char path[160] = {};
+    uint8_t pointSize = 0;
+    if (!findInstalledFontFile(candidate, manager_.currentPointSize(), FontFileSelection::Closest, path,
+                               sizeof(path), pointSize)) {
+      LOG_DBG("SDFS", "No installed file for script fallback family %s", candidate);
+      continue;
+    }
+
+    const int fallbackFontId = manager_.loadFamilyExtraFile(path, candidate, pointSize, renderer);
     if (fallbackFontId == 0) {
-      LOG_DBG("SDFS", "No %u pt file for script fallback family %s", manager_.currentPointSize(), candidate);
+      LOG_DBG("SDFS", "Failed to load script fallback %s at %u pt", candidate, pointSize);
       continue;
     }
     const auto fallbackIt = renderer.getFontMap().find(fallbackFontId);
     if (fallbackIt == renderer.getFontMap().end() || !fallbackIt->second.hasCodepoint(kKannadaProbe)) continue;
 
     renderer.setFallbackFont(readerFontId, fallbackFontId);
-    LOG_INF("SDFS", "Kannada fallback for %s -> %s @%upt", familyName.c_str(), candidate,
-            manager_.currentPointSize());
+    LOG_INF("SDFS", "Kannada fallback for %s @%upt -> %s @%upt", familyName.c_str(), manager_.currentPointSize(),
+            candidate, pointSize);
     return;
   }
 }
