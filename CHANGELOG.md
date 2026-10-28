@@ -16,6 +16,10 @@
 - Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
 - Settings shows the firmware as "CrossRhythm v<version>".
 
+### Fixed
+
+- Clearing a book's cache no longer erases that book's Reading Rhythm history. Daily reading minutes now survive Clear Cache, a book re-upload, and Settings > Clear Cache, just like the book's other reading stats.
+
 ## [v1.6.1] - 2026-10-03
 
 ### Added

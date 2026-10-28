@@ -18,22 +18,39 @@ struct PreservedCacheFile {
   const char* tmpName;
 };
 
+// rhythm_days.bin (plus the .bak kept for recovery and the .tmp a power loss
+// can leave behind mid-write) is the per-book Reading Rhythm sidecar written by
+// BookDailyMinutes::save(). It is a reading statistic, not derived cache output,
+// so it must survive a cache clear the way stats_v5.bin does. isStatsFileName()
+// only matches "stats*.bin", so these names are listed explicitly below.
 constexpr PreservedCacheFile EPUB_USER_STATE_FILES[] = {
     {"progress.bin", "upload_preserve_progress.bin"},
     {"progress.bin.bak", "upload_preserve_progress.bin.bak"},
     {"reader_settings.bin", "upload_preserve_reader_settings.bin"},
     {"dictionary_history.txt", "upload_preserve_dictionary_history.txt"},
     {"reading_stats_off", "upload_preserve_reading_stats_off"},
+    {"rhythm_days.bin", "upload_preserve_rhythm_days.bin"},
+    {"rhythm_days.bin.bak", "upload_preserve_rhythm_days.bin.bak"},
+    {"rhythm_days.bin.tmp", "upload_preserve_rhythm_days.bin.tmp"},
 };
 
+// Shared by XTC and TXT. XTC commits reading sessions and so writes the rhythm
+// sidecar; the TXT reader never does, where these entries are simply inert
+// because preserveUserStateFiles() skips sources that do not exist.
 constexpr PreservedCacheFile PAGE_PROGRESS_FILES[] = {
     {"progress.bin", "upload_preserve_progress.bin"},
     {"reading_stats_off", "upload_preserve_reading_stats_off"},
+    {"rhythm_days.bin", "upload_preserve_rhythm_days.bin"},
+    {"rhythm_days.bin.bak", "upload_preserve_rhythm_days.bin.bak"},
+    {"rhythm_days.bin.tmp", "upload_preserve_rhythm_days.bin.tmp"},
 };
 
 constexpr PreservedCacheFile CACHE_CLEAR_USER_STATE_FILES[] = {
     {"dictionary_history.txt", "clear_preserve_dictionary_history.txt"},
     {"reading_stats_off", "clear_preserve_reading_stats_off"},
+    {"rhythm_days.bin", "clear_preserve_rhythm_days.bin"},
+    {"rhythm_days.bin.bak", "clear_preserve_rhythm_days.bin.bak"},
+    {"rhythm_days.bin.tmp", "clear_preserve_rhythm_days.bin.tmp"},
 };
 
 struct ResolvedPreservedCacheFile {
@@ -46,9 +63,8 @@ struct StatsFileCandidate {
   int version = -1;
 };
 
-constexpr size_t MAX_PRESERVED_CACHE_FILES = std::size(EPUB_USER_STATE_FILES) > std::size(PAGE_PROGRESS_FILES)
-                                                 ? std::size(EPUB_USER_STATE_FILES)
-                                                 : std::size(PAGE_PROGRESS_FILES);
+constexpr size_t MAX_PRESERVED_CACHE_FILES = std::max(
+    {std::size(EPUB_USER_STATE_FILES), std::size(PAGE_PROGRESS_FILES), std::size(CACHE_CLEAR_USER_STATE_FILES)});
 constexpr size_t MAX_STATS_FILES_TO_PRESERVE = 8;
 constexpr char STATS_PREFIX[] = "stats";
 constexpr char STATS_SUFFIX[] = ".bin";
