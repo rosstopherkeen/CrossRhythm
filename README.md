@@ -12,15 +12,15 @@
 
 <table>
   <tr>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/reading-rhythm.png" width="200" alt="Reading Rhythm page: recent activity dot grid, weekly reading time bars, reading days by month" /><br/>
       <sub>Reading Rhythm</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/indic/kannada-book.png" width="200" alt="An Indic book page (Kannada) with conjuncts and vowel signs drawn correctly" /><br/>
       <sub>Indic books: Kannada, Tamil, Malayalam,<br/>Telugu, Marathi, Sanskrit, Hindi</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/scenes/glass_house.gif" width="200" alt="Glass House scene from 0 to 100%: the garden is planted, a Gandaberunda topiary grows and visitors arrive" /><br/>
       <sub>Glass House scene</sub>
     </td>
@@ -47,15 +47,15 @@ Open **Reading Stats** the usual way (the frontlight panel on the X4 Pro, or the
 
 <table>
   <tr>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/this-device.png" width="200" alt="This Device stats page from stock CrossInk" /><br/>
       <sub>This Device (stock CrossInk)</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/reading-rhythm.png" width="200" alt="Reading Rhythm page" /><br/>
       <sub>→ Reading Rhythm</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/books-finished.png" width="200" alt="Books Finished page: totals and recently finished books" /><br/>
       <sub>→ Books Finished</sub>
     </td>
@@ -74,15 +74,15 @@ Open **Reading Stats** the usual way (the frontlight panel on the X4 Pro, or the
 
 <table>
   <tr>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/book-overview.png" width="200" alt="Book Overview page: sessions, reading time, pace, dates, time of day and day of week" /><br/>
       <sub>Overview</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/book-rhythm.png" width="200" alt="Book Rhythm page with recorded reading days" /><br/>
       <sub>Book Rhythm, recorded days</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/rhythm/book-rhythm-estimated.png" width="200" alt="Book Rhythm page with estimated reading days, marked ~ estimated" /><br/>
       <sub>Book Rhythm, estimated days</sub>
     </td>
@@ -101,18 +101,16 @@ Copy a script's font folder to the SD card and its text renders correctly in any
 
 <table>
   <tr>
-    <td align="center"><img src="./docs/images/indic/kannada-book.png" width="150" alt="Kannada book page" /><br /><sub>Kannada</sub></td>
-    <td align="center"><img src="./docs/images/indic/tamil-book.png" width="150" alt="Tamil book page" /><br /><sub>Tamil</sub></td>
-    <td align="center"><img src="./docs/images/indic/malayalam-book.png" width="150" alt="Malayalam book page" /><br /><sub>Malayalam</sub></td>
-    <td align="center"><img src="./docs/images/indic/telugu-book.png" width="150" alt="Telugu book page" /><br /><sub>Telugu</sub></td>
-    <td align="center"><img src="./docs/images/indic/hindi-book.png" width="150" alt="Hindi book page" /><br /><sub>Hindi (Devanagari)</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/kannada-book.png" width="150" alt="Kannada book page" /><br /><sub>Kannada</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/tamil-book.png" width="150" alt="Tamil book page" /><br /><sub>Tamil</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/malayalam-book.png" width="150" alt="Malayalam book page" /><br /><sub>Malayalam</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/telugu-book.png" width="150" alt="Telugu book page" /><br /><sub>Telugu</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/hindi-book.png" width="150" alt="Hindi book page" /><br /><sub>Hindi (Devanagari)</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="./docs/images/indic/file-browser.png" width="150" alt="File browser with Hindi and Malayalam file names" /><br /><sub>File browser</sub></td>
-    <td align="center"><img src="./docs/images/indic/home.png" width="150" alt="Home screen with a Kannada title" /><br /><sub>Home</sub></td>
-    <td align="center"><img src="./docs/images/indic/chapter-list.png" width="150" alt="Chapter list in Kannada" /><br /><sub>Chapter list</sub></td>
-    <td></td>
-    <td></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/file-browser.png" width="150" alt="File browser with Hindi and Malayalam file names" /><br /><sub>File browser</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/home.png" width="150" alt="Home screen with a Kannada title" /><br /><sub>Home</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/indic/chapter-list.png" width="150" alt="Chapter list in Kannada" /><br /><sub>Chapter list</sub></td>
   </tr>
 </table>
 
@@ -151,19 +149,19 @@ When updating, replace the whole folder rather than single files: the `.cpfont` 
 
 <table>
   <tr>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/scenes/glass_house.gif" width="200" alt="Glass House scene from 0 to 100%: the Lalbagh Glass House garden planted, a Gandaberunda topiary grown in its wire frame and visitors filling the garden" /><br/>
       <sub><b>Glass House</b> (built in)</sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/scenes/lalbagh.gif" width="200" alt="Lalbagh scene from 0 to 100%: Namma Metro's Green line built past Lalbagh's West Gate" /><br/>
       <sub><b>Lalbagh</b></sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/scenes/kr_market.gif" width="200" alt="KR Market scene from 0 to 100%: City Market built up from a cleared site to its full roof" /><br/>
       <sub><b>KR Market</b></sub>
     </td>
-    <td align="center">
+    <td align="center" valign="top">
       <img src="./docs/images/scenes/state_library.gif" width="200" alt="State Library scene from 0 to 100%: boxes unpacked, shelves filled and readers filling the hall" /><br/>
       <sub><b>State Library</b></sub>
     </td>
@@ -190,12 +188,12 @@ Six "Read Responsibly" wallpapers for CrossInk's **Page Overlay** sleep screen, 
 
 <table>
   <tr>
-    <td align="center"><img src="./docs/images/page-overlays/dots.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dots pattern over the current page" /><br /><sub>Dots</sub></td>
-    <td align="center"><img src="./docs/images/page-overlays/dots-dense.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dense dots pattern over the current page" /><br /><sub>Dots, dense</sub></td>
-    <td align="center"><img src="./docs/images/page-overlays/maze.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, maze pattern over the current page" /><br /><sub>Maze</sub></td>
-    <td align="center"><img src="./docs/images/page-overlays/maze-outline.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, outlined maze pattern over the current page" /><br /><sub>Maze, outline</sub></td>
-    <td align="center"><img src="./docs/images/page-overlays/cells.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, cells pattern over the current page" /><br /><sub>Cells</sub></td>
-    <td align="center"><img src="./docs/images/page-overlays/cells-bold.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, bold cells pattern over the current page" /><br /><sub>Cells, bold</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/dots.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dots pattern over the current page" /><br /><sub>Dots</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/dots-dense.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dense dots pattern over the current page" /><br /><sub>Dots, dense</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/maze.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, maze pattern over the current page" /><br /><sub>Maze</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/maze-outline.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, outlined maze pattern over the current page" /><br /><sub>Maze, outline</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/cells.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, cells pattern over the current page" /><br /><sub>Cells</sub></td>
+    <td align="center" valign="top"><img src="./docs/images/page-overlays/cells-bold.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, bold cells pattern over the current page" /><br /><sub>Cells, bold</sub></td>
   </tr>
 </table>
 
