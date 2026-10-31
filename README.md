@@ -1,4 +1,9 @@
-# CrossRhythm
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/images/logo/logo-white.png" />
+    <img src="./docs/images/logo/logo-black.png" width="220" alt="CrossRhythm" />
+  </picture>
+</h1>
 
 > A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages, **Reading Rhythm** and **Books Finished**, plus support for **Indic** books (Hindi, Marathi, Bengali, Odia, Tamil, Telugu, Kannada, Malayalam).
 
@@ -17,7 +22,7 @@ Everything else is stock CrossInk: the same fonts, themes, reader features, sett
   </tr>
 </table>
 
-<sub>Simulator screenshots of the X4 Pro with sample data.</sub>
+<sub>Screenshots from an X4 Pro.</sub>
 
 ---
 
@@ -50,19 +55,32 @@ How often and how much you read, at a glance:
       <em>→ Reading Rhythm</em>
     </td>
     <td align="center">
-      <img src="./docs/images/rhythm/books-finished-scrolled.png" width="200" alt="Books Finished list scrolled with a book selected" /><br/>
-      <em>→ Books Finished (scrolled, selected)</em>
+      <img src="./docs/images/rhythm/books-finished.png" width="200" alt="Books Finished page: totals and recently finished books" /><br/>
+      <em>→ Books Finished</em>
     </td>
   </tr>
 </table>
 
 ### Book detail
 
-<img src="./docs/images/rhythm/book-rhythm.png" width="200" align="right" alt="Book Rhythm page for a single book" />
-
 Each finished book has its own Overview and Book Rhythm pages. The same view opens from **Reading Stats** in a book's long-press menu in the Library or File Browser. Per-book reading minutes are recorded from this firmware on, in `rhythm_days.bin` next to the book's `stats_v5.bin`, which is never changed. Days before that are estimated from your real read days between the book's start and finish dates and drawn lighter. The dots use the same five steps as Reading Rhythm, and the book's first and last days have a square around them. Short books (up to 3 weeks) show daily bars; longer ones show weekly bars for up to the last 13 weeks.
 
-<br clear="right"/>
+<table>
+  <tr>
+    <td align="center">
+      <img src="./docs/images/rhythm/book-overview.png" width="200" alt="Book Overview page: sessions, reading time, pace, dates, time of day and day of week" /><br/>
+      <em>Overview</em>
+    </td>
+    <td align="center">
+      <img src="./docs/images/rhythm/book-rhythm.png" width="200" alt="Book Rhythm page with recorded reading days" /><br/>
+      <em>Book Rhythm (recorded days)</em>
+    </td>
+    <td align="center">
+      <img src="./docs/images/rhythm/book-rhythm-estimated.png" width="200" alt="Book Rhythm page with estimated reading days, marked ~ estimated" /><br/>
+      <em>Book Rhythm (estimated days)</em>
+    </td>
+  </tr>
+</table>
 
 ### Boot screen and version
 
