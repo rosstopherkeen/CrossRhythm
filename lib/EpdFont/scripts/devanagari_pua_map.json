@@ -1,0 +1,840 @@
+{
+  "comment": "Shaped Devanagari forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "script": "devanagari",
+  "source_font": "NotoSansDevanagari.ttf",
+  "pua_base": 59904,
+  "forms": [
+    {
+      "codepoint": 59904,
+      "glyph": "uni0915094D0937"
+    },
+    {
+      "codepoint": 59905,
+      "glyph": "uni091C094D091E"
+    },
+    {
+      "codepoint": 59906,
+      "glyph": "uni0915094D"
+    },
+    {
+      "codepoint": 59907,
+      "glyph": "uni0916094D"
+    },
+    {
+      "codepoint": 59908,
+      "glyph": "uni0917094D"
+    },
+    {
+      "codepoint": 59909,
+      "glyph": "uni0918094D"
+    },
+    {
+      "codepoint": 59910,
+      "glyph": "uni091A094D"
+    },
+    {
+      "codepoint": 59911,
+      "glyph": "uni091B094D"
+    },
+    {
+      "codepoint": 59912,
+      "glyph": "uni091C094D"
+    },
+    {
+      "codepoint": 59913,
+      "glyph": "uni091D094D"
+    },
+    {
+      "codepoint": 59914,
+      "glyph": "uni091E094D"
+    },
+    {
+      "codepoint": 59915,
+      "glyph": "uni0923094D"
+    },
+    {
+      "codepoint": 59916,
+      "glyph": "uni0924094D"
+    },
+    {
+      "codepoint": 59917,
+      "glyph": "uni0925094D"
+    },
+    {
+      "codepoint": 59918,
+      "glyph": "uni0927094D"
+    },
+    {
+      "codepoint": 59919,
+      "glyph": "uni0928094D"
+    },
+    {
+      "codepoint": 59920,
+      "glyph": "uni092A094D"
+    },
+    {
+      "codepoint": 59921,
+      "glyph": "uni092B094D"
+    },
+    {
+      "codepoint": 59922,
+      "glyph": "uni092C094D"
+    },
+    {
+      "codepoint": 59923,
+      "glyph": "uni092D094D"
+    },
+    {
+      "codepoint": 59924,
+      "glyph": "uni092E094D"
+    },
+    {
+      "codepoint": 59925,
+      "glyph": "uni092F094D"
+    },
+    {
+      "codepoint": 59926,
+      "glyph": "uni0932094D"
+    },
+    {
+      "codepoint": 59927,
+      "glyph": "uni0935094D"
+    },
+    {
+      "codepoint": 59928,
+      "glyph": "uni0936094D"
+    },
+    {
+      "codepoint": 59929,
+      "glyph": "uni0937094D"
+    },
+    {
+      "codepoint": 59930,
+      "glyph": "uni0938094D"
+    },
+    {
+      "codepoint": 59931,
+      "glyph": "uni0939094D"
+    },
+    {
+      "codepoint": 59932,
+      "glyph": "uni0933094D"
+    },
+    {
+      "codepoint": 59933,
+      "glyph": "uni0958094D"
+    },
+    {
+      "codepoint": 59934,
+      "glyph": "uni0959094D"
+    },
+    {
+      "codepoint": 59935,
+      "glyph": "uni095A094D"
+    },
+    {
+      "codepoint": 59936,
+      "glyph": "uni095B094D"
+    },
+    {
+      "codepoint": 59937,
+      "glyph": "uni0929094D"
+    },
+    {
+      "codepoint": 59938,
+      "glyph": "uni095E094D"
+    },
+    {
+      "codepoint": 59939,
+      "glyph": "uni095F094D"
+    },
+    {
+      "codepoint": 59940,
+      "glyph": "uni0933094D093C"
+    },
+    {
+      "codepoint": 59941,
+      "glyph": "uni0915094D0930"
+    },
+    {
+      "codepoint": 59942,
+      "glyph": "uni0916094D0930"
+    },
+    {
+      "codepoint": 59943,
+      "glyph": "uni0917094D0930"
+    },
+    {
+      "codepoint": 59944,
+      "glyph": "uni0918094D0930"
+    },
+    {
+      "codepoint": 59945,
+      "glyph": "uni091A094D0930"
+    },
+    {
+      "codepoint": 59946,
+      "glyph": "uni091C094D0930"
+    },
+    {
+      "codepoint": 59947,
+      "glyph": "uni091D094D0930"
+    },
+    {
+      "codepoint": 59948,
+      "glyph": "uni091E094D0930"
+    },
+    {
+      "codepoint": 59949,
+      "glyph": "uni0923094D0930"
+    },
+    {
+      "codepoint": 59950,
+      "glyph": "uni0924094D0930"
+    },
+    {
+      "codepoint": 59951,
+      "glyph": "uni0925094D0930"
+    },
+    {
+      "codepoint": 59952,
+      "glyph": "uni0926094D0930"
+    },
+    {
+      "codepoint": 59953,
+      "glyph": "uni0927094D0930"
+    },
+    {
+      "codepoint": 59954,
+      "glyph": "uni0928094D0930"
+    },
+    {
+      "codepoint": 59955,
+      "glyph": "uni092A094D0930"
+    },
+    {
+      "codepoint": 59956,
+      "glyph": "uni092B094D0930"
+    },
+    {
+      "codepoint": 59957,
+      "glyph": "uni092C094D0930"
+    },
+    {
+      "codepoint": 59958,
+      "glyph": "uni092D094D0930"
+    },
+    {
+      "codepoint": 59959,
+      "glyph": "uni092E094D0930"
+    },
+    {
+      "codepoint": 59960,
+      "glyph": "uni092F094D0930"
+    },
+    {
+      "codepoint": 59961,
+      "glyph": "uni0932094D0930"
+    },
+    {
+      "codepoint": 59962,
+      "glyph": "uni0935094D0930"
+    },
+    {
+      "codepoint": 59963,
+      "glyph": "uni0936094D0930"
+    },
+    {
+      "codepoint": 59964,
+      "glyph": "uni0937094D0930"
+    },
+    {
+      "codepoint": 59965,
+      "glyph": "uni0938094D0930"
+    },
+    {
+      "codepoint": 59966,
+      "glyph": "uni0939094D0930"
+    },
+    {
+      "codepoint": 59967,
+      "glyph": "uni0958094D0930"
+    },
+    {
+      "codepoint": 59968,
+      "glyph": "uni0959094D0930"
+    },
+    {
+      "codepoint": 59969,
+      "glyph": "uni095A094D0930"
+    },
+    {
+      "codepoint": 59970,
+      "glyph": "uni095B094D0930"
+    },
+    {
+      "codepoint": 59971,
+      "glyph": "uni0929094D0930"
+    },
+    {
+      "codepoint": 59972,
+      "glyph": "uni095E094D0930"
+    },
+    {
+      "codepoint": 59973,
+      "glyph": "uni095F094D0930"
+    },
+    {
+      "codepoint": 59974,
+      "glyph": "uni0919094D092F"
+    },
+    {
+      "codepoint": 59975,
+      "glyph": "uni0919094D0915"
+    },
+    {
+      "codepoint": 59976,
+      "glyph": "uni0919094D0916"
+    },
+    {
+      "codepoint": 59977,
+      "glyph": "uni0919094D0917"
+    },
+    {
+      "codepoint": 59978,
+      "glyph": "uni0919094D0918"
+    },
+    {
+      "codepoint": 59979,
+      "glyph": "uni0919094D092E"
+    },
+    {
+      "codepoint": 59980,
+      "glyph": "uni091A094D091B"
+    },
+    {
+      "codepoint": 59981,
+      "glyph": "uni091B094D092F"
+    },
+    {
+      "codepoint": 59982,
+      "glyph": "uni091B094D0935"
+    },
+    {
+      "codepoint": 59983,
+      "glyph": "uni091F094D091F"
+    },
+    {
+      "codepoint": 59984,
+      "glyph": "uni091F094D0920"
+    },
+    {
+      "codepoint": 59985,
+      "glyph": "uni091F094D092F"
+    },
+    {
+      "codepoint": 59986,
+      "glyph": "uni0920094D0920"
+    },
+    {
+      "codepoint": 59987,
+      "glyph": "uni0920094D092F"
+    },
+    {
+      "codepoint": 59988,
+      "glyph": "uni0921094D0921"
+    },
+    {
+      "codepoint": 59989,
+      "glyph": "uni0921094D0922"
+    },
+    {
+      "codepoint": 59990,
+      "glyph": "uni0921094D092F"
+    },
+    {
+      "codepoint": 59991,
+      "glyph": "uni0922094D0922"
+    },
+    {
+      "codepoint": 59992,
+      "glyph": "uni0922094D092F"
+    },
+    {
+      "codepoint": 59993,
+      "glyph": "uni0924094D0924"
+    },
+    {
+      "codepoint": 59994,
+      "glyph": "uni0926094D0917"
+    },
+    {
+      "codepoint": 59995,
+      "glyph": "uni0926094D0918"
+    },
+    {
+      "codepoint": 59996,
+      "glyph": "uni0926094D0926"
+    },
+    {
+      "codepoint": 59997,
+      "glyph": "uni0926094D0927"
+    },
+    {
+      "codepoint": 59998,
+      "glyph": "uni0926094D092C"
+    },
+    {
+      "codepoint": 59999,
+      "glyph": "uni0926094D092D"
+    },
+    {
+      "codepoint": 60000,
+      "glyph": "uni0926094D092E"
+    },
+    {
+      "codepoint": 60001,
+      "glyph": "uni0926094D092F"
+    },
+    {
+      "codepoint": 60002,
+      "glyph": "uni0926094D0935"
+    },
+    {
+      "codepoint": 60003,
+      "glyph": "uni0928094D0928"
+    },
+    {
+      "codepoint": 60004,
+      "glyph": "uni092A094D0928"
+    },
+    {
+      "codepoint": 60005,
+      "glyph": "uni092C094D0927"
+    },
+    {
+      "codepoint": 60006,
+      "glyph": "uni0935094D092F"
+    },
+    {
+      "codepoint": 60007,
+      "glyph": "uni0936094D091A"
+    },
+    {
+      "codepoint": 60008,
+      "glyph": "uni0936094D0928"
+    },
+    {
+      "codepoint": 60009,
+      "glyph": "uni0936094D0932"
+    },
+    {
+      "codepoint": 60010,
+      "glyph": "uni0936094D0935"
+    },
+    {
+      "codepoint": 60011,
+      "glyph": "uni0937094D091F"
+    },
+    {
+      "codepoint": 60012,
+      "glyph": "uni0937094D0920"
+    },
+    {
+      "codepoint": 60013,
+      "glyph": "uni0939094D0923"
+    },
+    {
+      "codepoint": 60014,
+      "glyph": "uni0939094D0928"
+    },
+    {
+      "codepoint": 60015,
+      "glyph": "uni0939094D092E"
+    },
+    {
+      "codepoint": 60016,
+      "glyph": "uni0939094D092F"
+    },
+    {
+      "codepoint": 60017,
+      "glyph": "uni0939094D0932"
+    },
+    {
+      "codepoint": 60018,
+      "glyph": "uni0939094D0935"
+    },
+    {
+      "codepoint": 60019,
+      "glyph": "uni09260941"
+    },
+    {
+      "codepoint": 60020,
+      "glyph": "uni09260942"
+    },
+    {
+      "codepoint": 60021,
+      "glyph": "uni09260943"
+    },
+    {
+      "codepoint": 60022,
+      "glyph": "uni09300941"
+    },
+    {
+      "codepoint": 60023,
+      "glyph": "uni09300942"
+    },
+    {
+      "codepoint": 60024,
+      "glyph": "uni09300941093C"
+    },
+    {
+      "codepoint": 60025,
+      "glyph": "uni09300942093C"
+    },
+    {
+      "codepoint": 60026,
+      "glyph": "uni09360943"
+    },
+    {
+      "codepoint": 60027,
+      "glyph": "uni09390941"
+    },
+    {
+      "codepoint": 60028,
+      "glyph": "uni09390942"
+    },
+    {
+      "codepoint": 60029,
+      "glyph": "uni09390943"
+    },
+    {
+      "codepoint": 60030,
+      "glyph": "uni09390944"
+    },
+    {
+      "codepoint": 60031,
+      "glyph": "uni0939094D09300941"
+    },
+    {
+      "codepoint": 60032,
+      "glyph": "uni0939094D09300942"
+    },
+    {
+      "codepoint": 60033,
+      "glyph": "uni0930094D"
+    },
+    {
+      "codepoint": 60034,
+      "glyph": "eyelashRephdeva"
+    },
+    {
+      "codepoint": 60035,
+      "glyph": "uni094D0930"
+    },
+    {
+      "codepoint": 60036,
+      "glyph": "uni09470930094D"
+    },
+    {
+      "codepoint": 60037,
+      "glyph": "uni09480930094D"
+    },
+    {
+      "codepoint": 60038,
+      "glyph": "uni09450930094D"
+    },
+    {
+      "codepoint": 60039,
+      "glyph": "uni09460930094D"
+    },
+    {
+      "codepoint": 60040,
+      "glyph": "uni093F.01"
+    },
+    {
+      "codepoint": 60041,
+      "glyph": "uni093F.02"
+    },
+    {
+      "codepoint": 60042,
+      "glyph": "uni093F.03"
+    },
+    {
+      "codepoint": 60043,
+      "glyph": "uni093F.04"
+    },
+    {
+      "codepoint": 60044,
+      "glyph": "uni093F.05"
+    },
+    {
+      "codepoint": 60045,
+      "glyph": "uni093F.06"
+    },
+    {
+      "codepoint": 60046,
+      "glyph": "uni093F.07"
+    },
+    {
+      "codepoint": 60047,
+      "glyph": "uni093F.08"
+    },
+    {
+      "codepoint": 60048,
+      "glyph": "uni093F.09"
+    },
+    {
+      "codepoint": 60049,
+      "glyph": "uni093F.10"
+    },
+    {
+      "codepoint": 60050,
+      "glyph": "uni093F.11"
+    },
+    {
+      "codepoint": 60051,
+      "glyph": "uni093F.12"
+    },
+    {
+      "codepoint": 60052,
+      "glyph": "uni093F.13"
+    },
+    {
+      "codepoint": 60053,
+      "glyph": "uni093F.14"
+    },
+    {
+      "codepoint": 60054,
+      "glyph": "uni093F.15"
+    },
+    {
+      "codepoint": 60055,
+      "glyph": "uni093F0930094D.01"
+    },
+    {
+      "codepoint": 60056,
+      "glyph": "uni093F0930094D.02"
+    },
+    {
+      "codepoint": 60057,
+      "glyph": "uni093F0930094D.03"
+    },
+    {
+      "codepoint": 60058,
+      "glyph": "uni093F0930094D.04"
+    },
+    {
+      "codepoint": 60059,
+      "glyph": "uni093F0930094D.05"
+    },
+    {
+      "codepoint": 60060,
+      "glyph": "uni093F0930094D.06"
+    },
+    {
+      "codepoint": 60061,
+      "glyph": "uni093F0930094D.07"
+    },
+    {
+      "codepoint": 60062,
+      "glyph": "uni093F0930094D.08"
+    },
+    {
+      "codepoint": 60063,
+      "glyph": "uni093F0930094D.09"
+    },
+    {
+      "codepoint": 60064,
+      "glyph": "uni093F0930094D.10"
+    },
+    {
+      "codepoint": 60065,
+      "glyph": "uni093F0930094D.11"
+    },
+    {
+      "codepoint": 60066,
+      "glyph": "uni0940.01"
+    },
+    {
+      "codepoint": 60067,
+      "glyph": "uni0940.02"
+    },
+    {
+      "codepoint": 60068,
+      "glyph": "uni0940.03"
+    },
+    {
+      "codepoint": 60069,
+      "glyph": "uni09400930094D"
+    },
+    {
+      "codepoint": 60070,
+      "glyph": "uni09400930094D.01"
+    },
+    {
+      "codepoint": 60071,
+      "glyph": "uni09400930094D.02"
+    },
+    {
+      "codepoint": 60072,
+      "glyph": "uni09400930094D.03"
+    },
+    {
+      "codepoint": 60073,
+      "glyph": "uni091C094D.alt"
+    },
+    {
+      "codepoint": 60074,
+      "glyph": "uni095B094D.alt"
+    },
+    {
+      "codepoint": 60075,
+      "glyph": "uni0928094D.alt"
+    },
+    {
+      "codepoint": 60076,
+      "glyph": "uni092E094D.alt"
+    },
+    {
+      "codepoint": 60077,
+      "glyph": "uni0919.alt"
+    },
+    {
+      "codepoint": 60078,
+      "glyph": "uni091B.alt"
+    },
+    {
+      "codepoint": 60079,
+      "glyph": "uni091F.alt"
+    },
+    {
+      "codepoint": 60080,
+      "glyph": "uni0920.alt"
+    },
+    {
+      "codepoint": 60081,
+      "glyph": "uni0921.alt"
+    },
+    {
+      "codepoint": 60082,
+      "glyph": "uni0922.alt"
+    },
+    {
+      "codepoint": 60083,
+      "glyph": "uni0933.alt"
+    },
+    {
+      "codepoint": 60084,
+      "glyph": "uni093C.alt"
+    },
+    {
+      "codepoint": 60085,
+      "glyph": "uMatra_Narrowdeva"
+    },
+    {
+      "codepoint": 60086,
+      "glyph": "uni093C0941"
+    },
+    {
+      "codepoint": 60087,
+      "glyph": "uni093C0942"
+    },
+    {
+      "codepoint": 60088,
+      "glyph": "uni093C0943"
+    },
+    {
+      "codepoint": 60089,
+      "glyph": "uni093C0944"
+    },
+    {
+      "codepoint": 60090,
+      "glyph": "uni093C0962"
+    },
+    {
+      "codepoint": 60091,
+      "glyph": "uni093C0963"
+    },
+    {
+      "codepoint": 60092,
+      "glyph": "uni093C094D"
+    },
+    {
+      "codepoint": 60093,
+      "glyph": "uni094D09300941"
+    },
+    {
+      "codepoint": 60094,
+      "glyph": "uni094D09300942"
+    },
+    {
+      "codepoint": 60095,
+      "glyph": "uni094D09300943"
+    },
+    {
+      "codepoint": 60096,
+      "glyph": "uni094D09300944"
+    },
+    {
+      "codepoint": 60097,
+      "glyph": "uni094D09300962"
+    },
+    {
+      "codepoint": 60098,
+      "glyph": "uni094D09300963"
+    },
+    {
+      "codepoint": 60099,
+      "glyph": "uni093C094D0930"
+    },
+    {
+      "codepoint": 60100,
+      "glyph": "uni093C094D09300941"
+    },
+    {
+      "codepoint": 60101,
+      "glyph": "uni093C094D09300942"
+    },
+    {
+      "codepoint": 60102,
+      "glyph": "uni093C094D09300943"
+    },
+    {
+      "codepoint": 60103,
+      "glyph": "uni093C094D09300944"
+    },
+    {
+      "codepoint": 60104,
+      "glyph": "uni093C094D09300962"
+    },
+    {
+      "codepoint": 60105,
+      "glyph": "uni093C094D09300963"
+    },
+    {
+      "codepoint": 60106,
+      "glyph": "uni0941.alt"
+    },
+    {
+      "codepoint": 60107,
+      "glyph": "uni0942.alt"
+    },
+    {
+      "codepoint": 60108,
+      "glyph": "uni0944.alt"
+    },
+    {
+      "codepoint": 60109,
+      "glyph": "uni0962.alt"
+    },
+    {
+      "codepoint": 60110,
+      "glyph": "uni0963.alt"
+    },
+    {
+      "codepoint": 60111,
+      "glyph": "NullMark"
+    }
+  ]
+}

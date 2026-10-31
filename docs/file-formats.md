@@ -5,6 +5,37 @@ All POD fields are written in the ESP32 little-endian representation used by
 `Serialization.h`; strings are length-prefixed UTF-8 unless a format notes a
 fixed-size char buffer.
 
+## `/.scenes/<id>.rhythmscene` (also `/scenes/`)
+
+A scene for the charging animation and City Scapes (X4 Pro). The layout below is all a tool needs to
+write one. The scene's id is the file stem; the
+built-in frames (Glass House) use the same layout in flash (`ChargingFramesBuiltin.h`).
+The format was first shipped with the extension `.cpscene`; the firmware still reads that name (a
+`.rhythmscene` of the same id wins), but new files use `.rhythmscene`. The magic and version are
+unchanged.
+
+### Version 1
+
+All fields little-endian.
+
+| Offset | Field |
+| --- | --- |
+| 0 | `char[4]` magic `CPSC` |
+| 4 | `u16` version (1) |
+| 6 | `u16` header size (128) |
+| 8 | `u16` width (480), `u16` height (800) |
+| 12 | `u8` step percent (5), `u8` frame count (21) |
+| 14 | `i16[12]` plaque layout: x, y, width, height with the underline, title bottom, shadow, border, first stop x, stops y, stop height, stop width, stop gap |
+| 38 | `char[32]` title, NUL-padded |
+| 70 | zero padding to 128 |
+| 128 | `u32[frames + 1]` frame offsets into the data block (the last is its size) |
+| | `u32[frames]` CRC-32 of each inflated frame as stored (plain plaque) |
+| | `u32[frames]` CRC-32 of each frame with the charge underline drawn |
+| | data: each frame raw deflate, inflating to 48000 bytes (480x800, 1 bit per pixel, row-major, MSB first, 1 = white) |
+
+The reader rejects other versions or layouts, offsets past the end of the file and frames over
+128 KB compressed, and then shows the built-in scene instead.
+
 ## `epub_<hash>/links.bin`
 
 The EPUB reader writes followed-link Back history on clean exit (Home, sleep,
@@ -1224,3 +1255,49 @@ the card to the host. Manage Fonts performs a full rescan; alternatively remove
 this cache to force reinspection after external same-length font changes.
 
 EPUB layout cache versions and identities are unchanged by this catalog.
+
+## `/.fonts/<Family>/shaping.cpshape`
+
+Indic shaping tables for the script a font family draws, written by
+`lib/EpdFont/scripts/gen_indic_shaping.py` and copied into the family folder by
+`build-sd-fonts.py`. Loaded once per font-registry revision into one heap block
+(PSRAM where available) and read in place; `IndicTables::parse()` bounds-checks
+every section and rejects the file on any mismatch. The private-use codepoints
+it emits address glyphs rasterized into the same family's `.cpfont` files, so
+the file and the fonts must come from the same build.
+
+### Version 1
+
+Little-endian. 64-byte header:
+
+| Offset | Size | Field |
+| --- | --- | --- |
+| 0 | 4 | magic `CPSH` |
+| 4 | 2 | version (1) |
+| 6 | 2 | header size (64) |
+| 8 | 4 | file size |
+| 12 | 4 | first codepoint of the script's block |
+| 16 | 4 | last codepoint of the block (block must lie in U+0800-U+0FFF) |
+| 20 | 4 | virama |
+| 24 | 4 | ra |
+| 28 | 4 | reph codepoint, 0 for none |
+| 32 | 1 | 1 when the last consonant of a conjunct is the base |
+| 33 | 1 | consonant count |
+| 34 | 1 | matra slots (matra count + 1) |
+| 35 | 1 | reserved |
+| 36 | 2 | base entries |
+| 38 | 2 | base codepoints |
+| 40 | 2 | attached-form entries |
+| 42 | 2 | plain attached-form entries |
+| 44 | 2 | akhand entries |
+| 46 | 2 | exception entries |
+| 48 | 2 | exception codepoints |
+| 50 | 14 | reserved |
+
+Then nine sections, each starting on a 4-byte boundary: consonants (`uint16`),
+matras (`uint16`), base entries (6 bytes: key, offset `uint16`, count, insertAt
+`uint8`), base codepoints (`uint16`), attached forms and plain attached forms (4
+bytes: key, codepoint `uint16`), akhand pairs (4 bytes: key, unit `uint16`),
+exceptions (8 bytes: key `uint32`, offset `uint16`, count `uint8`, reserved),
+exception codepoints (`uint16`). Every key table is strictly ascending.
+

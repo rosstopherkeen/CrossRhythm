@@ -164,6 +164,13 @@ files directly instead.
 | `punctuation` | General punctuation (U+2000–U+206F)                                                                                  |
 | `cjk`         | CJK Unified Ideographs + Hiragana + Katakana + Fullwidth                                                             |
 | `hangul`      | Korean Hangul syllables + Jamo + Compatibility Jamo                                                                  |
+| `devanagari`  | Devanagari + Devanagari Extended, plus the shaped conjunct forms (see below)                                         |
+| `bengali`     | Bengali + danda, plus the shaped conjunct forms (see below)                                                          |
+| `oriya`       | Odia + danda, plus the shaped conjunct forms (see below)                                                             |
+| `tamil`       | Tamil + danda, plus the shaped conjunct forms (see below)                                                            |
+| `telugu`      | Telugu + danda, plus the shaped conjunct forms (see below)                                                           |
+| `kannada`     | Kannada + danda, plus the shaped conjunct forms (see below)                                                          |
+| `malayalam`   | Malayalam + danda, plus the shaped conjunct forms (see below)                                                        |
 | `cherokee`    | Cherokee (historic + supplement block)                                                                               |
 | `tifinagh`    | Tifinagh                                                                                                             |
 | `symbols`     | Math, currency, arrows, box-drawing, misc symbols, dingbats                                                          |
@@ -178,6 +185,29 @@ You can also specify arbitrary Unicode ranges directly:
 To list all presets with codepoint counts:
 
     python3 lib/EpdFont/scripts/fontconvert_sdcard.py --list-presets
+
+### Indic scripts need their shaped forms
+
+The seven Indic presets each pull in a second interval beyond the
+Unicode block: the private-use codepoints that address that script's shaped
+conjuncts, below-base consonants and merged vowel signs. Those shapes come out
+of the font's GSUB table and have no character codes of their own, so without
+them the text renders as separate letters with visible viramas.
+
+The mapping lives in `lib/EpdFont/scripts/<script>_pua_map.json`, written by
+`gen_indic_shaping.py` and read automatically — requesting the script's preset
+is enough. If that file is missing the conversion still succeeds but prints a
+warning, and the resulting font cannot render the script correctly.
+
+This is also why these scripts need a `.cpfont` rather than a `.ttf` on an
+ESP32-S3: a scalable font resolves glyphs through its cmap, which has no entry
+for the shaped forms.
+
+The shaping tables themselves are not part of the .cpfont: `build-sd-fonts.py`
+copies `lib/EpdFont/scripts/shaping/<script>.cpshape` into the family folder as
+`shaping.cpshape`, and the reader loads it from there. Install the whole folder;
+without that file the script draws, but conjuncts appear as separate letters.
+The web portal's Fonts page accepts `shaping.cpshape` alongside the .cpfont files.
 
 ### Additional options
 

@@ -1146,6 +1146,9 @@ bool ActivityManager::hasActivityNamed(const char* activityName) const {
 bool ActivityManager::isCurrentActivityNamed(const char* activityName) const {
   return currentActivity && currentActivity->name == activityName;
 }
+const char* ActivityManager::simulatorCurrentActivityName() const {
+  return currentActivity ? currentActivity->name.c_str() : "(none)";
+}
 #endif
 
 bool ActivityManager::canSnapshotForSleepOverlay() const {

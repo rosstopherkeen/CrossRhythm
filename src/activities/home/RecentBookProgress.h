@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 class Epub;
@@ -24,6 +25,8 @@ void saveCachedEpubPercent(const std::string& cachePath, float progress);
 void saveCachedEpubPercent(const Epub& epub, int spineIndex, int currentPage, int pageCount);
 // Returns true when progress contains a known 0-100 percentage.
 bool hasPercent(float progress);
+// Known progress rounded to the whole percent the UI shows (99.6 -> 100), clamped to 0..100.
+uint16_t wholePercent(float progress);
 // Formats progress as a rounded percentage string such as "42%".
 // Returns an empty string when progress is unknown.
 std::string formatPercent(float progress);

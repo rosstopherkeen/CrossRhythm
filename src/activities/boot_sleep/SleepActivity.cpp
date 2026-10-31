@@ -8,6 +8,7 @@
 #include <HalClock.h>
 #include <HalDisplay.h>
 #include <HalGPIO.h>
+#include <HalPowerManager.h>
 #include <HalStorage.h>
 #include <I18n.h>
 #include <Memory.h>
@@ -32,6 +33,7 @@
 #include "../reader/XtcReaderActivity.h"
 #include "AppCapabilities.h"
 #include "AppVersion.h"
+#include "ChargingAnimation.h"
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
 #include "ImageFolderIndex.h"
@@ -514,6 +516,12 @@ bool selectRandomSleepImage(SleepImageMode mode, SleepImageSelection& selection,
 
 void SleepActivity::onEnter() {
   Activity::onEnter();
+  // On the charger the charging animation replaces every sleep screen, Quick Resume included.
+  if (ChargingAnimation::shouldShow() && renderChargingAnimationSleepScreen()) {
+    return;
+  }
+  ChargingAnimation::clear();
+
   const bool renderQuickResume =
       SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::QUICK_RESUME ||
       (fromTimeout &&
@@ -532,7 +540,8 @@ void SleepActivity::onEnter() {
   const bool sleepScreenUsesRecentBooks = sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::READING_STATS_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_STATS_SLEEP ||
-                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP;
+                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP ||
+                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES;
   const std::string& recentBookPath = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
   if (sleepScreenUsesRecentBooks && !recentBookPath.empty()) {
     RECENT_BOOKS.ensureLoaded();
@@ -582,6 +591,8 @@ void SleepActivity::onEnter() {
       return renderMinimalStatsSleepScreen();
     case (CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP):
       return renderDashboardSleepScreen();
+    case (CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES):
+      return renderCityScapeSleepScreen();
     default:
       return renderDefaultSleepScreen();
   }
@@ -966,6 +977,32 @@ void SleepActivity::renderLastScreenSleepScreen() const {
   } else {
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
   }
+}
+
+bool SleepActivity::renderChargingAnimationSleepScreen() const {
+  // The frames are pre-dithered artwork; Night Mode inversion would turn them into a negative.
+  display.setInverted(false);
+  const uint16_t percent = powerManager.getBatteryPercentage();
+  if (!ChargingAnimation::drawFrame(renderer, percent, /*chargeBars=*/true, SETTINGS.chargingScene)) {
+    return false;
+  }
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
+  ChargingAnimation::markShown(percent, SETTINGS.chargingScene);
+  return true;
+}
+
+void SleepActivity::renderCityScapeSleepScreen() const {
+  // The City Scape scene (or, under Cycle All, the next one) for the latest book's reading progress
+  // (unknown progress or no book shows the 0% scene), without the charge underline. Drawn once per sleep; no timer wake.
+  const std::string& path = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
+  float progress = path.empty() ? -1.0f : RecentBookProgress::loadPercent(recentBookForPath(path));
+  if (!RecentBookProgress::hasPercent(progress)) progress = 0.0f;
+  // Round like every progress label: a book shown as 100% gets the final scene, not the 95% one.
+  if (!ChargingAnimation::drawFrame(renderer, RecentBookProgress::wholePercent(progress), /*chargeBars=*/false,
+                                    ChargingAnimation::cityScapeSceneForSleep())) {
+    return renderDefaultSleepScreen();
+  }
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
 }
 
 void SleepActivity::renderBlankSleepScreen() const {

@@ -1,0 +1,312 @@
+{
+  "comment": "Shaped Malayalam forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "script": "malayalam",
+  "source_font": "NotoSansMalayalam.ttf",
+  "pua_base": 62976,
+  "forms": [
+    {
+      "codepoint": 62976,
+      "glyph": "yapostmlym"
+    },
+    {
+      "codepoint": 62977,
+      "glyph": "vapostmlym"
+    },
+    {
+      "codepoint": 62978,
+      "glyph": "rapostmlym"
+    },
+    {
+      "codepoint": 62979,
+      "glyph": "kakamlym"
+    },
+    {
+      "codepoint": 62980,
+      "glyph": "katamlym"
+    },
+    {
+      "codepoint": 62981,
+      "glyph": "kalamlym"
+    },
+    {
+      "codepoint": 62982,
+      "glyph": "kassamlym"
+    },
+    {
+      "codepoint": 62983,
+      "glyph": "gagamlym"
+    },
+    {
+      "codepoint": 62984,
+      "glyph": "gamamlym"
+    },
+    {
+      "codepoint": 62985,
+      "glyph": "ganamlym"
+    },
+    {
+      "codepoint": 62986,
+      "glyph": "galamlym"
+    },
+    {
+      "codepoint": 62987,
+      "glyph": "ngakamlym"
+    },
+    {
+      "codepoint": 62988,
+      "glyph": "ngangamlym"
+    },
+    {
+      "codepoint": 62989,
+      "glyph": "cacamlym"
+    },
+    {
+      "codepoint": 62990,
+      "glyph": "cachamlym"
+    },
+    {
+      "codepoint": 62991,
+      "glyph": "jajamlym"
+    },
+    {
+      "codepoint": 62992,
+      "glyph": "janyamlym"
+    },
+    {
+      "codepoint": 62993,
+      "glyph": "nyacamlym"
+    },
+    {
+      "codepoint": 62994,
+      "glyph": "nyajamlym"
+    },
+    {
+      "codepoint": 62995,
+      "glyph": "nyanyamlym"
+    },
+    {
+      "codepoint": 62996,
+      "glyph": "ttattamlym"
+    },
+    {
+      "codepoint": 62997,
+      "glyph": "ddaddamlym"
+    },
+    {
+      "codepoint": 62998,
+      "glyph": "ddaddhamlym"
+    },
+    {
+      "codepoint": 62999,
+      "glyph": "nnaddamlym"
+    },
+    {
+      "codepoint": 63000,
+      "glyph": "nnamamlym"
+    },
+    {
+      "codepoint": 63001,
+      "glyph": "nnannamlym"
+    },
+    {
+      "codepoint": 63002,
+      "glyph": "nnattamlym"
+    },
+    {
+      "codepoint": 63003,
+      "glyph": "tanamlym"
+    },
+    {
+      "codepoint": 63004,
+      "glyph": "tabhamlym"
+    },
+    {
+      "codepoint": 63005,
+      "glyph": "tamamlym"
+    },
+    {
+      "codepoint": 63006,
+      "glyph": "tasamlym"
+    },
+    {
+      "codepoint": 63007,
+      "glyph": "tatamlym"
+    },
+    {
+      "codepoint": 63008,
+      "glyph": "tathamlym"
+    },
+    {
+      "codepoint": 63009,
+      "glyph": "talamlym"
+    },
+    {
+      "codepoint": 63010,
+      "glyph": "dadamlym"
+    },
+    {
+      "codepoint": 63011,
+      "glyph": "dadhamlym"
+    },
+    {
+      "codepoint": 63012,
+      "glyph": "nadamlym"
+    },
+    {
+      "codepoint": 63013,
+      "glyph": "nadhamlym"
+    },
+    {
+      "codepoint": 63014,
+      "glyph": "nanamlym"
+    },
+    {
+      "codepoint": 63015,
+      "glyph": "namamlym"
+    },
+    {
+      "codepoint": 63016,
+      "glyph": "narramlym"
+    },
+    {
+      "codepoint": 63017,
+      "glyph": "natamlym"
+    },
+    {
+      "codepoint": 63018,
+      "glyph": "nathamlym"
+    },
+    {
+      "codepoint": 63019,
+      "glyph": "papamlym"
+    },
+    {
+      "codepoint": 63020,
+      "glyph": "palamlym"
+    },
+    {
+      "codepoint": 63021,
+      "glyph": "phalamlym"
+    },
+    {
+      "codepoint": 63022,
+      "glyph": "babamlym"
+    },
+    {
+      "codepoint": 63023,
+      "glyph": "balamlym"
+    },
+    {
+      "codepoint": 63024,
+      "glyph": "mamamlym"
+    },
+    {
+      "codepoint": 63025,
+      "glyph": "mapamlym"
+    },
+    {
+      "codepoint": 63026,
+      "glyph": "malamlym"
+    },
+    {
+      "codepoint": 63027,
+      "glyph": "yayamlym"
+    },
+    {
+      "codepoint": 63028,
+      "glyph": "rrarramlym"
+    },
+    {
+      "codepoint": 63029,
+      "glyph": "lapamlym"
+    },
+    {
+      "codepoint": 63030,
+      "glyph": "lalamlym"
+    },
+    {
+      "codepoint": 63031,
+      "glyph": "llallamlym"
+    },
+    {
+      "codepoint": 63032,
+      "glyph": "valamlym"
+    },
+    {
+      "codepoint": 63033,
+      "glyph": "vavamlym"
+    },
+    {
+      "codepoint": 63034,
+      "glyph": "shacamlym"
+    },
+    {
+      "codepoint": 63035,
+      "glyph": "shashamlym"
+    },
+    {
+      "codepoint": 63036,
+      "glyph": "shalamlym"
+    },
+    {
+      "codepoint": 63037,
+      "glyph": "sasamlym"
+    },
+    {
+      "codepoint": 63038,
+      "glyph": "sathamlym"
+    },
+    {
+      "codepoint": 63039,
+      "glyph": "salamlym"
+    },
+    {
+      "codepoint": 63040,
+      "glyph": "hamamlym"
+    },
+    {
+      "codepoint": 63041,
+      "glyph": "hanamlym"
+    },
+    {
+      "codepoint": 63042,
+      "glyph": "halamlym"
+    },
+    {
+      "codepoint": 63043,
+      "glyph": "ivowelsignaltmlym"
+    },
+    {
+      "codepoint": 63044,
+      "glyph": "iivowelsignaltmlym"
+    },
+    {
+      "codepoint": 63045,
+      "glyph": "uvowelsignaltmlym"
+    },
+    {
+      "codepoint": 63046,
+      "glyph": "uuvowelsignaltmlym"
+    },
+    {
+      "codepoint": 63047,
+      "glyph": "rvocalicvowelsignaltmlym"
+    },
+    {
+      "codepoint": 63048,
+      "glyph": "rrvocalicvowelsignaltmlym"
+    },
+    {
+      "codepoint": 63049,
+      "glyph": "yapostaltmlym"
+    },
+    {
+      "codepoint": 63050,
+      "glyph": "vapostaltmlym"
+    },
+    {
+      "codepoint": 63051,
+      "glyph": "rapostaltmlym"
+    }
+  ]
+}

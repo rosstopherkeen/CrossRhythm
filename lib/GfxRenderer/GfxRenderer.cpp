@@ -7,7 +7,7 @@
 #include <BuildScratch.h>
 #include <FontDecompressor.h>
 #include <HalGPIO.h>
-#include <KannadaShape.h>
+#include <IndicShape.h>
 #include <Logging.h>
 #include <SdCardFont.h>
 #include <Utf8.h>
@@ -350,14 +350,13 @@ int GfxRenderer::resolveTextFontId(const int fontId, const char* text, const Epd
     return fontId;
   }
   const auto fbIt = fallbackFontMap_.find(fontId);
-  if (fbIt == fallbackFontMap_.end()) {
+  if (fbIt == fallbackFontMap_.end() || fbIt->second.count == 0) {
     return fontId;  // no fallback registered for this font
   }
-  const int fallbackFontId = fbIt->second;
+  const FallbackSet& fallbacks = fbIt->second;
   const auto fontIt = fontMap.find(fontId);
-  const auto fallbackIt = fontMap.find(fallbackFontId);
-  if (fontIt == fontMap.end() || fallbackIt == fontMap.end()) {
-    return fontId;  // unknown primary or fallback not loaded — let the caller handle it
+  if (fontIt == fontMap.end()) {
+    return fontId;  // unknown primary — let the caller handle it
   }
   // Every script worth redirecting is non-ASCII, so a string of plain ASCII
   // bytes can be answered without decoding it. This is the common case for an
@@ -369,20 +368,49 @@ int GfxRenderer::resolveTextFontId(const int fontId, const char* text, const Epd
   }
 
   const EpdFontFamily& primary = fontIt->second;
-  const EpdFontFamily& fallback = fallbackIt->second;
   const char* cursor = text;
   uint32_t cp;
   while ((cp = utf8NextCodepoint(reinterpret_cast<const uint8_t**>(&cursor)))) {
-    // Only redirect for a whole script the primary font cannot draw but the
-    // fallback can (CJK, Kannada). Latin/symbol strings the built-in UI fonts
+    // Only redirect for a whole script the primary font cannot draw but a
+    // fallback can (CJK, Indic). Latin/symbol strings the built-in UI fonts
     // already cover are left untouched, and a partial-coverage fallback (e.g.
     // kana-only) is not worth dragging the whole string into for glyphs it
     // would also miss.
-    if (utf8IsFallbackScriptCodepoint(cp) && !primary.hasCodepoint(cp, style) && fallback.hasCodepoint(cp, style)) {
-      return fallbackFontId;
+    if (!utf8IsFallbackScriptCodepoint(cp) || primary.hasCodepoint(cp, style)) continue;
+    // The first fallback that can draw this codepoint wins. With several
+    // scripts installed the sets are tiny (at most MAX_FALLBACK_FONTS), and
+    // this only runs for a codepoint the primary font already failed.
+    for (uint8_t i = 0; i < fallbacks.count; i++) {
+      const auto fallbackIt = fontMap.find(fallbacks.ids[i]);
+      if (fallbackIt == fontMap.end()) continue;  // fallback not loaded
+      if (fallbackIt->second.hasCodepoint(cp, style)) return fallbacks.ids[i];
     }
   }
   return fontId;
+}
+
+void GfxRenderer::ensureFallbackGlyphs(const int fallbackFontId, const int primaryFontId, const char* visualText,
+                                       const EpdFontFamily::Style style) const {
+  if (fallbackFontId == primaryFontId || fontCacheManager_ == nullptr || fontCacheManager_->isScanning()) return;
+  const auto setIt = fallbackFontMap_.find(primaryFontId);
+  if (setIt == fallbackFontMap_.end() || !setIt->second.prewarmOnDemand) return;
+  const auto sdIt = sdCardFonts_.find(fallbackFontId);
+  const auto fontIt = fontMap.find(fallbackFontId);
+  if (sdIt == sdCardFonts_.end() || fontIt == fontMap.end()) return;
+
+  // An SD font only has glyphs in its table that a prewarm put there, and a
+  // glyph missing from it draws as a replacement box. Reader pages prewarm
+  // first, so every glyph is already present and this is one table lookup per
+  // codepoint; a UI string drawn cold needs the one prewarm below.
+  const char* cursor = visualText;
+  uint32_t cp;
+  while ((cp = utf8NextCodepoint(reinterpret_cast<const uint8_t**>(&cursor)))) {
+    if (utf8IsVariationSelector(cp)) continue;
+    if (fontIt->second.findGlyphData(cp, style).glyph != nullptr) continue;
+    const uint8_t styleMask = static_cast<uint8_t>(1u << resolveSdCardStyle(*sdIt->second, style));
+    fontCacheManager_->prewarmCache(fallbackFontId, visualText, styleMask);
+    return;
+  }
 }
 
 // Translate logical (x,y) coordinates to physical panel coordinates based on current orientation
@@ -1032,12 +1060,12 @@ const char* resolveVisualText(const char* text, std::string& visualBuffer, const
     return visualBuffer.c_str();
   }
 
-  // Kannada needs its conjuncts and vowel signs substituted for the shaped
-  // forms the font actually draws; the codepoints as authored render as
+  // Indic scripts need their conjuncts and vowel signs substituted for the
+  // shaped forms the font actually draws; the codepoints as authored render as
   // separate letters with visible viramas. applyShaping() has its own UTF-8
   // lead-byte prefilter, so other scripts pay one byte scan. RTL text cannot
-  // contain Kannada, so the two transforms never contend for visualBuffer.
-  if (KannadaShape::applyShaping(text, visualBuffer) && !visualBuffer.empty()) {
+  // contain these blocks, so the two transforms never contend for visualBuffer.
+  if (IndicShape::applyShaping(text, visualBuffer) && !visualBuffer.empty()) {
     return visualBuffer.c_str();
   }
   return text;
@@ -1057,6 +1085,7 @@ int GfxRenderer::getTextWidth(const int fontId, const char* text, const EpdFontF
 
   std::string visualBuffer;
   const char* textCursor = resolveVisualText(text, visualBuffer, baseDir);
+  ensureFallbackGlyphs(resolvedFontId, fontId, textCursor, style);
   if ((style & EpdFontFamily::SMALL_CAPS) != 0) {
     return getTextAdvanceX(resolvedFontId, textCursor, style);
   }
@@ -1157,6 +1186,7 @@ void GfxRenderer::drawText(const int fontId, const int x, const int y, const cha
 
   std::string visualBuffer;
   const char* textCursor = resolveVisualText(text, visualBuffer, baseDir);
+  ensureFallbackGlyphs(resolvedFontId, fontId, textCursor, style);
 
   const auto fontIt = fontMap.find(resolvedFontId);
   if (fontIt == fontMap.end()) {

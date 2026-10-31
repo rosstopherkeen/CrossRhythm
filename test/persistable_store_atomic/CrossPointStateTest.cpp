@@ -75,3 +75,23 @@ TEST_F(CrossPointStateTest, ReloadInvalidatesPreviousSnapshot) {
   ASSERT_TRUE(APP_STATE.loadFromFile());
   EXPECT_EQ(APP_STATE.openEpubPath, "/old.epub");
 }
+
+// City Scapes was called Life Views when the cycle position was first saved. A state file written
+// then must still restore it, and a save writes only the new key.
+TEST_F(CrossPointStateTest, ReadsCityScapeCyclePositionSavedUnderTheOldName) {
+  JsonDocument legacy;
+  legacy["lifeViewCycleScene"] = "kr_market";
+  APP_STATE.fromJson(legacy.as<JsonVariantConst>());
+  EXPECT_EQ(APP_STATE.cityScapeCycleScene, "kr_market");
+
+  JsonDocument both;
+  both["lifeViewCycleScene"] = "kr_market";
+  both["cityScapeCycleScene"] = "lalbagh";
+  APP_STATE.fromJson(both.as<JsonVariantConst>());
+  EXPECT_EQ(APP_STATE.cityScapeCycleScene, "lalbagh");
+
+  JsonDocument saved;
+  APP_STATE.toJson(saved);
+  EXPECT_EQ(saved["cityScapeCycleScene"].as<std::string>(), "lalbagh");
+  EXPECT_FALSE(saved["lifeViewCycleScene"].is<const char*>());
+}

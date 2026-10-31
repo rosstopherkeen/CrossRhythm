@@ -109,19 +109,43 @@ class GfxRenderer {
   // as before, concentrated in a single pointer instead of four fields.
   mutable FontCacheManager* fontCacheManager_ = nullptr;
 
-  // CJK UI font fallback map: primary (built-in, Latin-only) UI font id -> a
-  // size-matched SD-card font id that carries CJK glyphs. When a string drawn
-  // or measured with a mapped primary font contains a CJK codepoint the primary
-  // cannot render, the whole string is routed to the mapped fallback so it
-  // appears at the same point size as the surrounding UI text. Populated by the
-  // app-level SD font setup when an SD family is loaded. See resolveTextFontId().
-  std::map<int, int> fallbackFontMap_;
+  // Script fallback map: primary font id -> size-matched SD-card font ids that
+  // carry glyphs the primary cannot draw. When a string drawn or measured with
+  // a mapped primary font contains such a codepoint, the whole string is routed
+  // to the first mapped fallback that can draw it, so it appears at the same
+  // point size as the surrounding text. Populated by the app-level SD font
+  // setup when an SD family is loaded. See resolveTextFontId().
+  //
+  // A primary font can need more than one fallback -- a Latin reader font with
+  // a CJK family and several Indic families installed beside it -- so each
+  // entry holds a small set rather than a single id. The cap is a fixed array
+  // on purpose: the set is consulted inside text measurement, and one bounded
+  // allocation per primary font beats a vector's per-entry heap block.
+  // One CJK family plus every Indic script a build can carry. Only *installed*
+  // families take a slot, so real devices use one or two; the cap exists so the
+  // set stays a fixed array.
+  static constexpr uint8_t MAX_FALLBACK_FONTS = 8;
+  struct FallbackSet {
+    int ids[MAX_FALLBACK_FONTS] = {};
+    uint8_t count = 0;
+    // UI fonts draw outside any prewarm scope, so a fallback glyph has to be
+    // loaded when the string is drawn. Reader fonts must not set this: their
+    // layout measures every word and would prewarm per word.
+    bool prewarmOnDemand = false;
+  };
+  std::map<int, FallbackSet> fallbackFontMap_;
 
-  // If `text` contains a CJK codepoint that `fontId` cannot render and `fontId`
-  // has a registered fallback, returns the fallback id; otherwise returns
-  // fontId unchanged. The whole string is routed as a unit so each draw/measure
-  // call stays single-font (consistent bit depth, metrics, wrapping).
+  // If `text` contains a codepoint that `fontId` cannot render and `fontId` has
+  // a registered fallback that can, returns that fallback's id; otherwise
+  // returns fontId unchanged. The whole string is routed as a unit so each
+  // draw/measure call stays single-font (consistent bit depth, metrics,
+  // wrapping).
   int resolveTextFontId(int fontId, const char* text, EpdFontFamily::Style style) const;
+  // Load the SD-font glyphs `visualText` needs when it is about to be drawn or
+  // measured with a fallback font outside any prewarm scope (UI strings: file
+  // names, titles). Reader pages prewarm through their own scope and skip this.
+  void ensureFallbackGlyphs(int fallbackFontId, int primaryFontId, const char* visualText,
+                            EpdFontFamily::Style style) const;
   void renderChar(const EpdFontFamily& fontFamily, uint32_t cp, int* x, int* y, bool pixelState,
                   EpdFontFamily::Style style) const;
   void freeBwBufferChunks();
@@ -181,9 +205,22 @@ class GfxRenderer {
   void clearSdCardFonts() { sdCardFonts_.clear(); }
   const std::map<int, SdCardFont*>& getSdCardFonts() const { return sdCardFonts_; }
   bool isSdCardFont(int fontId) const { return sdCardFonts_.count(fontId) > 0; }
-  // Register/clear size-matched CJK UI fallbacks (see fallbackFontMap_).
-  // setFallbackFont maps a primary UI font id to an SD font id of the same size.
-  void setFallbackFont(int primaryFontId, int fallbackFontId) { fallbackFontMap_[primaryFontId] = fallbackFontId; }
+  // Register/clear size-matched script fallbacks (see fallbackFontMap_).
+  // addFallbackFont maps a primary font id to an SD font id of the same size,
+  // appending to whatever that primary already has. Re-adding an id already in
+  // the set is a no-op, so a setup path that runs again (a render-option reload
+  // that keeps the same family) does not duplicate entries. Silently ignores
+  // anything past MAX_FALLBACK_FONTS -- the earlier entries were registered in
+  // preference order, so dropping the overflow beats evicting them.
+  void addFallbackFont(int primaryFontId, int fallbackFontId) {
+    FallbackSet& set = fallbackFontMap_[primaryFontId];
+    for (uint8_t i = 0; i < set.count; i++) {
+      if (set.ids[i] == fallbackFontId) return;
+    }
+    if (set.count >= MAX_FALLBACK_FONTS) return;
+    set.ids[set.count++] = fallbackFontId;
+  }
+  void setFallbackPrewarmOnDemand(int primaryFontId) { fallbackFontMap_[primaryFontId].prewarmOnDemand = true; }
   void clearFallbackFonts() { fallbackFontMap_.clear(); }
   // Ensure SD card font glyph data is loaded for the given text. Called from layout code
   // (which holds a const GfxRenderer&) before measuring word widths. Safe to call on non-SD fonts (no-op).

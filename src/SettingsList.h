@@ -14,10 +14,12 @@
 #include <utility>
 #include <vector>
 
+#include "AppCapabilities.h"
 #include "CrossPointSettings.h"
 #include "DeviceCapabilities.h"
 #include "KOReaderCredentialStore.h"
 #include "QuickActions.h"
+#include "activities/boot_sleep/ChargingAnimation.h"
 #include "activities/settings/SettingsActivity.h"
 #include "components/UITheme.h"
 #include "util/Dictionary.h"
@@ -330,12 +332,16 @@ inline SettingInfo buildDictionarySetting(const DictionaryRegistry* dictRegistry
 }
 
 inline SettingInfo buildSleepScreenSetting() {
-  SettingInfo s = SettingInfo::Enum(
-      StrId::STR_SLEEP_SCREEN, &CrossPointSettings::sleepScreen,
-      {StrId::STR_NONE_OPT, StrId::STR_DARK, StrId::STR_LIGHT, StrId::STR_CUSTOM, StrId::STR_COVER,
-       StrId::STR_COVER_CUSTOM, StrId::STR_PAGE_OVERLAY, StrId::STR_READING_STATS, StrId::STR_THEME_MINIMAL,
-       StrId::STR_THEME_MINIMAL_STATS, StrId::STR_THEME_DASHBOARD, StrId::STR_QUICK_RESUME},
-      "sleepScreen", StrId::STR_CAT_DISPLAY);
+  SettingInfo s =
+      SettingInfo::Enum(StrId::STR_SLEEP_SCREEN, &CrossPointSettings::sleepScreen,
+                        {StrId::STR_NONE_OPT, StrId::STR_DARK, StrId::STR_LIGHT, StrId::STR_CUSTOM, StrId::STR_COVER,
+                         StrId::STR_COVER_CUSTOM, StrId::STR_PAGE_OVERLAY, StrId::STR_READING_STATS,
+                         StrId::STR_THEME_MINIMAL, StrId::STR_THEME_MINIMAL_STATS, StrId::STR_THEME_DASHBOARD,
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+                         StrId::STR_CITY_SCAPES,
+#endif
+                         StrId::STR_QUICK_RESUME},
+                        "sleepScreen", StrId::STR_CAT_DISPLAY);
   s.withEnumRawValues({
       static_cast<uint8_t>(CrossPointSettings::BLANK),
       static_cast<uint8_t>(CrossPointSettings::DARK),
@@ -348,10 +354,95 @@ inline SettingInfo buildSleepScreenSetting() {
       static_cast<uint8_t>(CrossPointSettings::MINIMAL_SLEEP),
       static_cast<uint8_t>(CrossPointSettings::MINIMAL_STATS_SLEEP),
       static_cast<uint8_t>(CrossPointSettings::DASHBOARD_SLEEP),
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+      static_cast<uint8_t>(CrossPointSettings::CITY_SCAPES),
+#endif
       static_cast<uint8_t>(CrossPointSettings::QUICK_RESUME),
   });
   return s;
 }
+
+// Scene pickers open their option list even with one or two choices, like Wallpaper does, instead of
+// cycling the value in place.
+inline bool settingAlwaysOpensOptionList(const SettingInfo& setting) {
+  return setting.key && (strcmp(setting.key, "chargingAnimation") == 0 || strcmp(setting.key, "cityScape") == 0);
+}
+
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+inline void setSceneId(char (&dst)[24], const char* id) {
+  strncpy(dst, id, sizeof(dst) - 1);
+  dst[sizeof(dst) - 1] = '\0';
+}
+
+// Charging Animation: Off, the built-in scene, then every SD scene. A saved SD scene that is no longer
+// on the card reads as the built-in one, which is also what the sleep screen falls back to.
+inline SettingInfo buildChargingAnimationSetting() {
+  SettingInfo s;
+  s.nameId = StrId::STR_CHARGING_ANIMATION;
+  s.type = SettingType::ENUM;
+  s.key = "chargingAnimation";
+  s.category = StrId::STR_CAT_DISPLAY;
+  std::vector<std::string> ids;
+  const auto& scenes = ChargingAnimation::sdScenes();
+  s.enumStringValues.reserve(scenes.size() + 2);
+  ids.reserve(scenes.size());
+  s.enumStringValues.push_back(I18N.get(StrId::STR_NONE_OPT));
+  s.enumStringValues.push_back(ChargingAnimation::builtinTitle());
+  for (const auto& scene : scenes) {
+    s.enumStringValues.push_back(scene.title);
+    ids.push_back(scene.id);
+  }
+  s.valueGetter = [ids]() -> uint8_t {
+    if (SETTINGS.chargingAnimation != CrossPointSettings::CHARGING_ANIMATION_ON) return 0;
+    for (size_t i = 0; i < ids.size(); i++) {
+      if (ids[i] == SETTINGS.chargingScene) return static_cast<uint8_t>(i + 2);
+    }
+    return 1;
+  };
+  s.valueSetter = [ids](const uint8_t v) {
+    SETTINGS.chargingAnimation =
+        v == 0 ? CrossPointSettings::CHARGING_ANIMATION_OFF : CrossPointSettings::CHARGING_ANIMATION_ON;
+    setSceneId(SETTINGS.chargingScene, v >= 2 && v - 2u < ids.size() ? ids[v - 2].c_str() : "");
+  };
+  return s;
+}
+
+// City Scape (shown while Wallpaper is City Scapes): the built-in scene, then every SD scene, then Cycle All
+// (a different scene each sleep).
+inline SettingInfo buildCityScapeSetting() {
+  SettingInfo s;
+  s.nameId = StrId::STR_CITY_SCAPE;
+  s.type = SettingType::ENUM;
+  s.key = "cityScape";
+  s.category = StrId::STR_CAT_DISPLAY;
+  std::vector<std::string> ids;
+  const auto& scenes = ChargingAnimation::sdScenes();
+  s.enumStringValues.reserve(scenes.size() + 2);
+  ids.reserve(scenes.size());
+  s.enumStringValues.push_back(ChargingAnimation::builtinTitle());
+  for (const auto& scene : scenes) {
+    s.enumStringValues.push_back(scene.title);
+    ids.push_back(scene.id);
+  }
+  s.enumStringValues.push_back(I18N.get(StrId::STR_CYCLE_ALL));
+  s.valueGetter = [ids]() -> uint8_t {
+    if (strcmp(SETTINGS.cityScapeScene, ChargingAnimation::kCycleAllScenes) == 0) {
+      return static_cast<uint8_t>(ids.size() + 1);
+    }
+    for (size_t i = 0; i < ids.size(); i++) {
+      if (ids[i] == SETTINGS.cityScapeScene) return static_cast<uint8_t>(i + 1);
+    }
+    return 0;
+  };
+  s.valueSetter = [ids](const uint8_t v) {
+    const char* id = v == ids.size() + 1 ? ChargingAnimation::kCycleAllScenes
+                     : v >= 1 && v - 1u < ids.size() ? ids[v - 1].c_str()
+                                                     : "";
+    setSceneId(SETTINGS.cityScapeScene, id);
+  };
+  return s;
+}
+#endif
 
 enum class ShortcutOptionCatalog { PowerButton, ButtonChord, LongPress, HomeButton, SideButton };
 
@@ -586,7 +677,8 @@ inline SettingInfo buildSideButtonActionSetting(const StrId nameId, uint8_t Cros
 // can use it directly; mutable device UI lists use getSettingsList(), which
 // returns an owned copy and can add SD-card font and dictionary options.
 // Four edge gesture entries are compiled only for touch devices.
-inline constexpr size_t BASE_SETTINGS_CAPACITY = 104 + (CROSSINK_APP_CAP_TOUCH ? 4 : 0);
+inline constexpr size_t BASE_SETTINGS_CAPACITY =
+    104 + (CROSSINK_APP_CAP_TOUCH ? 4 : 0) + (CROSSINK_APP_CAP_CHARGING_ANIMATION ? 1 : 0);
 
 const std::vector<SettingInfo>& getBaseSettingsList();
 
@@ -750,6 +842,15 @@ inline std::vector<SettingInfo> getSettingsList(const SdCardFontRegistry* regist
     const auto insertPos = guideIt == v.end() ? v.end() : guideIt + 1;
     v.insert(insertPos, buildDictionarySetting(dictRegistry));
   }
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+  // Scene pickers list the SD scenes; the base entry only persists the on/off state.
+  auto chargingIt =
+      std::find_if(v.begin(), v.end(), [](const SettingInfo& s) { return s.nameId == StrId::STR_CHARGING_ANIMATION; });
+  if (chargingIt != v.end()) {
+    *chargingIt = buildChargingAnimationSetting();
+    v.insert(chargingIt + 1, buildCityScapeSetting());
+  }
+#endif
   return v;
 }
 
@@ -970,7 +1071,7 @@ inline std::vector<SettingInfo> buildControlsSideButtonSettingsList(const std::v
 
 inline std::vector<SettingInfo> buildGroupedDisplaySettingsList(const std::vector<SettingInfo>& allSettings) {
   std::vector<SettingInfo> displaySettings;
-  displaySettings.reserve(9);
+  displaySettings.reserve(10);
 
   auto addDisplaySetting = [&](StrId nameId) {
     const auto it = std::find_if(allSettings.begin(), allSettings.end(),
@@ -981,6 +1082,8 @@ inline std::vector<SettingInfo> buildGroupedDisplaySettingsList(const std::vecto
   };
 
   displaySettings.push_back(SettingInfo::Submenu(StrId::STR_DISPLAY_SLEEP_SCREEN, SettingAction::DisplaySleepScreen));
+  // Only present where CROSSINK_APP_CAP_CHARGING_ANIMATION adds it to the base list.
+  addDisplaySetting(StrId::STR_CHARGING_ANIMATION);
   if (Frontlight.present()) {
     displaySettings.push_back(SettingInfo::Submenu(StrId::STR_FRONTLIGHT, SettingAction::DisplayFrontlight));
   }
@@ -1019,7 +1122,7 @@ inline std::vector<SettingInfo> buildDisplayFrontlightSettingsList(const std::ve
 
 inline std::vector<SettingInfo> buildDisplaySleepSettingsList(const std::vector<SettingInfo>& allSettings) {
   std::vector<SettingInfo> sleepSettings;
-  sleepSettings.reserve(4);
+  sleepSettings.reserve(5);
 
   auto addSleepSetting = [&](StrId nameId, StrId displayNameId) {
     const auto it = std::find_if(allSettings.begin(), allSettings.end(),
@@ -1031,6 +1134,10 @@ inline std::vector<SettingInfo> buildDisplaySleepSettingsList(const std::vector<
   };
 
   addSleepSetting(StrId::STR_SLEEP_SCREEN, StrId::STR_SLEEP_SCREEN_WALLPAPER);
+  // City Scape only means something while City Scapes is the wallpaper.
+  if (SETTINGS.sleepScreen == CrossPointSettings::CITY_SCAPES) {
+    addSleepSetting(StrId::STR_CITY_SCAPE, StrId::STR_CITY_SCAPE);
+  }
   addSleepSetting(StrId::STR_SLEEP_COVER_MODE, StrId::STR_SLEEP_COVER_MODE_SHORT);
   addSleepSetting(StrId::STR_SLEEP_COVER_FILTER, StrId::STR_SLEEP_COVER_FILTER_SHORT);
   addSleepSetting(StrId::STR_QUICK_RESUME_TIMEOUT, StrId::STR_QUICK_RESUME_TIMEOUT);
