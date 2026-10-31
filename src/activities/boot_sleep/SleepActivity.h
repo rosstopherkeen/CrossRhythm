@@ -31,7 +31,7 @@ class SleepActivity final : public Activity {
   bool renderBitmapSleepScreen(Bitmap& bitmap) const;
   void renderLastScreenSleepScreen() const;
   void renderBlankSleepScreen() const;
-  void renderLifeViewSleepScreen() const;
+  void renderCityScapeSleepScreen() const;
   // Returns false when the frame cannot be drawn, so the selected sleep screen renders instead.
   bool renderChargingAnimationSleepScreen() const;
   void renderOverlaySleepScreen() const;

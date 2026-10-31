@@ -62,7 +62,7 @@ constexpr uint8_t SLEEP_SCREEN_STORAGE_ORDER[] = {
     static_cast<uint8_t>(CrossPointSettings::QUICK_RESUME),
     static_cast<uint8_t>(CrossPointSettings::MINIMAL_STATS_SLEEP),
     static_cast<uint8_t>(CrossPointSettings::DASHBOARD_SLEEP),
-    static_cast<uint8_t>(CrossPointSettings::LIFE_VIEWS),
+    static_cast<uint8_t>(CrossPointSettings::CITY_SCAPES),
 };
 constexpr uint8_t SLEEP_SCREEN_STORAGE_ORDER_COUNT =
     sizeof(SLEEP_SCREEN_STORAGE_ORDER) / sizeof(SLEEP_SCREEN_STORAGE_ORDER[0]);
@@ -496,7 +496,7 @@ void CrossPointSettings::toJson(JsonDocument& doc) const {
   doc["fontFamily"] = fontFamily;
   if (sdFontFamilyName[0] != '\0') doc["sdFontFamilyName"] = sdFontFamilyName;
   if (chargingScene[0] != '\0') doc["chargingScene"] = chargingScene;
-  if (lifeViewScene[0] != '\0') doc["lifeViewScene"] = lifeViewScene;
+  if (cityScapeScene[0] != '\0') doc["cityScapeScene"] = cityScapeScene;
   if (dictionarySdFontFamilyName[0] != '\0') doc["dictionaryFont"] = dictionarySdFontFamilyName;
   doc["dictionaryFontSize"] = dictionaryFontPointSize;
   JsonArray quickActionSlotsJson = doc["quickActionSlots"].to<JsonArray>();
@@ -866,9 +866,10 @@ bool CrossPointSettings::fromJson(JsonVariantConst doc, bool importingCrossPoint
   const char* chargingSceneId = doc["chargingScene"] | "";
   strncpy(chargingScene, chargingSceneId, sizeof(chargingScene) - 1);
   chargingScene[sizeof(chargingScene) - 1] = '\0';
-  const char* lifeViewSceneId = doc["lifeViewScene"] | "";
-  strncpy(lifeViewScene, lifeViewSceneId, sizeof(lifeViewScene) - 1);
-  lifeViewScene[sizeof(lifeViewScene) - 1] = '\0';
+  // Saved as "lifeViewScene" before City Scapes was renamed; read it when the new key is absent.
+  const char* cityScapeSceneId = doc["cityScapeScene"] | (doc["lifeViewScene"] | "");
+  strncpy(cityScapeScene, cityScapeSceneId, sizeof(cityScapeScene) - 1);
+  cityScapeScene[sizeof(cityScapeScene) - 1] = '\0';
   const char* dictionaryFamily = doc["dictionaryFont"] | "";
   strncpy(dictionarySdFontFamilyName, dictionaryFamily, sizeof(dictionarySdFontFamilyName) - 1);
   dictionarySdFontFamilyName[sizeof(dictionarySdFontFamilyName) - 1] = '\0';

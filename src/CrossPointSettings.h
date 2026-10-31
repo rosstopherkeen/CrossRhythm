@@ -37,8 +37,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
     QUICK_RESUME = 9,
     MINIMAL_STATS_SLEEP = 10,
     DASHBOARD_SLEEP = 11,
-    // A scene picked by lifeViewScene, keyed by book progress (CROSSINK_APP_CAP_CHARGING_ANIMATION boards).
-    LIFE_VIEWS = 12,
+    // A scene picked by cityScapeScene, keyed by book progress (CROSSINK_APP_CAP_CHARGING_ANIMATION boards).
+    CITY_SCAPES = 12,
     SLEEP_SCREEN_MODE_COUNT
   };
   enum SLEEP_SCREEN_COVER_MODE { FIT = 0, CROP = 1, SLEEP_SCREEN_COVER_MODE_COUNT };
@@ -444,10 +444,10 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   // Sleep screen shown instead while on the charger (CROSSINK_APP_CAP_CHARGING_ANIMATION boards).
   enum CHARGING_ANIMATION { CHARGING_ANIMATION_OFF = 0, CHARGING_ANIMATION_ON = 1, CHARGING_ANIMATION_COUNT };
   uint8_t chargingAnimation = CHARGING_ANIMATION_OFF;
-  // Scenes for the charging animation and the Life Views wallpaper: an SD scene's file stem
+  // Scenes for the charging animation and the City Scapes wallpaper: an SD scene's file stem
   // (/.scenes/<id>.rhythmscene), or "" for the built-in Glass House.
   char chargingScene[24] = "";
-  char lifeViewScene[24] = "";
+  char cityScapeScene[24] = "";
   // Night mode: inverted output polarity, applied to every activity per render
   // by ActivityManager. Quick Resume preserves it; other sleep screens remain normal.
   uint8_t screenInverted = 0;

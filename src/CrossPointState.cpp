@@ -134,7 +134,7 @@ void CrossPointState::toJson(JsonDocument& doc) const {
   doc["pendingBookmarkParagraphIndex"] = pendingBookmarkParagraphIndex;
   doc["pendingClippingIndex"] = pendingClippingIndex;
   doc["showBootScreen"] = showBootScreen;
-  if (!lifeViewCycleScene.empty()) doc["lifeViewCycleScene"] = lifeViewCycleScene;
+  if (!cityScapeCycleScene.empty()) doc["cityScapeCycleScene"] = cityScapeCycleScene;
   doc["quickLockResumePending"] = quickLockResumePending;
   doc["quickLockRestoreFrontlight"] = quickLockRestoreFrontlight;
   doc["pendingOverlayOrigin"] = static_cast<uint8_t>(pendingOverlayResume.origin);
@@ -188,7 +188,8 @@ bool CrossPointState::fromJson(JsonVariantConst doc) {
   pendingBookmarkParagraphIndex = doc["pendingBookmarkParagraphIndex"] | static_cast<uint16_t>(UINT16_MAX);
   pendingClippingIndex = doc["pendingClippingIndex"] | static_cast<uint16_t>(UINT16_MAX);
   showBootScreen = doc["showBootScreen"] | true;
-  lifeViewCycleScene = doc["lifeViewCycleScene"] | "";
+  // Saved as "lifeViewCycleScene" before City Scapes was renamed.
+  cityScapeCycleScene = doc["cityScapeCycleScene"] | (doc["lifeViewCycleScene"] | "");
   quickLockResumePending = doc["quickLockResumePending"] | false;
   quickLockRestoreFrontlight = doc["quickLockRestoreFrontlight"] | false;
   pendingOverlayResume.origin =

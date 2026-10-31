@@ -368,9 +368,9 @@ class SimulatorSmokeTest {
   // lists, so a setting added only to the base list silently never shows up on the device.
   static void verifyEverySettingIsOnAPage() {
 #if CROSSINK_APP_CAP_CHARGING_ANIMATION
-    // Life View is listed only while Life Views is the wallpaper; select it so the check sees it.
+    // City Scape is listed only while City Scapes is the wallpaper; select it so the check sees it.
     const uint8_t savedSleepScreen = SETTINGS.sleepScreen;
-    SETTINGS.sleepScreen = CrossPointSettings::LIFE_VIEWS;
+    SETTINGS.sleepScreen = CrossPointSettings::CITY_SCAPES;
 #endif
     const auto all = getSettingsList();
     std::vector<const char*> shown;
@@ -435,7 +435,7 @@ class SimulatorSmokeTest {
                      [](const SettingInfo& item) { return settingKeyIs(item, "chargingAnimation"); }))
       fail("Charging Animation is not on the Display page");
     // Every 5% step decodes to exactly the generator's image: with the charge underline (charging
-    // animation) and without it (Life Views).
+    // animation) and without it (City Scapes).
     auto pixels = makeUniqueNoThrow<uint8_t[]>(ChargingAnimation::kFrameBufferBytes);
     if (!pixels) fail("No memory for a charging frame");
     for (uint16_t percent = 0; percent <= 100; percent += 5) {
@@ -451,7 +451,7 @@ class SimulatorSmokeTest {
     }
     renderer.clearScreen();
     LOG_INF("SMOKE", "Charging Animation is on the Display page; all frames match with and without bars");
-    verifyLifeViewsSettings(all, savedSleepScreen);
+    verifyCityScapesSettings(all, savedSleepScreen);
     verifyCardScenes();
     verifySdScenes();
 #endif
@@ -469,42 +469,42 @@ class SimulatorSmokeTest {
     return ~crc;
   }
 
-  static void verifyLifeViewsSettings(const std::vector<SettingInfo>& all, const uint8_t savedSleepScreen) {
+  static void verifyCityScapesSettings(const std::vector<SettingInfo>& all, const uint8_t savedSleepScreen) {
     const auto findKey = [](const std::vector<SettingInfo>& page, const char* key) {
       return std::find_if(page.begin(), page.end(), [key](const SettingInfo& item) { return settingKeyIs(item, key); });
     };
-    // Wallpaper offers Life Views.
+    // Wallpaper offers City Scapes.
     const auto wallpaper = findKey(all, "sleepScreen");
     if (wallpaper == all.end() || std::find(wallpaper->enumValues.begin(), wallpaper->enumValues.end(),
-                                            StrId::STR_LIFE_VIEWS) == wallpaper->enumValues.end())
-      fail("Wallpaper has no Life Views option");
-    // With Life Views selected, Life View is the row right after Wallpaper; otherwise it is absent.
-    const auto withLifeViews = buildDisplaySleepSettingsList(all);
-    if (withLifeViews.size() < 2 || !settingKeyIs(withLifeViews[0], "sleepScreen") ||
-        !settingKeyIs(withLifeViews[1], "lifeView"))
-      fail("Life View is not the row after Wallpaper when Life Views is selected");
+                                            StrId::STR_CITY_SCAPES) == wallpaper->enumValues.end())
+      fail("Wallpaper has no City Scapes option");
+    // With City Scapes selected, City Scape is the row right after Wallpaper; otherwise it is absent.
+    const auto withCityScapes = buildDisplaySleepSettingsList(all);
+    if (withCityScapes.size() < 2 || !settingKeyIs(withCityScapes[0], "sleepScreen") ||
+        !settingKeyIs(withCityScapes[1], "cityScape"))
+      fail("City Scape is not the row after Wallpaper when City Scapes is selected");
     SETTINGS.sleepScreen = CrossPointSettings::COVER;
     const auto withCover = buildDisplaySleepSettingsList(getSettingsList());
-    if (findKey(withCover, "lifeView") != withCover.end())
-      fail("Life View is listed while Wallpaper is not Life Views");
+    if (findKey(withCover, "cityScape") != withCover.end())
+      fail("City Scape is listed while Wallpaper is not City Scapes");
     // Both pickers open their option list instead of cycling in place.
-    const auto lifeView = findKey(all, "lifeView");
+    const auto cityScape = findKey(all, "cityScape");
     const auto charging = findKey(all, "chargingAnimation");
-    if (lifeView == all.end() || charging == all.end() || !settingAlwaysOpensOptionList(*lifeView) ||
+    if (cityScape == all.end() || charging == all.end() || !settingAlwaysOpensOptionList(*cityScape) ||
         !settingAlwaysOpensOptionList(*charging))
-      fail("Life View / Charging Animation do not open an option list");
-    if (lifeView->enumStringValues.empty() || lifeView->enumStringValues[0] != ChargingAnimation::builtinTitle())
-      fail("Life View does not offer the built-in scene first");
-    // Life Views survives a save/load round trip.
-    SETTINGS.sleepScreen = CrossPointSettings::LIFE_VIEWS;
+      fail("City Scape / Charging Animation do not open an option list");
+    if (cityScape->enumStringValues.empty() || cityScape->enumStringValues[0] != ChargingAnimation::builtinTitle())
+      fail("City Scape does not offer the built-in scene first");
+    // City Scapes survives a save/load round trip.
+    SETTINGS.sleepScreen = CrossPointSettings::CITY_SCAPES;
     JsonDocument saved;
     SETTINGS.toJson(saved);
     SETTINGS.sleepScreen = CrossPointSettings::DARK;
     SETTINGS.fromJson(saved.as<JsonVariantConst>());
-    if (SETTINGS.sleepScreen != CrossPointSettings::LIFE_VIEWS) fail("Life Views did not survive save/load");
+    if (SETTINGS.sleepScreen != CrossPointSettings::CITY_SCAPES) fail("City Scapes did not survive save/load");
     SETTINGS.sleepScreen = savedSleepScreen;
 
-    // The Life View frame follows the percent the UI shows for the book: for every progress value,
+    // The City Scape frame follows the percent the UI shows for the book: for every progress value,
     // the whole percent the sleep screen draws is the one formatPercent prints, and that percent's
     // frame is the one decoded (so a book shown as 100% gets the final step, not the 95% one).
     for (int hundredths = 0; hundredths <= 10000; ++hundredths) {
@@ -520,13 +520,13 @@ class SimulatorSmokeTest {
       for (const float progress : {static_cast<float>(shown) - 0.49f, static_cast<float>(shown) + 0.49f}) {
         if (progress < 0.0f || progress > 100.0f) continue;
         if (!ChargingAnimation::decodeFrame(pixels.get(), RecentBookProgress::wholePercent(progress), false))
-          fail("Life View frame for %.2f%% did not decode", progress);
+          fail("City Scape frame for %.2f%% did not decode", progress);
         if (crc32(pixels.get(), ChargingAnimation::kFrameBufferBytes - 1) !=
             charging_frames_builtin::kPlainCrc[shown / charging_frames_builtin::kStepPercent])
-          fail("Progress %.2f (shown as %d%%) draws the wrong Life View step", progress, shown);
+          fail("Progress %.2f (shown as %d%%) draws the wrong City Scape step", progress, shown);
       }
     }
-    LOG_INF("SMOKE", "Life Views wallpaper, Life View row, option lists and progress-to-step mapping verified");
+    LOG_INF("SMOKE", "City Scapes wallpaper, City Scape row, option lists and progress-to-step mapping verified");
   }
 #endif
 
@@ -653,53 +653,53 @@ class SimulatorSmokeTest {
       return *it;
     };
     const SettingInfo& charging = picker("chargingAnimation");
-    const SettingInfo& lifeView = picker("lifeView");
+    const SettingInfo& cityScape = picker("cityScape");
     const auto indexOf = [](const SettingInfo& s, const char* label) {
       const auto it = std::find(s.enumStringValues.begin(), s.enumStringValues.end(), label);
       return it == s.enumStringValues.end() ? -1 : static_cast<int>(it - s.enumStringValues.begin());
     };
     const int chargingIdx = indexOf(charging, "Smoke Scene");
-    const int lifeIdx = indexOf(lifeView, "Smoke Scene");
+    const int lifeIdx = indexOf(cityScape, "Smoke Scene");
     if (chargingIdx < 2 || lifeIdx < 1 || indexOf(charging, ChargingAnimation::builtinTitle()) != 1)
       fail("Scene pickers do not list Off / built-in / SD scenes");
     const uint8_t savedOnOff = SETTINGS.chargingAnimation;
     charging.valueSetter(static_cast<uint8_t>(chargingIdx));
-    lifeView.valueSetter(static_cast<uint8_t>(lifeIdx));
+    cityScape.valueSetter(static_cast<uint8_t>(lifeIdx));
     if (SETTINGS.chargingAnimation != CrossPointSettings::CHARGING_ANIMATION_ON ||
-        strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.lifeViewScene, "smoke_scene") != 0 ||
-        charging.valueGetter() != chargingIdx || lifeView.valueGetter() != lifeIdx)
+        strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.cityScapeScene, "smoke_scene") != 0 ||
+        charging.valueGetter() != chargingIdx || cityScape.valueGetter() != lifeIdx)
       fail("Choosing the SD scene did not store it");
     // Through text, as on the card (the document only points at the settings' strings).
     JsonDocument saved;
     SETTINGS.toJson(saved);
     std::vector<char> text(measureJson(saved) + 1);
     serializeJson(saved, text.data(), text.size());
-    SETTINGS.chargingScene[0] = SETTINGS.lifeViewScene[0] = '\0';
+    SETTINGS.chargingScene[0] = SETTINGS.cityScapeScene[0] = '\0';
     JsonDocument loaded;
     if (deserializeJson(loaded, text.data())) fail("Saved settings did not parse");
     SETTINGS.fromJson(loaded.as<JsonVariantConst>());
-    if (strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.lifeViewScene, "smoke_scene") != 0)
+    if (strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.cityScapeScene, "smoke_scene") != 0)
       fail("SD scene choice did not survive save/load");
 
-    // Cycle All is the Life View list's last option (not offered for charging) and walks every scene,
+    // Cycle All is the City Scape list's last option (not offered for charging) and walks every scene,
     // built-in first, one per sleep, wrapping round; the position survives a state save/load.
-    const int cycleIdx = indexOf(lifeView, I18N.get(StrId::STR_CYCLE_ALL));
-    if (cycleIdx != static_cast<int>(lifeView.enumStringValues.size()) - 1 ||
+    const int cycleIdx = indexOf(cityScape, I18N.get(StrId::STR_CYCLE_ALL));
+    if (cycleIdx != static_cast<int>(cityScape.enumStringValues.size()) - 1 ||
         indexOf(charging, I18N.get(StrId::STR_CYCLE_ALL)) != -1)
-      fail("Cycle All should be the last Life View option and only there");
-    lifeView.valueSetter(static_cast<uint8_t>(cycleIdx));
-    if (strcmp(SETTINGS.lifeViewScene, ChargingAnimation::kCycleAllScenes) != 0 || lifeView.valueGetter() != cycleIdx)
+      fail("Cycle All should be the last City Scape option and only there");
+    cityScape.valueSetter(static_cast<uint8_t>(cycleIdx));
+    if (strcmp(SETTINGS.cityScapeScene, ChargingAnimation::kCycleAllScenes) != 0 || cityScape.valueGetter() != cycleIdx)
       fail("Choosing Cycle All did not store it");
-    const std::string savedCycle = APP_STATE.lifeViewCycleScene;
-    APP_STATE.lifeViewCycleScene.clear();
+    const std::string savedCycle = APP_STATE.cityScapeCycleScene;
+    APP_STATE.cityScapeCycleScene.clear();
     std::vector<std::string> shownIds;
     for (size_t k = 0; k <= found.size() + 1; ++k) {
-      shownIds.emplace_back(ChargingAnimation::lifeViewSceneForSleep());
+      shownIds.emplace_back(ChargingAnimation::cityScapeSceneForSleep());
       JsonDocument state;
       APP_STATE.toJson(state);
-      APP_STATE.lifeViewCycleScene = "stale";
+      APP_STATE.cityScapeCycleScene = "stale";
       APP_STATE.fromJson(state.as<JsonVariantConst>());
-      if (APP_STATE.lifeViewCycleScene != shownIds.back()) fail("Cycle position did not survive save/load");
+      if (APP_STATE.cityScapeCycleScene != shownIds.back()) fail("Cycle position did not survive save/load");
     }
     // The first sleep after choosing Cycle All moves on from the built-in scene.
     for (size_t k = 0; k < shownIds.size(); ++k) {
@@ -709,8 +709,8 @@ class SimulatorSmokeTest {
     }
     if (std::find(shownIds.begin(), shownIds.end(), "smoke_scene") == shownIds.end())
       fail("Cycle All never showed the SD scene");
-    APP_STATE.lifeViewCycleScene = savedCycle;
-    lifeView.valueSetter(static_cast<uint8_t>(lifeIdx));
+    APP_STATE.cityScapeCycleScene = savedCycle;
+    cityScape.valueSetter(static_cast<uint8_t>(lifeIdx));
 
     // Missing or corrupt scenes fall back to the built-in frames; the pickers then read as built-in.
     if (crcOf(0, true, "no_such_scene") != f::kBarsCrc[0]) fail("Missing scene did not fall back to the built-in");
@@ -732,7 +732,7 @@ class SimulatorSmokeTest {
     if (chargingAfter == after.end() || chargingAfter->valueGetter() != 1)
       fail("A missing SD scene should read as the built-in scene");
     SETTINGS.chargingAnimation = savedOnOff;
-    SETTINGS.chargingScene[0] = SETTINGS.lifeViewScene[0] = '\0';
+    SETTINGS.chargingScene[0] = SETTINGS.cityScapeScene[0] = '\0';
     LOG_INF("SMOKE", "SD scenes: discovery, pickers, Cycle All, byte-exact frames, save/load and fallback verified");
   }
 

@@ -541,7 +541,7 @@ void SleepActivity::onEnter() {
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_STATS_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP ||
-                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::LIFE_VIEWS;
+                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES;
   const std::string& recentBookPath = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
   if (sleepScreenUsesRecentBooks && !recentBookPath.empty()) {
     RECENT_BOOKS.ensureLoaded();
@@ -591,8 +591,8 @@ void SleepActivity::onEnter() {
       return renderMinimalStatsSleepScreen();
     case (CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP):
       return renderDashboardSleepScreen();
-    case (CrossPointSettings::SLEEP_SCREEN_MODE::LIFE_VIEWS):
-      return renderLifeViewSleepScreen();
+    case (CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES):
+      return renderCityScapeSleepScreen();
     default:
       return renderDefaultSleepScreen();
   }
@@ -991,15 +991,15 @@ bool SleepActivity::renderChargingAnimationSleepScreen() const {
   return true;
 }
 
-void SleepActivity::renderLifeViewSleepScreen() const {
-  // The Life View scene (or, under Cycle All, the next one) for the latest book's reading progress
+void SleepActivity::renderCityScapeSleepScreen() const {
+  // The City Scape scene (or, under Cycle All, the next one) for the latest book's reading progress
   // (unknown progress or no book shows the 0% scene), without the charge underline. Drawn once per sleep; no timer wake.
   const std::string& path = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
   float progress = path.empty() ? -1.0f : RecentBookProgress::loadPercent(recentBookForPath(path));
   if (!RecentBookProgress::hasPercent(progress)) progress = 0.0f;
   // Round like every progress label: a book shown as 100% gets the final scene, not the 95% one.
   if (!ChargingAnimation::drawFrame(renderer, RecentBookProgress::wholePercent(progress), /*chargeBars=*/false,
-                                    ChargingAnimation::lifeViewSceneForSleep())) {
+                                    ChargingAnimation::cityScapeSceneForSleep())) {
     return renderDefaultSleepScreen();
   }
   renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);

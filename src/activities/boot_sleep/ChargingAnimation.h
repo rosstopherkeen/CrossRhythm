@@ -5,7 +5,7 @@
 
 class GfxRenderer;
 
-// Scenes for the charging animation and the Life Views wallpaper (X4 Pro:
+// Scenes for the charging animation and the City Scapes wallpaper (X4 Pro:
 // CROSSINK_APP_CAP_CHARGING_ANIMATION). A scene is 21 frames, one per 5% step, 0..100%.
 //
 // Glass House is built into flash and is the default. More scenes are .rhythmscene files the user copies to
@@ -36,14 +36,14 @@ void refreshScenes();
 // The SD scenes found by the last refreshScenes().
 const std::vector<Scene>& sdScenes();
 
-// Life View setting value meaning "a different scene each sleep" ('*' cannot be a FAT file stem).
+// City Scape setting value meaning "a different scene each sleep" ('*' cannot be a FAT file stem).
 constexpr const char* kCycleAllScenes = "*";
 // The scene after `last` in picker order (built-in, then sdScenes()), wrapping round; a `last` that
 // is no longer listed starts again at the built-in one. The result stays valid until refreshScenes().
 const char* nextCycleScene(const char* last);
-// The scene the Life Views wallpaper shows at this sleep: the Life View setting, or under Cycle All
+// The scene the City Scapes wallpaper shows at this sleep: the City Scape setting, or under Cycle All
 // the scene after the one shown last time (rescans the card and saves the choice to APP_STATE).
-const char* lifeViewSceneForSleep();
+const char* cityScapeSceneForSleep();
 
 // The build has the animation and the setting selects one.
 bool isSelected();

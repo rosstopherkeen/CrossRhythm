@@ -41,8 +41,8 @@ class CrossPointState : public PersistableStore<CrossPointState> {
   // normal Quick Lock session so its matching unlock can restore the light.
   bool quickLockRestoreFrontlight = false;
   PendingOverlayResume pendingOverlayResume{};
-  // Life View scene shown at the last sleep while the Life View setting is Cycle All ("" = built-in).
-  std::string lifeViewCycleScene;
+  // City Scape scene shown at the last sleep while the City Scape setting is Cycle All ("" = built-in).
+  std::string cityScapeCycleScene;
 
   void setPendingOverlayResume(PendingOverlayResume value);
   bool consumePendingOverlayResume(PendingOverlayResume& value);

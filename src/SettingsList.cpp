@@ -22,8 +22,8 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
                           {StrId::STR_NONE_OPT, StrId::STR_ON}, "chargingAnimation", StrId::STR_CAT_DISPLAY)
             .withEnumRawValues(
                 {CrossPointSettings::CHARGING_ANIMATION_OFF, CrossPointSettings::CHARGING_ANIMATION_ON}));
-    // Which scene it shows (and Life View) are picked from the SD scenes found when Settings opens:
-    // getSettingsList() swaps in buildChargingAnimationSetting() / buildLifeViewSetting().
+    // Which scene it shows (and City Scape) are picked from the SD scenes found when Settings opens:
+    // getSettingsList() swaps in buildChargingAnimationSetting() / buildCityScapeSetting().
 #endif
     add(SettingInfo::Enum(StrId::STR_HIDE_BATTERY, &CrossPointSettings::hideBatteryPercentage,
                           {StrId::STR_NEVER, StrId::STR_IN_READER, StrId::STR_ALWAYS}, "hideBatteryPercentage",

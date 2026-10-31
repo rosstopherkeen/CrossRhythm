@@ -338,7 +338,7 @@ inline SettingInfo buildSleepScreenSetting() {
                          StrId::STR_COVER_CUSTOM, StrId::STR_PAGE_OVERLAY, StrId::STR_READING_STATS,
                          StrId::STR_THEME_MINIMAL, StrId::STR_THEME_MINIMAL_STATS, StrId::STR_THEME_DASHBOARD,
 #if CROSSINK_APP_CAP_CHARGING_ANIMATION
-                         StrId::STR_LIFE_VIEWS,
+                         StrId::STR_CITY_SCAPES,
 #endif
                          StrId::STR_QUICK_RESUME},
                         "sleepScreen", StrId::STR_CAT_DISPLAY);
@@ -355,7 +355,7 @@ inline SettingInfo buildSleepScreenSetting() {
       static_cast<uint8_t>(CrossPointSettings::MINIMAL_STATS_SLEEP),
       static_cast<uint8_t>(CrossPointSettings::DASHBOARD_SLEEP),
 #if CROSSINK_APP_CAP_CHARGING_ANIMATION
-      static_cast<uint8_t>(CrossPointSettings::LIFE_VIEWS),
+      static_cast<uint8_t>(CrossPointSettings::CITY_SCAPES),
 #endif
       static_cast<uint8_t>(CrossPointSettings::QUICK_RESUME),
   });
@@ -365,7 +365,7 @@ inline SettingInfo buildSleepScreenSetting() {
 // Scene pickers open their option list even with one or two choices, like Wallpaper does, instead of
 // cycling the value in place.
 inline bool settingAlwaysOpensOptionList(const SettingInfo& setting) {
-  return setting.key && (strcmp(setting.key, "chargingAnimation") == 0 || strcmp(setting.key, "lifeView") == 0);
+  return setting.key && (strcmp(setting.key, "chargingAnimation") == 0 || strcmp(setting.key, "cityScape") == 0);
 }
 
 #if CROSSINK_APP_CAP_CHARGING_ANIMATION
@@ -407,13 +407,13 @@ inline SettingInfo buildChargingAnimationSetting() {
   return s;
 }
 
-// Life View (shown while Wallpaper is Life Views): the built-in scene, then every SD scene, then Cycle All
+// City Scape (shown while Wallpaper is City Scapes): the built-in scene, then every SD scene, then Cycle All
 // (a different scene each sleep).
-inline SettingInfo buildLifeViewSetting() {
+inline SettingInfo buildCityScapeSetting() {
   SettingInfo s;
-  s.nameId = StrId::STR_LIFE_VIEW;
+  s.nameId = StrId::STR_CITY_SCAPE;
   s.type = SettingType::ENUM;
-  s.key = "lifeView";
+  s.key = "cityScape";
   s.category = StrId::STR_CAT_DISPLAY;
   std::vector<std::string> ids;
   const auto& scenes = ChargingAnimation::sdScenes();
@@ -426,11 +426,11 @@ inline SettingInfo buildLifeViewSetting() {
   }
   s.enumStringValues.push_back(I18N.get(StrId::STR_CYCLE_ALL));
   s.valueGetter = [ids]() -> uint8_t {
-    if (strcmp(SETTINGS.lifeViewScene, ChargingAnimation::kCycleAllScenes) == 0) {
+    if (strcmp(SETTINGS.cityScapeScene, ChargingAnimation::kCycleAllScenes) == 0) {
       return static_cast<uint8_t>(ids.size() + 1);
     }
     for (size_t i = 0; i < ids.size(); i++) {
-      if (ids[i] == SETTINGS.lifeViewScene) return static_cast<uint8_t>(i + 1);
+      if (ids[i] == SETTINGS.cityScapeScene) return static_cast<uint8_t>(i + 1);
     }
     return 0;
   };
@@ -438,7 +438,7 @@ inline SettingInfo buildLifeViewSetting() {
     const char* id = v == ids.size() + 1 ? ChargingAnimation::kCycleAllScenes
                      : v >= 1 && v - 1u < ids.size() ? ids[v - 1].c_str()
                                                      : "";
-    setSceneId(SETTINGS.lifeViewScene, id);
+    setSceneId(SETTINGS.cityScapeScene, id);
   };
   return s;
 }
@@ -848,7 +848,7 @@ inline std::vector<SettingInfo> getSettingsList(const SdCardFontRegistry* regist
       std::find_if(v.begin(), v.end(), [](const SettingInfo& s) { return s.nameId == StrId::STR_CHARGING_ANIMATION; });
   if (chargingIt != v.end()) {
     *chargingIt = buildChargingAnimationSetting();
-    v.insert(chargingIt + 1, buildLifeViewSetting());
+    v.insert(chargingIt + 1, buildCityScapeSetting());
   }
 #endif
   return v;
@@ -1134,9 +1134,9 @@ inline std::vector<SettingInfo> buildDisplaySleepSettingsList(const std::vector<
   };
 
   addSleepSetting(StrId::STR_SLEEP_SCREEN, StrId::STR_SLEEP_SCREEN_WALLPAPER);
-  // Life View only means something while Life Views is the wallpaper.
-  if (SETTINGS.sleepScreen == CrossPointSettings::LIFE_VIEWS) {
-    addSleepSetting(StrId::STR_LIFE_VIEW, StrId::STR_LIFE_VIEW);
+  // City Scape only means something while City Scapes is the wallpaper.
+  if (SETTINGS.sleepScreen == CrossPointSettings::CITY_SCAPES) {
+    addSleepSetting(StrId::STR_CITY_SCAPE, StrId::STR_CITY_SCAPE);
   }
   addSleepSetting(StrId::STR_SLEEP_COVER_MODE, StrId::STR_SLEEP_COVER_MODE_SHORT);
   addSleepSetting(StrId::STR_SLEEP_COVER_FILTER, StrId::STR_SLEEP_COVER_FILTER_SHORT);
