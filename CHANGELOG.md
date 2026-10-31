@@ -14,6 +14,7 @@
 - Scenes on the SD card (X4 Pro): copy a `.rhythmscene` file from the releases (Lalbagh, KR Market and State Library so far) to `/.scenes/` or `/scenes/` and it appears in both the Charging Animation and Life View lists. Each scene's plaque gives the landmark and, under it, the place (Namma Metro / Lalbagh, City Market / KR Market). Glass House stays built in as the default; a missing or damaged scene file falls back to it.
 - Life Views wallpaper (X4 Pro): Settings > Display > Sleep Screen > Wallpaper > Life Views. A Life View row then appears below Wallpaper to pick the view; Glass House is the first: the sleep screen shows the garden grown as far as you have read in your latest book, with the plain plaque (no charge stops).
 - Cycle All for Life View (X4 Pro): the last option in the Life View list shows a different scene each time the device sleeps, going through Glass House and every scene on the SD card in turn.
+- Six "Read Responsibly" reaction-diffusion wallpapers for the Page Overlay sleep screen, in `assets/page-overlays/`: copy them to `/.sleep/` on the SD card and set the sleep screen to Page Overlay.
 
 ### Changed
 
