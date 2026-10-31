@@ -92,6 +92,7 @@ inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() { return ESP_SLEEP_
 #include "SilentRestart.h"
 #include "activities/Activity.h"
 #include "activities/ActivityManager.h"
+#include "activities/boot_sleep/ChargingAnimation.h"
 #include "activities/boot_sleep/ImageFolderIndex.h"
 #include "activities/home/BookActions.h"
 #include "activities/reader/KOReaderSyncActivity.h"
@@ -1084,9 +1085,15 @@ void mirrorWakeShortPressToNvs() {
 }
 
 // Enter deep sleep mode
+// Set when a charging-animation timer wake finds USB unplugged: the device goes straight back to
+// sleep with the regular sleep screen, so the previous sleep's reader context must survive.
+static bool resleepAfterChargingAnimation = false;
+
 void enterDeepSleep(bool fromTimeout) {
   HalPowerManager::Lock powerLock;  // Ensure we are at normal CPU frequency for sleep preparation
-  APP_STATE.lastSleepFromReader = activityManager.isReaderActivity();
+  if (!resleepAfterChargingAnimation) {
+    APP_STATE.lastSleepFromReader = activityManager.isReaderActivity();
+  }
 
   const bool isQuickResumeSleep =
       SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::QUICK_RESUME ||
@@ -1106,7 +1113,8 @@ void enterDeepSleep(bool fromTimeout) {
 
   // Refreshes are synchronous; display.deepSleep() also finishes pending
   // display work and power-off, so an extra settle delay serves no purpose.
-  if (isQuickResumeSleep) {
+  // The charging animation is not a resumable screen, so it never becomes a Quick Resume frame.
+  if (isQuickResumeSleep && !ChargingAnimation::isOnScreen()) {
     saveSleepFrameBuffer();
   } else {
     if (Storage.exists(SLEEP_FRAME_FILE)) {
@@ -1133,6 +1141,9 @@ void enterDeepSleep(bool fromTimeout) {
   putTiltSensorToSleepForDeepSleep();
   display.deepSleep();
   mirrorWakeShortPressToNvs();
+  if (ChargingAnimation::isOnScreen()) {
+    ChargingAnimation::armTimerWake();
+  }
   LOG_DBG("MAIN", "Entering deep sleep");
 
   powerManager.startDeepSleep(gpio);
@@ -1192,6 +1203,31 @@ void setupDisplayAndFonts(const bool seamless, const bool loadReaderResources, c
   } else {
     LOG_DBG("MAIN", "Skipping EPUB scratch workspace and SD fonts for minimal network boot");
   }
+}
+
+// Timer wake while the charging animation is on screen and USB is still connected. Redraws only
+// when the battery reached a higher 5% step, then sleeps again. Settings are not needed: the
+// animation being on screen already means it is selected, and RTC memory holds which scene it shows.
+// The built-in scene is in flash; an SD scene mounts the card just for this frame.
+static void refreshChargingAnimationAndSleep() {
+  const uint16_t percent = powerManager.getBatteryPercentage();
+  LOG_INF("CHG", "Charging check: %u%%", static_cast<unsigned>(percent));
+  if (ChargingAnimation::stepAdvancedPastShown(percent)) {
+    char scene[ChargingAnimation::kSceneIdMax];
+    strncpy(scene, ChargingAnimation::shownScene(), sizeof(scene) - 1);
+    scene[sizeof(scene) - 1] = '\0';
+    const bool sdScene = scene[0] != '\0' && Storage.begin();
+    if (scene[0] != '\0' && !sdScene) LOG_ERR("CHG", "SD card unavailable; drawing the built-in scene");
+    setupDisplayAndFonts(true, false, false);
+    if (ChargingAnimation::drawFrame(renderer, percent, /*chargeBars=*/true, sdScene ? scene : "")) {
+      renderer.displayBuffer(HalDisplay::HALF_REFRESH, true);
+      ChargingAnimation::markShown(percent, scene);
+    }
+    if (sdScene) Storage.shutdown();
+    display.deepSleep();
+  }
+  ChargingAnimation::armTimerWake();
+  powerManager.startDeepSleep(gpio);
 }
 
 void setup() {
@@ -1267,6 +1303,18 @@ void setup() {
   // only on screens that explicitly allow the fallback.
   gpio.setSharedConfirmPowerShortPressEmitsPower(true);
   powerManager.begin();
+
+  // The charging animation's periodic timer wake. Unplugged since the last check: boot far enough to
+  // draw the regular sleep screen, then sleep again (below, once settings are loaded).
+  if (rawResetReason == ESP_RST_DEEPSLEEP && rawWakeupCause == ESP_SLEEP_WAKEUP_TIMER &&
+      ChargingAnimation::isOnScreen()) {
+    if (gpio.isUsbConnected()) {
+      refreshChargingAnimationAndSleep();
+    }
+    LOG_INF("CHG", "USB unplugged; restoring the regular sleep screen");
+    resleepAfterChargingAnimation = true;
+  }
+  ChargingAnimation::clear();
 
   const auto wakeupReason = gpio.getWakeupReason();
 #ifndef SIMULATOR
@@ -1365,6 +1413,13 @@ void setup() {
   UITheme::getInstance().reload();
   ButtonNavigator::setMappedInputManager(mappedInputManager);
   logBootHeap("boot state ready");
+  // Quick Resume has no screen to retain from this wake, so that mode boots normally instead.
+  if (resleepAfterChargingAnimation && SETTINGS.sleepScreen != CrossPointSettings::SLEEP_SCREEN_MODE::QUICK_RESUME) {
+    // Before the frontlight restore and any activity paint: the user never sees this wake.
+    setupDisplayAndFonts(true, true, useReaderRenderStack);
+    enterDeepSleep(false);
+  }
+  resleepAfterChargingAnimation = false;
   // Silent restarts are invisible recovery steps, so they always retain the
   // current light state rather than applying wake or schedule policy.
   const bool wasLightOnBeforeSleep =

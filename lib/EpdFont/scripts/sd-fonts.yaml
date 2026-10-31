@@ -402,6 +402,171 @@ families:
           variable: { wght: 700, wdth: 100 },
         }
 
+  # Indic families. None of the Google Fonts Indic families has an italic or
+  # slant axis, so the italic slots reuse the upright weights rather than
+  # synthesising an oblique that reads poorly on e-ink at reading sizes.
+  - name: NotoSansBengali
+    description: "Sans-serif with Bengali support"
+    languages: "Bengali, Assamese, Latin"
+    intervals: latin-ext,bengali
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansbengali/NotoSansBengali%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansbengali/NotoSansBengali%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansbengali/NotoSansBengali%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansbengali/NotoSansBengali%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
+  - name: NotoSansDevanagari
+    description: "Sans-serif with Devanagari support"
+    languages: "Hindi, Marathi, Sanskrit, Nepali, Latin"
+    intervals: latin-ext,devanagari
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
+  - name: NotoSansMalayalam
+    description: "Sans-serif with Malayalam support"
+    languages: "Malayalam, Latin"
+    intervals: latin-ext,malayalam
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansmalayalam/NotoSansMalayalam%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansmalayalam/NotoSansMalayalam%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansmalayalam/NotoSansMalayalam%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansmalayalam/NotoSansMalayalam%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
+  - name: NotoSansOriya
+    description: "Sans-serif with Odia support"
+    languages: "Odia, Latin"
+    intervals: latin-ext,oriya
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansoriya/NotoSansOriya%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansoriya/NotoSansOriya%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansoriya/NotoSansOriya%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansoriya/NotoSansOriya%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
+  - name: NotoSansTamil
+    description: "Sans-serif with Tamil support"
+    languages: "Tamil, Latin"
+    intervals: latin-ext,tamil
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstamil/NotoSansTamil%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstamil/NotoSansTamil%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstamil/NotoSansTamil%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstamil/NotoSansTamil%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
+  - name: NotoSansTelugu
+    description: "Sans-serif with Telugu support"
+    languages: "Telugu, Latin"
+    intervals: latin-ext,telugu
+    sizes: [8, 9, 10, 12, 14, 16, 18, 20]
+    styles:
+      regular:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstelugu/NotoSansTelugu%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bold:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstelugu/NotoSansTelugu%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+      italic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstelugu/NotoSansTelugu%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 400, wdth: 100 },
+        }
+      bolditalic:
+        {
+          url: "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstelugu/NotoSansTelugu%5Bwdth%2Cwght%5D.ttf",
+          variable: { wght: 700, wdth: 100 },
+        }
+
   - name: SourceSans3
     description: "Adobe humanist sans-serif"
     languages: "Latin, Greek, Cyrillic"

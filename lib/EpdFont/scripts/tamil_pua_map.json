@@ -1,0 +1,384 @@
+{
+  "comment": "Shaped Tamil forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "script": "tamil",
+  "source_font": "NotoSansTamil.ttf",
+  "pua_base": 59392,
+  "forms": [
+    {
+      "codepoint": 59392,
+      "glyph": "tchatamil"
+    },
+    {
+      "codepoint": 59393,
+      "glyph": "kaprehalftamil"
+    },
+    {
+      "codepoint": 59394,
+      "glyph": "ngaprehalftamil"
+    },
+    {
+      "codepoint": 59395,
+      "glyph": "caprehalftamil"
+    },
+    {
+      "codepoint": 59396,
+      "glyph": "japrehalftamil"
+    },
+    {
+      "codepoint": 59397,
+      "glyph": "nyaprehalftamil"
+    },
+    {
+      "codepoint": 59398,
+      "glyph": "ttaprehalftamil"
+    },
+    {
+      "codepoint": 59399,
+      "glyph": "nnaprehalftamil"
+    },
+    {
+      "codepoint": 59400,
+      "glyph": "taprehalftamil"
+    },
+    {
+      "codepoint": 59401,
+      "glyph": "naprehalftamil"
+    },
+    {
+      "codepoint": 59402,
+      "glyph": "nnnaprehalftamil"
+    },
+    {
+      "codepoint": 59403,
+      "glyph": "paprehalftamil"
+    },
+    {
+      "codepoint": 59404,
+      "glyph": "maprehalftamil"
+    },
+    {
+      "codepoint": 59405,
+      "glyph": "yaprehalftamil"
+    },
+    {
+      "codepoint": 59406,
+      "glyph": "raprehalftamil"
+    },
+    {
+      "codepoint": 59407,
+      "glyph": "rraprehalftamil"
+    },
+    {
+      "codepoint": 59408,
+      "glyph": "laprehalftamil"
+    },
+    {
+      "codepoint": 59409,
+      "glyph": "llaprehalftamil"
+    },
+    {
+      "codepoint": 59410,
+      "glyph": "lllaprehalftamil"
+    },
+    {
+      "codepoint": 59411,
+      "glyph": "vaprehalftamil"
+    },
+    {
+      "codepoint": 59412,
+      "glyph": "shaprehalftamil"
+    },
+    {
+      "codepoint": 59413,
+      "glyph": "ssaprehalftamil"
+    },
+    {
+      "codepoint": 59414,
+      "glyph": "saprehalftamil"
+    },
+    {
+      "codepoint": 59415,
+      "glyph": "haprehalftamil"
+    },
+    {
+      "codepoint": 59416,
+      "glyph": "tchaprehalftamil"
+    },
+    {
+      "codepoint": 59417,
+      "glyph": "kaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59418,
+      "glyph": "kauvowelsigntamil"
+    },
+    {
+      "codepoint": 59419,
+      "glyph": "kauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59420,
+      "glyph": "ngaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59421,
+      "glyph": "ngauvowelsigntamil"
+    },
+    {
+      "codepoint": 59422,
+      "glyph": "ngauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59423,
+      "glyph": "caiivowelsigntamil"
+    },
+    {
+      "codepoint": 59424,
+      "glyph": "cauvowelsigntamil"
+    },
+    {
+      "codepoint": 59425,
+      "glyph": "cauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59426,
+      "glyph": "jaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59427,
+      "glyph": "nyaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59428,
+      "glyph": "nyauvowelsigntamil"
+    },
+    {
+      "codepoint": 59429,
+      "glyph": "nyauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59430,
+      "glyph": "ttaivowelsigntamil"
+    },
+    {
+      "codepoint": 59431,
+      "glyph": "ttaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59432,
+      "glyph": "ttauvowelsigntamil"
+    },
+    {
+      "codepoint": 59433,
+      "glyph": "ttauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59434,
+      "glyph": "nnaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59435,
+      "glyph": "nnauvowelsigntamil"
+    },
+    {
+      "codepoint": 59436,
+      "glyph": "nnauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59437,
+      "glyph": "taiivowelsigntamil"
+    },
+    {
+      "codepoint": 59438,
+      "glyph": "tauvowelsigntamil"
+    },
+    {
+      "codepoint": 59439,
+      "glyph": "tauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59440,
+      "glyph": "naiivowelsigntamil"
+    },
+    {
+      "codepoint": 59441,
+      "glyph": "nauvowelsigntamil"
+    },
+    {
+      "codepoint": 59442,
+      "glyph": "nauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59443,
+      "glyph": "nnnaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59444,
+      "glyph": "nnnauvowelsigntamil"
+    },
+    {
+      "codepoint": 59445,
+      "glyph": "nnnauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59446,
+      "glyph": "paiivowelsigntamil"
+    },
+    {
+      "codepoint": 59447,
+      "glyph": "pauvowelsigntamil"
+    },
+    {
+      "codepoint": 59448,
+      "glyph": "pauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59449,
+      "glyph": "maiivowelsigntamil"
+    },
+    {
+      "codepoint": 59450,
+      "glyph": "mauvowelsigntamil"
+    },
+    {
+      "codepoint": 59451,
+      "glyph": "mauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59452,
+      "glyph": "yaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59453,
+      "glyph": "yauvowelsigntamil"
+    },
+    {
+      "codepoint": 59454,
+      "glyph": "yauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59455,
+      "glyph": "raiivowelsigntamil"
+    },
+    {
+      "codepoint": 59456,
+      "glyph": "rauvowelsigntamil"
+    },
+    {
+      "codepoint": 59457,
+      "glyph": "rauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59458,
+      "glyph": "rraiivowelsigntamil"
+    },
+    {
+      "codepoint": 59459,
+      "glyph": "rrauvowelsigntamil"
+    },
+    {
+      "codepoint": 59460,
+      "glyph": "rrauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59461,
+      "glyph": "laivowelsigntamil"
+    },
+    {
+      "codepoint": 59462,
+      "glyph": "laiivowelsigntamil"
+    },
+    {
+      "codepoint": 59463,
+      "glyph": "lauvowelsigntamil"
+    },
+    {
+      "codepoint": 59464,
+      "glyph": "lauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59465,
+      "glyph": "llaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59466,
+      "glyph": "llauvowelsigntamil"
+    },
+    {
+      "codepoint": 59467,
+      "glyph": "llauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59468,
+      "glyph": "lllaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59469,
+      "glyph": "lllauvowelsigntamil"
+    },
+    {
+      "codepoint": 59470,
+      "glyph": "lllauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59471,
+      "glyph": "vaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59472,
+      "glyph": "vauvowelsigntamil"
+    },
+    {
+      "codepoint": 59473,
+      "glyph": "vauuvowelsigntamil"
+    },
+    {
+      "codepoint": 59474,
+      "glyph": "ssaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59475,
+      "glyph": "saivowelsigntamil"
+    },
+    {
+      "codepoint": 59476,
+      "glyph": "saiivowelsigntamil"
+    },
+    {
+      "codepoint": 59477,
+      "glyph": "haiivowelsigntamil"
+    },
+    {
+      "codepoint": 59478,
+      "glyph": "tchaiivowelsigntamil"
+    },
+    {
+      "codepoint": 59479,
+      "glyph": "shritamil"
+    },
+    {
+      "codepoint": 59480,
+      "glyph": "ivowelsign4tamil"
+    },
+    {
+      "codepoint": 59481,
+      "glyph": "ivowelsign3tamil"
+    },
+    {
+      "codepoint": 59482,
+      "glyph": "ivowelsign2tamil"
+    },
+    {
+      "codepoint": 59483,
+      "glyph": "ivowelsign1tamil"
+    },
+    {
+      "codepoint": 59484,
+      "glyph": "uvowelsignalttamil"
+    },
+    {
+      "codepoint": 59485,
+      "glyph": "uuvowelsignalttamil"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 #include <FsHelpers.h>
 #include <HalStorage.h>
+#include <IndicTables.h>
 #include <Logging.h>
 #include <SdCardFontSystem.h>
 #if CROSSINK_SCALABLE_FONTS
@@ -82,6 +83,10 @@ bool FontInstaller::isValidFamilyName(const char* name) {
 bool FontInstaller::isValidCpfontFilename(const char* name) {
   if (name == nullptr || name[0] == '\0') return false;
 
+  // An Indic family's shaping tables travel in its folder under one fixed name;
+  // without them the font draws conjuncts as separate letters.
+  if (strcmp(name, IndicTables::FILE_NAME) == 0) return true;
+
   // Reject path separators / traversal up front. Anything that could escape
   // the family directory or refer to a different one is a hard reject.
   if (strstr(name, "..") != nullptr) return false;
@@ -150,6 +155,22 @@ bool FontInstaller::validateCpfontFile(const char* path) {
 
   const size_t pathLength = strlen(path);
   const bool ttf = pathLength > 4 && strcasecmp(path + pathLength - 4, ".ttf") == 0;
+  constexpr size_t shapingNameLength = sizeof(IndicTables::FILE_NAME) - 1;
+  const bool shaping = pathLength > shapingNameLength && path[pathLength - shapingNameLength - 1] == '/' &&
+                       strcmp(path + pathLength - shapingNameLength, IndicTables::FILE_NAME) == 0;
+  if (shaping) {
+    // Header check only; the font system parses and bounds-checks the whole
+    // file when it loads it, and rejects anything malformed there.
+    uint8_t header[8];
+    const size_t headerRead = file.read(header, sizeof(header));
+    file.close();
+    if (headerRead < sizeof(header) || memcmp(header, IndicTables::MAGIC, sizeof(IndicTables::MAGIC)) != 0 ||
+        (header[4] | (header[5] << 8)) != IndicTables::FORMAT_VERSION) {
+      LOG_ERR("FONT", "Not a shaping file: %s", path);
+      return false;
+    }
+    return true;
+  }
   uint8_t magic[CPFONT_MAGIC_LEN];
   size_t bytesRead = file.read(magic, CPFONT_MAGIC_LEN);
   file.close();

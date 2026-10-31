@@ -1,9 +1,12 @@
 #pragma once
 
+#include <IndicShape.h>
+#include <Memory.h>
 #include <SdCardFontManager.h>
 #include <SdCardFontRegistry.h>
 
 #include <atomic>
+#include <string>
 
 #include "ReaderFontSizeStep.h"
 
@@ -137,11 +140,30 @@ class SdCardFontSystem {
   void setupUiFallbacks(GfxRenderer& renderer);
   void setupUiFallbacksDirect(GfxRenderer& renderer, const char* familyName);
 
-  /// Register a reader-side fallback for scripts the selected reader font cannot
-  /// draw, so a Kannada book renders without the reader changing their font. Does
-  /// nothing when the reader font already covers the script, or when no font
-  /// carrying it is installed.
+  /// Load the shaping file of every installed Indic font family and register a
+  /// reader-side fallback for each script the selected reader font cannot draw,
+  /// so a Hindi, Bengali, Tamil, ... book renders correctly as soon as its font
+  /// is on the SD card. Skips a script the reader font already covers.
   void setupReaderScriptFallback(GfxRenderer& renderer);
+
+  /// Read `<Family>/shaping.cpshape` for every installed family that has one and
+  /// register it with IndicShape. Reloads only when the font registry changed,
+  /// since a font-size change keeps the same families.
+  void ensureShapingLoaded();
+  void releaseShaping();
+
+  /// A loaded shaping file and the family it came from. The buffer is read in
+  /// place by IndicShape, so it must outlive the registration.
+  struct ShapingFile {
+    HeapByteBuffer data;
+    std::string family;
+    uint32_t probe = 0;  ///< a consonant any font covering this script draws
+  };
+  static constexpr size_t MAX_SHAPING_FILES = IndicShape::MAX_SCRIPTS;
+  ShapingFile shapingFiles_[MAX_SHAPING_FILES];
+  size_t shapingFileCount_ = 0;
+  bool shapingLoaded_ = false;
+  uint32_t shapingRegistryRevision_ = 0;
 
   SdCardFontRegistry registry_;
   SdCardFontManager manager_;
