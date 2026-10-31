@@ -17,8 +17,8 @@
       <sub>Reading Rhythm</sub>
     </td>
     <td align="center">
-      <img src="./docs/images/indic/kannada-book.png" width="200" alt="A Kannada book page with conjuncts and vowel signs drawn correctly" /><br/>
-      <sub>Kannada book</sub>
+      <img src="./docs/images/indic/kannada-book.png" width="200" alt="An Indic book page (Kannada) with conjuncts and vowel signs drawn correctly" /><br/>
+      <sub>Indic books: Kannada, Tamil, Malayalam,<br/>Telugu, Marathi, Sanskrit, Hindi</sub>
     </td>
     <td align="center">
       <img src="./docs/images/scenes/glass_house.gif" width="200" alt="Glass House scene from 0 to 100%: the garden is planted, a Gandaberunda topiary grows and visitors arrive" /><br/>
@@ -32,7 +32,7 @@ Everything else is stock CrossInk: the same fonts, themes, reader features, sett
 ## What it adds
 
 - **[Reading stats](#reading-stats)**: two new pages at the end of Reading Stats, Reading Rhythm and Books Finished, and a detail view for every finished book.
-- **[Indic books](#indic-books)**: Hindi, Marathi, Tamil, Telugu, Kannada and Malayalam (Bengali and Odia experimental) render correctly once the matching font folder is on the SD card, in books and in file names, titles and chapter lists.
+- **[Indic books](#indic-books)**: Kannada, Tamil, Malayalam, Telugu, Marathi, Sanskrit and Hindi (Bengali and Odia experimental) render correctly once the matching font folder is on the SD card, in books and in file names, titles and chapter lists.
 - **[Charging animation and City Scapes](#charging-animation-and-city-scapes)**: illustrated Bengaluru scenes that build up as the battery charges, or as you get through your book.
 - **[Page Overlay wallpapers](#page-overlay-wallpapers)**: six reaction-diffusion wallpapers for CrossInk's Page Overlay sleep screen.
 - **[Boot screen](#boot-screen)**: a CrossRhythm boot screen, and **CrossRhythm v&lt;version&gt;** in Settings.
@@ -102,10 +102,10 @@ Copy a script's font folder to the SD card and its text renders correctly in any
 <table>
   <tr>
     <td align="center"><img src="./docs/images/indic/kannada-book.png" width="150" alt="Kannada book page" /><br /><sub>Kannada</sub></td>
-    <td align="center"><img src="./docs/images/indic/hindi-book.png" width="150" alt="Hindi book page" /><br /><sub>Hindi</sub></td>
     <td align="center"><img src="./docs/images/indic/tamil-book.png" width="150" alt="Tamil book page" /><br /><sub>Tamil</sub></td>
     <td align="center"><img src="./docs/images/indic/malayalam-book.png" width="150" alt="Malayalam book page" /><br /><sub>Malayalam</sub></td>
     <td align="center"><img src="./docs/images/indic/telugu-book.png" width="150" alt="Telugu book page" /><br /><sub>Telugu</sub></td>
+    <td align="center"><img src="./docs/images/indic/hindi-book.png" width="150" alt="Hindi book page" /><br /><sub>Hindi (Devanagari)</sub></td>
   </tr>
   <tr>
     <td align="center"><img src="./docs/images/indic/file-browser.png" width="150" alt="File browser with Hindi and Malayalam file names" /><br /><sub>File browser</sub></td>
@@ -122,7 +122,7 @@ Copy a script's font folder to the SD card and its text renders correctly in any
 | Tamil | `NotoSansTamil` | 5.9 MB | Tested on device |
 | Malayalam | `NotoSansMalayalam` | 5.9 MB | Tested on device |
 | Telugu | `NotoSansTelugu` | 7.9 MB | Tested on device |
-| Hindi, Marathi | `NotoSansDevanagari` | 6.1 MB | Tested on device |
+| Marathi, Sanskrit, Hindi (Devanagari) | `NotoSansDevanagari` | 6.1 MB | Tested on device with Hindi |
 | Bengali | `NotoSansBengali` | – | Experimental: many conjuncts are approximate |
 | Odia | `NotoSansOriya` | – | Experimental |
 
