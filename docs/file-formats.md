@@ -7,7 +7,7 @@ fixed-size char buffer.
 
 ## `/.scenes/<id>.rhythmscene` (also `/scenes/`)
 
-A scene for the charging animation and Life Views (X4 Pro). The layout below is all a tool needs to
+A scene for the charging animation and City Scapes (X4 Pro). The layout below is all a tool needs to
 write one. The scene's id is the file stem; the
 built-in frames (Glass House) use the same layout in flash (`ChargingFramesBuiltin.h`).
 The format was first shipped with the extension `.cpscene`; the firmware still reads that name (a

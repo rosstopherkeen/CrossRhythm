@@ -292,12 +292,12 @@ const char* nextCycleScene(const char* last) {
   return "";
 }
 
-const char* lifeViewSceneForSleep() {
-  if (strcmp(SETTINGS.lifeViewScene, kCycleAllScenes) != 0) return SETTINGS.lifeViewScene;
+const char* cityScapeSceneForSleep() {
+  if (strcmp(SETTINGS.cityScapeScene, kCycleAllScenes) != 0) return SETTINGS.cityScapeScene;
   refreshScenes();
-  const char* scene = nextCycleScene(APP_STATE.lifeViewCycleScene.c_str());
-  APP_STATE.lifeViewCycleScene = scene;
-  if (!APP_STATE.saveToFile()) LOG_ERR("CHG", "Could not save the Life View cycle position");
+  const char* scene = nextCycleScene(APP_STATE.cityScapeCycleScene.c_str());
+  APP_STATE.cityScapeCycleScene = scene;
+  if (!APP_STATE.saveToFile()) LOG_ERR("CHG", "Could not save the City Scape cycle position");
   return scene;
 }
 
@@ -404,7 +404,7 @@ const char* builtinTitle() { return ""; }
 void refreshScenes() {}
 const std::vector<Scene>& sdScenes() { return kNoScenes; }
 const char* nextCycleScene(const char*) { return ""; }
-const char* lifeViewSceneForSleep() { return ""; }
+const char* cityScapeSceneForSleep() { return ""; }
 bool isSelected() { return false; }
 bool shouldShow() { return false; }
 bool decodeFrame(uint8_t*, uint16_t, bool, const char*) { return false; }

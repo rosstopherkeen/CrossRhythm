@@ -190,7 +190,7 @@ Open **Reading Stats** the usual way. On the X4 Pro that's the frontlight panel,
 
 The pages need the device clock. On devices without one, Reading Stats keeps its single-screen layout.
 
-### Charging animation and Life Views (X4 Pro)
+### Charging animation and City Scapes (X4 Pro)
 
 A scene is a 1-bit illustration that is built up in 21 steps, one per 5%. Two settings use scenes:
 
@@ -216,13 +216,13 @@ A scene is a 1-bit illustration that is built up in 21 steps, one per 5%. Two se
 </table>
 
 - **Settings › Display › Charging Animation**: while the device sleeps on the charger, the sleep screen shows the scene for the battery level, with four stops under the name filling at 25/50/75/100%. It updates within about five minutes of each 5% step, and unplugging brings back your usual sleep screen.
-- **Settings › Display › Sleep Screen › Wallpaper › Life Views**: the sleep screen shows the scene for how far you are in your latest book. Pick the scene in the **Life View** row that appears under Wallpaper, or **Cycle All** to show the next scene each time the device sleeps.
+- **Settings › Display › Sleep Screen › Wallpaper › City Scapes**: the sleep screen shows the scene for how far you are in your latest book. Pick the scene in the **City Scape** row that appears under Wallpaper, or **Cycle All** to show the next scene each time the device sleeps.
 
 **Glass House** (Lalbagh's Glass House, from bare lawns to a planted garden with a Gandaberunda topiary and a crowd of visitors) is built into the firmware and is the default for both. More scenes, such as **Lalbagh** (Namma Metro's Green line built past Lalbagh's West Gate), **KR Market** (City Market) and **State Library** (Cubbon Park's reading hall, from boxes in an empty hall to full shelves and a crowd), are single `.cpscene` files:
 
 1. Download the `.rhythmscene` file from this fork's [releases](https://github.com/rosstopherkeen/CrossRhythm/releases).
 2. Copy it to `/.scenes/` (or `/scenes/`) on the SD card. On the X4 Pro, **Home › File Transfer › USB Drive** exposes the card to your computer.
-3. Open Settings: the scene now appears in both the Charging Animation and Life View lists.
+3. Open Settings: the scene now appears in both the Charging Animation and City Scape lists.
 
 If a chosen scene file is removed or damaged, the sleep screen falls back to Glass House. Scenes keep their frames on the card, so they don't use firmware space.
 
