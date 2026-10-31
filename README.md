@@ -90,6 +90,28 @@ The default boot screen is replaced by the CrossRhythm image above (`src/images/
 
 <br clear="right"/>
 
+### Page Overlay sleep screens
+
+Six "Read Responsibly" wallpapers made for CrossInk's **Page Overlay** sleep screen: the device sleeps with the page you were reading still showing, and the wallpaper's white areas let it show through.
+
+The patterns are grown with a reaction-diffusion simulation, the process behind spots and stripes in nature. Over the page they read like redaction marks on a document, but organic rather than ruled bars, and they are drawn as pure black and white so they stay crisp on the e-ink panel instead of turning into dithered grey.
+
+<table>
+  <tr>
+    <td align="center"><img src="./docs/images/page-overlays/dots.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dots pattern over the current page" /><br /><sub>Dots</sub></td>
+    <td align="center"><img src="./docs/images/page-overlays/dots-dense.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, dots, dense pattern over the current page" /><br /><sub>Dots, dense</sub></td>
+    <td align="center"><img src="./docs/images/page-overlays/maze.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, maze pattern over the current page" /><br /><sub>Maze</sub></td>
+    <td align="center"><img src="./docs/images/page-overlays/maze-outline.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, maze, outline pattern over the current page" /><br /><sub>Maze, outline</sub></td>
+    <td align="center"><img src="./docs/images/page-overlays/cells.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, cells pattern over the current page" /><br /><sub>Cells</sub></td>
+    <td align="center"><img src="./docs/images/page-overlays/cells-bold.png" width="130" alt="Page Overlay sleep screen: Read Responsibly, cells, bold pattern over the current page" /><br /><sub>Cells, bold</sub></td>
+  </tr>
+</table>
+
+1. Copy the `.bmp` files you want from [`assets/page-overlays/`](./assets/page-overlays/) to `/.sleep/` (or `/sleep/`) on the SD card. With several there, one is picked at random each time the device sleeps.
+2. Set **Settings › Display › Sleep Screen › Wallpaper** to **Page Overlay**.
+
+They are 480×800 1-bit images for the X4 and X4 Pro. Nothing in the firmware changes for them; Page Overlay is stock CrossInk.
+
 ### Indic books
 
 Install the matching font and Indic text in any book renders correctly, without changing your reading font. A mostly-English library keeps its usual font; only the Indic parts switch, at the closest installed size to your reading size. Install more than one and each script is routed to its own font, so a mixed library needs no fiddling. The same font also draws Indic file names, book titles and chapter names in the file browser, Home, chapter list and reader footer.
