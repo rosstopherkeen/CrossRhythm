@@ -1,8 +1,8 @@
 # CrossRhythm
 
-> A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages, **Reading Rhythm** and **Books Finished**, plus support for **Kannada** books.
+> A personal fork of [CrossInk](https://github.com/uxjulia/CrossInk) for the **Xteink X4 Pro** that adds two reading stats pages, **Reading Rhythm** and **Books Finished**, plus support for **Indic** books (Hindi, Marathi, Bengali, Odia, Tamil, Telugu, Kannada, Malayalam).
 
-Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), renders Kannada text correctly when a Kannada font is installed, uses its own boot screen, and shows **CrossRhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
+Everything else is stock CrossInk: the same fonts, themes, reader features, settings and data on the SD card. This fork adds two pages to the end of Reading Stats (keeping their data in two new files of its own), renders Indic text correctly when the matching font is installed, uses its own boot screen, and shows **CrossRhythm** with the version in Settings. Your existing stats are never changed, so you can flash stock CrossInk back at any time.
 
 <table>
   <tr>
@@ -68,29 +68,123 @@ Each finished book has its own Overview and Book Rhythm pages. The same view ope
 
 <img src="./docs/images/rhythm/boot-screen.png" width="160" align="right" alt="CrossRhythm boot screen" />
 
-The default boot screen is replaced by the CrossRhythm image above (`src/images/boot-rhythm.bmp`, run-length encoded by `scripts/bmp_to_boot_header.py` to about 22 KB of flash). CrossInk's custom boot screen setting still takes priority when it's on. Settings › System shows the firmware as **CrossRhythm v&lt;version&gt;**.
+The default boot screen is replaced by the CrossRhythm image above (`src/images/boot-rhythm.bmp`, run-length encoded by `scripts/bmp_to_boot_header.py` to about 5 KB of flash). CrossInk's custom boot screen setting still takes priority when it's on. Settings › System shows the firmware as **CrossRhythm v&lt;version&gt;**.
 
 <br clear="right"/>
 
-### Kannada books
+### Indic books
 
-Install the **Noto Sans Kannada** font and Kannada text in any book renders correctly, without changing your reading font. A mostly-English library keeps its usual font; only the Kannada parts switch, at the closest installed size to your reading size.
+Install the matching font and Indic text in any book renders correctly, without changing your reading font. A mostly-English library keeps its usual font; only the Indic parts switch, at the closest installed size to your reading size. Install more than one and each script is routed to its own font, so a mixed library needs no fiddling. The same font also draws Indic file names, book titles and chapter names in the file browser, Home, chapter list and reader footer.
 
-Kannada stacks the consonants of a cluster under the first letter and joins vowel signs to the letter they belong to. Fonts do this with shapes that have no character codes of their own, so drawing text one character at a time shows separate letters with visible viramas (್). This fork works those shapes out ahead of time with [HarfBuzz](https://harfbuzz.github.io/) and stores the result as about 25 KB of lookup tables in flash (no extra RAM). The reader applies them as it measures and draws a line, so conjuncts stack, vowel signs join, and arkavattu (ರ್) sits where it should. The book's text itself is unchanged, so dictionary lookup, clippings and search still see real Kannada.
+These scripts stack or attach the consonants of a cluster to a base letter and join vowel signs to the letter they belong to; several also move part of a vowel sign in front of it. Fonts do this with shapes that have no character codes of their own, so drawing text one character at a time shows separate letters with visible viramas (್). This fork works those shapes out ahead of time with [HarfBuzz](https://harfbuzz.github.io/) and ships the result as a small `shaping.cpshape` file inside each font's folder. When the font is on the card the reader loads that file and applies it as it measures and draws a line, so conjuncts stack, vowel signs join, and reph sits where it should. The book's text itself is unchanged, so dictionary lookup, clippings and search still see real text.
 
-**Installing the font:**
+Book pages on the X4 Pro, in each supported script:
 
-1. Build the font files (see [Building](#building)), or use a copy you already have. You need the folder `NotoSansKannada/` with eight `NotoSansKannada_<size>.cpfont` files.
-2. Copy that folder to `/.fonts/` (or `/fonts/`) on the SD card, keeping the folder name exactly `NotoSansKannada`. On the X4 Pro, **Home › File Transfer › USB Drive** exposes the card to your computer. You can also upload the folder from the web portal's **Fonts** page.
-3. If you opened a Kannada book before installing the font, open it and choose **Delete Book Cache** from the reader menu, so its pages are laid out again with the Kannada font.
+<table>
+  <tr>
+    <td align="center"><img src="./docs/images/indic/kannada-book.png" width="150" alt="Kannada book page" /><br /><sub>Kannada</sub></td>
+    <td align="center"><img src="./docs/images/indic/hindi-book.png" width="150" alt="Hindi book page" /><br /><sub>Hindi</sub></td>
+    <td align="center"><img src="./docs/images/indic/tamil-book.png" width="150" alt="Tamil book page" /><br /><sub>Tamil</sub></td>
+    <td align="center"><img src="./docs/images/indic/malayalam-book.png" width="150" alt="Malayalam book page" /><br /><sub>Malayalam</sub></td>
+    <td align="center"><img src="./docs/images/indic/telugu-book.png" width="150" alt="Telugu book page" /><br /><sub>Telugu</sub></td>
+  </tr>
+</table>
 
-Use the generated `.cpfont` files, not a Kannada `.ttf`. The shaped forms only exist in the `.cpfont` files, so a `.ttf` shows Kannada as separate letters. The font has no italic, so italic text in Kannada shows upright.
+The same fonts draw the rest of the interface too: file names, book titles and chapter names.
+
+<table>
+  <tr>
+    <td align="center"><img src="./docs/images/indic/file-browser.png" width="150" alt="File browser with Hindi and Malayalam file names" /><br /><sub>File browser</sub></td>
+    <td align="center"><img src="./docs/images/indic/home.png" width="150" alt="Home screen with a Kannada title" /><br /><sub>Home</sub></td>
+    <td align="center"><img src="./docs/images/indic/chapter-list.png" width="150" alt="Chapter list in Kannada" /><br /><sub>Chapter list</sub></td>
+  </tr>
+</table>
+
+Nothing about this is built into the firmware: every script works with the same firmware, and installing a font folder is the whole setup.
+
+| Script | Font folder to copy | Folder size (8 sizes) | Shaping file | Status |
+| --- | --- | --- | --- | --- |
+| Kannada | `NotoSansKannada` | 6.2 MB | 26 KB | Tested on device |
+| Tamil | `NotoSansTamil` | 5.9 MB | 24 KB | Tested on device |
+| Malayalam | `NotoSansMalayalam` | 5.9 MB | 43 KB | Tested on device |
+| Telugu | `NotoSansTelugu` | 7.9 MB | 58 KB | Tested on device |
+| Hindi, Marathi (Devanagari) | `NotoSansDevanagari` | 6.1 MB | 140 KB | Tested on device |
+| Bengali | `NotoSansBengali` | not built here | 253 KB | Experimental: most conjuncts fall back to literal table rows |
+| Odia | `NotoSansOriya` | not built here | 107 KB | Experimental |
+
+Install only the scripts you read; each folder is self-contained. Firmware cost is about 6 KB of flash for all of them together, because the tables live on the SD card.
+
+The shaping file is held in memory while its font is installed. On the X4 Pro and other ESP32-S3 readers it goes in PSRAM, where all seven together use under 1 MB of 8 MB. ESP32-C3 readers (X3, X4) have no PSRAM and too little free RAM during reading to hold one safely, so there the script still draws but its conjuncts appear as separate letters.
+
+**Installing a font:**
+
+1. Download the font pack from this fork's [releases](https://github.com/rosstopherkeen/CrossRhythm/releases), or build it yourself (see [Building](#building)). Either way you end up with a folder such as `NotoSansTelugu/` holding eight `NotoSansTelugu_<size>.cpfont` files and `shaping.cpshape`.
+2. Copy that folder to `/.fonts/` (or `/fonts/`) on the SD card, keeping the folder name exactly as it is. The card should look like this:
+
+   ```
+   /.fonts/
+     NotoSansKannada/
+       NotoSansKannada_8.cpfont
+       NotoSansKannada_9.cpfont
+       ...
+       NotoSansKannada_20.cpfont
+       shaping.cpshape
+     NotoSansTelugu/
+       NotoSansTelugu_8.cpfont
+       ...
+       shaping.cpshape
+   ```
+
+   On the X4 Pro, **Home › File Transfer › USB Drive** exposes the card to your computer. You can also upload the folder from the web portal's **Fonts** page.
+3. If you opened a book in one of these scripts before installing its font, open it and choose **Delete Book Cache** from the reader menu, so its pages are laid out again with the new font.
+
+**Updating:** a font folder and its `shaping.cpshape` are generated together, so replace the whole folder when you update, never a single file. After updating fonts, use **Delete Book Cache** on a book if its pages look stale.
+
+**What is handled beyond the basics:** word-final consonant + halant in Kannada, Tamil and Telugu (for example ಕುಮಾರ್) draws the joined final form, and Hindi letters written with a nukta (ज़, फ़, ड़) draw as one letter. Not handled: the final halant forms of ड़्, ढ़् and ऴ् in Hindi still differ slightly from a full shaper.
+
+Copy the whole folder, including `shaping.cpshape`; without it the font draws but conjuncts come apart. Use the generated `.cpfont` files, not the `.ttf`: the shaped forms only exist in the `.cpfont` files, so a `.ttf` shows the text as separate letters. None of these fonts has an italic, so italic text in these scripts shows upright.
 
 ### Where to find them
 
 Open **Reading Stats** the usual way. On the X4 Pro that's the frontlight panel, or the reader menu on button devices. Swipe left or press Right/Down past *This Device* (and *All Devices*, if you sync stats). The two new pages share the existing page dots, header and card layout. Weeks start on Monday by default; set **First Day of Week** in Settings › System › Device to start them on Sunday.
 
 The pages need the device clock. On devices without one, Reading Stats keeps its single-screen layout.
+
+### Charging animation and Life Views (X4 Pro)
+
+A scene is a 1-bit illustration that is built up in 21 steps, one per 5%. Two settings use scenes:
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./docs/images/scenes/lalbagh.gif" width="200" alt="Lalbagh scene from 0 to 100%: Namma Metro's Green line built past Lalbagh's West Gate" /><br/>
+      <sub><b>Lalbagh</b></sub>
+    </td>
+    <td align="center">
+      <img src="./docs/images/scenes/kr_market.gif" width="200" alt="KR Market scene from 0 to 100%: City Market built up from a cleared site to its full roof" /><br/>
+      <sub><b>KR Market</b></sub>
+    </td>
+    <td align="center">
+      <img src="./docs/images/scenes/state_library.gif" width="200" alt="State Library scene from 0 to 100%: boxes unpacked, shelves filled and readers filling the hall" /><br/>
+      <sub><b>State Library</b></sub>
+    </td>
+    <td align="center">
+      <img src="./docs/images/scenes/glass_house.gif" width="200" alt="Glass House scene from 0 to 100%: the Lalbagh Glass House garden planted, a Gandaberunda topiary grown in its wire frame and visitors filling the garden" /><br/>
+      <sub><b>Glass House</b> (built in)</sub>
+    </td>
+  </tr>
+</table>
+
+- **Settings › Display › Charging Animation**: while the device sleeps on the charger, the sleep screen shows the scene for the battery level, with four stops under the name filling at 25/50/75/100%. It updates within about five minutes of each 5% step, and unplugging brings back your usual sleep screen.
+- **Settings › Display › Sleep Screen › Wallpaper › Life Views**: the sleep screen shows the scene for how far you are in your latest book. Pick the scene in the **Life View** row that appears under Wallpaper, or **Cycle All** to show the next scene each time the device sleeps.
+
+**Glass House** (Lalbagh's Glass House, from bare lawns to a planted garden with a Gandaberunda topiary and a crowd of visitors) is built into the firmware and is the default for both. More scenes, such as **Lalbagh** (Namma Metro's Green line built past Lalbagh's West Gate), **KR Market** (City Market) and **State Library** (Cubbon Park's reading hall, from boxes in an empty hall to full shelves and a crowd), are single `.cpscene` files:
+
+1. Download the `.rhythmscene` file from this fork's [releases](https://github.com/rosstopherkeen/CrossRhythm/releases).
+2. Copy it to `/.scenes/` (or `/scenes/`) on the SD card. On the X4 Pro, **Home › File Transfer › USB Drive** exposes the card to your computer.
+3. Open Settings: the scene now appears in both the Charging Animation and Life View lists.
+
+If a chosen scene file is removed or damaged, the sleep screen falls back to Glass House. Scenes keep their frames on the card, so they don't use firmware space.
 
 ---
 
@@ -144,13 +238,13 @@ Run the host tests, including `test/reading_rhythm/` for the new data files and 
 cmake -S test -B build-tests && cmake --build build-tests -j 8 && ctest --test-dir build-tests --output-on-failure
 ```
 
-Build the Kannada font files (needs the Python packages in `lib/EpdFont/scripts/requirements.txt`, including `uharfbuzz`):
+Build the Indic font packs (needs the Python packages in `lib/EpdFont/scripts/requirements.txt`, including `uharfbuzz`):
 
 ```bash
-python3 lib/EpdFont/scripts/build-sd-fonts.py --only NotoSansKannada --output-dir .pio/sd-fonts --no-package
+python3 lib/EpdFont/scripts/build-sd-fonts.py --only NotoSansKannada,NotoSansTelugu,NotoSansTamil,NotoSansDevanagari,NotoSansBengali,NotoSansOriya,NotoSansMalayalam --output-dir .pio/sd-fonts
 ```
 
-The files end up in `.pio/sd-fonts/NotoSansKannada/`. The Kannada lookup tables are already committed. Regenerate them with `lib/EpdFont/scripts/gen_kannada_shaping.py` only when changing the Kannada font; that script refuses to write tables that don't match HarfBuzz, and `test/kannada_shaping/` checks the firmware against it.
+Each family lands in `.pio/sd-fonts/<Family>/` with its `shaping.cpshape` copied in, plus a matching `<Family>.zip` ready to attach to a release. The shaping files are committed under `lib/EpdFont/scripts/shaping/`. Regenerate one with `lib/EpdFont/scripts/gen_indic_shaping.py --script <name> <font.ttf> --golden` only when changing that script's font; the script refuses to write tables that don't match HarfBuzz, and `test/indic_shaping/` checks the firmware against it.
 
 Simulator: `pio run -e x4-pro-simulator -t run_simulator`, with an SD card copied into `./fs_/`. The simulator has no clock, so the new pages only appear on real hardware.
 
@@ -163,6 +257,7 @@ The fork's code lives in `src/activities/reader/rhythm/`. The hooks into existin
 - **[CrossInk](https://github.com/uxjulia/CrossInk)** by uxjulia, the firmware this fork is built on. For CrossInk's own features (fonts, themes, Focus Reading, button remapping, stats sync and more), see its [README](https://github.com/uxjulia/CrossInk#readme) and [crossink.dev](https://www.crossink.dev). Please support CrossInk directly via its [Ko-fi](https://ko-fi.com/Q5Q01M6S7).
 - **[XPoint](https://github.com/Belphemur/XPoint)** (MIT License, Copyright (c) 2025 CrossPoint Reader organization), where the Reading Rhythm and Books Finished screens and the finished-books file format come from: `ReadingRhythmActivity`, `FinishedBooksActivity`, `FinishedBooksIndex`, and `renderReadingRhythmPage` / `renderFinishedBooksPage` from `BookStatsView.cpp`.
 - **[CrossPoint Reader](https://github.com/crosspoint-reader/crosspoint-reader)**, the upstream firmware for both.
-- **[Noto Sans Kannada](https://fonts.google.com/noto/specimen/Noto+Sans+Kannada)** (SIL Open Font License 1.1) for Kannada text, and **[HarfBuzz](https://harfbuzz.github.io/)**, used at build time to work out the Kannada shaping tables.
+- The **[Noto Sans](https://fonts.google.com/noto)** Indic families — Devanagari, Bengali, Oriya, Tamil, Telugu, Kannada and Malayalam (all SIL Open Font License 1.1) — and **[HarfBuzz](https://harfbuzz.github.io/)**, used at build time to work out the shaping tables.
+- The **Lalbagh** and **KR Market** scenes are drawn from map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, available under the Open Database License (ODbL).
 
 This is a personal fork. Issues with CrossInk itself belong in the [CrossInk repo](https://github.com/uxjulia/CrossInk); issues with the two stats pages belong [here](https://github.com/rosstopherkeen/CrossRhythm/issues).

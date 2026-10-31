@@ -60,7 +60,7 @@ int SdCardFontManager::loadFilePath(const char* path, const char* familyName, ui
     return 0;
   }
   renderer.registerSdCardFont(fontId, font);
-  loaded_.push_back({font, fontId, pointSize});
+  loaded_.push_back({font, fontId, pointSize, familyName});
 
   LOG_DBG("SDMGR", "Loaded %s size=%u id=%d styles=%u", path, pointSize, fontId, font->styleCount());
 
@@ -127,10 +127,10 @@ int SdCardFontManager::loadFamilyExtraSize(const SdCardFontFamilyInfo& family, G
   const SdCardFontFileInfo* file = family.findFile(pointSize);
   if (!file) return 0;  // family has no .cpfont at this exact size
 
-  // Reuse an already-loaded font of the same size (e.g. when a reader size
-  // happens to match a UI size) instead of double-loading the file.
+  // Reuse an already-loaded font of the same family and size (e.g. when a
+  // reader size happens to match a UI size) instead of double-loading the file.
   for (const auto& lf : loaded_) {
-    if (lf.size == pointSize) return lf.fontId;
+    if (lf.size == pointSize && lf.family == family.name) return lf.fontId;
   }
 
   return loadFile(*file, family.name.c_str(), renderer);
@@ -138,8 +138,10 @@ int SdCardFontManager::loadFamilyExtraSize(const SdCardFontFamilyInfo& family, G
 
 int SdCardFontManager::loadFamilyExtraFile(const char* path, const char* familyName, uint8_t pointSize,
                                            GfxRenderer& renderer) {
+  // Same size in a different family is a different font: a script fallback
+  // must not resolve to the reader font that happens to share its point size.
   for (const auto& lf : loaded_) {
-    if (lf.size == pointSize) return lf.fontId;
+    if (lf.size == pointSize && lf.family == familyName) return lf.fontId;
   }
   return loadFilePath(path, familyName, pointSize, renderer);
 }
@@ -188,7 +190,7 @@ int SdCardFontManager::registerScalableSize(GfxRenderer& renderer, uint8_t size)
     return 0;
   }
   loaded_.reserve(ScalableContentMaxPointSize - ScalableContentMinPointSize + 1);
-  loaded_.push_back({nullptr, id, size});
+  loaded_.push_back({nullptr, id, size, {}});
   renderer.insertFont(id, EpdFontFamily(styles[0], styles[1], styles[2], styles[3]));
   return id;
 }

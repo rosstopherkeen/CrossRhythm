@@ -8,7 +8,12 @@
 - First Day of Week setting (Settings > System > Device): start the Reading Stats calendars, weekly totals and day-of-week bars on Monday or Sunday.
 - New CrossRhythm boot screen.
 - Daily reading minutes are now recorded for the Reading Rhythm screen. Minutes for days read before updating are estimated once from each book's reading time and shown lighter.
-- Kannada book support: install the Noto Sans Kannada font and Kannada text renders automatically, in any book, without changing your reading font. Conjuncts stack, vowel signs join the letter they belong to, and arkavattu sits where it should, so Kannada reads as Kannada rather than as separate letters. Books in your usual font keep using it, and only the Kannada parts switch.
+- Kannada book support: install the Noto Sans Kannada font folder and Kannada text renders automatically, in any book, without changing your reading font. Conjuncts stack, vowel signs join the letter they belong to, and arkavattu sits where it should, so Kannada reads as Kannada rather than as separate letters. Books in your usual font keep using it, and only the Kannada parts switch.
+- Indic book support beyond Kannada: Telugu, Tamil, Malayalam, Odia, Devanagari (Hindi and Marathi) and Bengali. Copy the matching Noto Sans font folder to the SD card and text in that script renders correctly, without changing your reading font or anything in the firmware; install several and each script is routed to its own. Two-part vowel signs are split and placed around the letter as they should be. Needs an ESP32-S3 reader (X4 Pro, Sticky): the shaping data is held in PSRAM.
+- Charging animation on the sleep screen (X4 Pro): Settings > Display > Charging Animation > Glass House. While the device sleeps on the charger, Lalbagh's Glass House garden is planted as the battery fills, with a plaque that marks each 25%: the beds come into flower, a Gandaberunda topiary grows through its wire frame, and visitors come and go, more of them every 5% step. The screen updates within about five minutes of each 5% step, and unplugging brings back your usual sleep screen.
+- Scenes on the SD card (X4 Pro): copy a `.rhythmscene` file from the releases (Lalbagh, KR Market and State Library so far) to `/.scenes/` or `/scenes/` and it appears in both the Charging Animation and Life View lists. Each scene's plaque gives the landmark and, under it, the place (Namma Metro / Lalbagh, City Market / KR Market). Glass House stays built in as the default; a missing or damaged scene file falls back to it.
+- Life Views wallpaper (X4 Pro): Settings > Display > Sleep Screen > Wallpaper > Life Views. A Life View row then appears below Wallpaper to pick the view; Glass House is the first: the sleep screen shows the garden grown as far as you have read in your latest book, with the plain plaque (no charge stops).
+- Cycle All for Life View (X4 Pro): the last option in the Life View list shows a different scene each time the device sleeps, going through Glass House and every scene on the SD card in turn.
 
 ### Changed
 
@@ -18,6 +23,9 @@
 
 ### Fixed
 
+- Indic text in file names, book titles and the reader footer now draws in the installed script font instead of replacement boxes.
+- Kannada, Tamil and Telugu words ending in a consonant with halant or pulli (such as ಕುಮಾರ್) now draw the joined final form instead of a separate mark, and Hindi letters written with a nukta (ज़, फ़, ड़) now draw as one letter. Copy the updated Noto Sans font folders to the SD card.
+- Life Views now shows the final scene for a book shown as 100% read. The sleep screen rounded progress down (99.6% drew the 95% scene) while every progress label rounds to the nearest percent; both now use the same rounding.
 - Clearing a book's cache no longer erases that book's Reading Rhythm history. Daily reading minutes now survive Clear Cache, a book re-upload, and Settings > Clear Cache, just like the book's other reading stats.
 
 ## [v1.6.1] - 2026-10-03

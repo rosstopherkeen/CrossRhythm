@@ -65,6 +65,9 @@ class SdCardFontManager {
 
   // Get name of currently loaded family (empty if none).
   const std::string& currentFamilyName() const { return loadedFamilyName_; };
+  // True while any font is resident, including script-fallback sizes loaded
+  // before a reader family (those leave currentFamilyName() empty).
+  bool hasLoadedFonts() const { return !loaded_.empty(); }
 
   // Point size that was actually loaded (closest match to targetPtSize).
   // 0 if nothing loaded.
@@ -116,6 +119,7 @@ class SdCardFontManager {
     SdCardFont* font;  // heap-allocated, owned
     int fontId;
     uint8_t size;
+    std::string family;  // empty for scalable sizes, which are always the loaded family
   };
   static int computeFontId(uint32_t contentHash, const char* familyName, uint8_t pointSize);
 

@@ -17,6 +17,14 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
                           "sleepScreenCoverFilter", StrId::STR_CAT_DISPLAY));
     add(SettingInfo::Toggle(StrId::STR_QUICK_RESUME_TIMEOUT, &CrossPointSettings::quickResumeSleepScreen,
                             "quickResumeSleepScreen", StrId::STR_CAT_DISPLAY));
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+    add(SettingInfo::Enum(StrId::STR_CHARGING_ANIMATION, &CrossPointSettings::chargingAnimation,
+                          {StrId::STR_NONE_OPT, StrId::STR_ON}, "chargingAnimation", StrId::STR_CAT_DISPLAY)
+            .withEnumRawValues(
+                {CrossPointSettings::CHARGING_ANIMATION_OFF, CrossPointSettings::CHARGING_ANIMATION_ON}));
+    // Which scene it shows (and Life View) are picked from the SD scenes found when Settings opens:
+    // getSettingsList() swaps in buildChargingAnimationSetting() / buildLifeViewSetting().
+#endif
     add(SettingInfo::Enum(StrId::STR_HIDE_BATTERY, &CrossPointSettings::hideBatteryPercentage,
                           {StrId::STR_NEVER, StrId::STR_IN_READER, StrId::STR_ALWAYS}, "hideBatteryPercentage",
                           StrId::STR_CAT_DISPLAY));

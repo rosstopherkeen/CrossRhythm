@@ -271,11 +271,15 @@ void RecentBookProgress::saveCachedEpubPercent(const Epub& epub, const int spine
 
 bool RecentBookProgress::hasPercent(const float progress) { return progress >= 0.0f; }
 
+uint16_t RecentBookProgress::wholePercent(const float progress) {
+  return static_cast<uint16_t>(clampProgressPercent(progress) + 0.5f);
+}
+
 std::string RecentBookProgress::formatPercent(const float progress) {
   if (!hasPercent(progress)) {
     return "";
   }
   char buffer[8];
-  snprintf(buffer, sizeof(buffer), "%.0f%%", clampProgressPercent(progress));
+  snprintf(buffer, sizeof(buffer), "%u%%", static_cast<unsigned>(wholePercent(progress)));
   return buffer;
 }

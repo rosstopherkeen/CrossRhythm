@@ -100,10 +100,17 @@ inline bool utf8IsCjkCodepoint(const uint32_t cp) {
          || (cp >= 0x30000 && cp <= 0x323AF);  // CJK Extensions G-H
 }
 
-// Returns true for any codepoint in the Kannada block. Used for fallback font
-// selection: Latin reader fonts carry no Kannada glyphs, so a string containing
-// these has to be routed to a font that does.
-inline bool utf8IsKannadaCodepoint(const uint32_t cp) { return cp >= 0x0C80 && cp <= 0x0CFF; }
+// Returns true for any codepoint in an Indic (Brahmic) block CrossInk can
+// shape. Used for fallback font selection: Latin reader fonts carry no Indic
+// glyphs, so a string containing these has to be routed to a font that does.
+// These are the blocks gen_indic_shaping.py generates shaping files for; a
+// font carrying one is registered as a fallback at runtime.
+inline bool utf8IsIndicCodepoint(const uint32_t cp) {
+  // The supported blocks are contiguous apart from Gurmukhi and Gujarati
+  // (U+0A00-U+0AFF), which CrossInk cannot shape and so must not claim.
+  return (cp >= 0x0900 && cp <= 0x09FF)      // Devanagari, Bengali
+         || (cp >= 0x0B00 && cp <= 0x0D7F);  // Oriya, Tamil, Telugu, Kannada, Malayalam
+}
 
 // Returns true for a codepoint whose script a Latin reader font will not cover,
 // so a string containing it is worth routing to a fallback font. Kept separate
@@ -111,7 +118,7 @@ inline bool utf8IsKannadaCodepoint(const uint32_t cp) { return cp >= 0x0C80 && c
 // only for whole scripts a primary font is expected to miss -- never for Latin
 // or symbols the built-in fonts already draw.
 inline bool utf8IsFallbackScriptCodepoint(const uint32_t cp) {
-  return utf8IsCjkCodepoint(cp) || utf8IsKannadaCodepoint(cp);
+  return utf8IsCjkCodepoint(cp) || utf8IsIndicCodepoint(cp);
 }
 
 // Returns true for CJK letters, syllables, and digits that can form a dictionary
