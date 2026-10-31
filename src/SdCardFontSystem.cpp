@@ -6,6 +6,7 @@
 
 #include <GfxRenderer.h>
 #include <HalStorage.h>
+#include <IndicTables.h>
 #include <Logging.h>
 #include <MemoryBudget.h>
 
@@ -30,10 +31,10 @@ constexpr UiFontSize kUiFontSizes[] = {
     {UI_12_FONT_ID, 12},
 };
 
-// Installed families consulted, in order, to draw a script the selected reader
-// font is missing. Kept as names rather than a coverage scan so the lookup costs
-// one registry hit and no SD reads when the font is not installed.
-constexpr const char* kScriptFallbackFamilies[] = {"NotoSansKannada"};
+// Internal RAM to leave free when a shaping file has to go there (no PSRAM).
+// Reading sessions on the C3 run at roughly 85-90 KB free; a table that would
+// eat into that is skipped and its script draws unshaped instead.
+constexpr size_t kShapingInternalHeadroom = 64 * 1024;
 
 enum class FontFileSelection : uint8_t { Closest, Exact };
 
@@ -120,6 +121,16 @@ void SdCardFontSystem::begin(GfxRenderer& renderer) {
   };
   SETTINGS.sdFontResolverCtx = this;
 
+  // The font browser, Home and book titles draw before any reader font is
+  // requested, and a reader font on a scalable target is not loaded until it
+  // is. Install the Indic UI fallbacks now so those screens are not drawn with
+  // replacement boxes. Skipped without PSRAM, where Indic draws unshaped anyway.
+  if (psramHeapAvailable()) {
+    ensureRegistry();
+    setupReaderScriptFallback(renderer);
+    LOG_INF("SDFS", "Indic UI fallbacks at boot: %u script(s) loaded", static_cast<unsigned>(shapingFileCount_));
+  }
+
   if (SETTINGS.sdFontFamilyName[0] == '\0') {
     LOG_DBG("SDFS", "SD font resolver ready; discovery deferred until requested");
     return;
@@ -170,6 +181,11 @@ void SdCardFontSystem::ensureLoaded(GfxRenderer& renderer) {
     if (!currentFamily.empty()) {
       manager_.unloadAll(renderer);
       loadedFontPointSize_ = 0;
+      // unloadAll dropped every fallback, the UI ones included.
+      if (psramHeapAvailable()) {
+        ensureRegistry();
+        setupReaderScriptFallback(renderer);
+      }
     }
 #if CROSSINK_SCALABLE_FONTS
     ensureBuiltInReaderFont(renderer);
@@ -232,7 +248,12 @@ void SdCardFontSystem::ensureLoaded(GfxRenderer& renderer) {
             targetPointSize, registryWasDirty ? " [registry dirty]" : "");
   }
 
-  if (!currentFamily.empty() && (!family || !family->isScalable() || !familyMatches || registryWasDirty)) {
+  // Script-fallback sizes loaded at boot sit in the manager with no family name.
+  // Left there, they would be the "first loaded font" the reader family resolves
+  // to, so drop them before the reader font loads (setup below reloads them).
+  const bool strayFallbacks = currentFamily.empty() && manager_.hasLoadedFonts();
+  if (strayFallbacks ||
+      (!currentFamily.empty() && (!family || !family->isScalable() || !familyMatches || registryWasDirty))) {
     manager_.unloadAll(renderer);
   }
 
@@ -380,54 +401,162 @@ void SdCardFontSystem::setupUiFallbacks(GfxRenderer& renderer) {
   for (const auto& ui : kUiFontSizes) {
     const int sdFontId = manager_.loadFamilyExtraSize(*family, renderer, ui.pointSize);
     if (sdFontId != 0) {
-      renderer.setFallbackFont(ui.fontId, sdFontId);
+      renderer.addFallbackFont(ui.fontId, sdFontId);
+      renderer.setFallbackPrewarmOnDemand(ui.fontId);
     } else {
       LOG_DBG("SDFS", "No %u pt SD glyphs for UI fallback in %s", ui.pointSize, familyName.c_str());
     }
   }
 }
 
-void SdCardFontSystem::setupReaderScriptFallback(GfxRenderer& renderer) {
-  const std::string& familyName = manager_.currentFamilyName();
-  if (familyName.empty()) return;
+void SdCardFontSystem::releaseShaping() {
+  // Unregister before freeing: IndicShape reads the buffers in place.
+  IndicShape::clearScripts();
+  for (size_t i = 0; i < shapingFileCount_; i++) shapingFiles_[i] = ShapingFile{};
+  shapingFileCount_ = 0;
+  shapingLoaded_ = false;
+}
 
+// A family carrying IndicTables::FILE_NAME in its folder is an Indic font: the
+// file's presence is what makes it a script fallback, so the firmware holds no
+// list of scripts or families. gen_indic_shaping.py writes the file and
+// build-sd-fonts.py packs it into the family folder.
+void SdCardFontSystem::ensureShapingLoaded() {
+  if (shapingLoaded_ && shapingRegistryRevision_ == registry_.revision()) return;
+  releaseShaping();
+  shapingLoaded_ = true;
+  shapingRegistryRevision_ = registry_.revision();
+
+  char path[192] = {};
+  for (const auto& family : registry_.getFamilies()) {
+    if (shapingFileCount_ >= MAX_SHAPING_FILES) {
+      LOG_ERR("SDFS", "More shaping fonts than slots; ignoring %s and later", family.name.c_str());
+      break;
+    }
+    const char* root = SdCardFontRegistry::findFamilyRoot(family.name.c_str());
+    if (!root) continue;
+    const int length = std::snprintf(path, sizeof(path), "%s/%s/%s", root, family.name.c_str(), IndicTables::FILE_NAME);
+    if (length <= 0 || static_cast<size_t>(length) >= sizeof(path) || !Storage.exists(path)) continue;
+
+    HalFile file;
+    if (!Storage.openFileForRead("SDFS", path, file)) continue;
+    const size_t size = file.fileSize();
+    if (size == 0 || size > IndicTables::MAX_FILE_SIZE) {
+      file.close();
+      LOG_ERR("SDFS", "Skipping %s: %u bytes", path, static_cast<unsigned>(size));
+      continue;
+    }
+
+    // The table is read on every Indic word measured and drawn, for as long as
+    // the font is installed, so it lives on the heap for the session. PSRAM
+    // when the board has it; on the C3 only if internal RAM keeps headroom for
+    // a reading session, otherwise the script draws unshaped rather than
+    // starving layout.
+    HeapByteBuffer buffer;
+    if (psramHeapAvailable()) {
+      buffer = makeAlignedByteBufferNoThrow(size, MemoryPool::Psram);
+    } else if (byteHeapSnapshot(MemoryPool::Internal).largest >= size + kShapingInternalHeadroom) {
+      buffer = makeAlignedByteBufferNoThrow(size, MemoryPool::Internal);
+    }
+    if (!buffer) {
+      file.close();
+      LOG_ERR("SDFS", "No room for %s (%u bytes); its script will draw unshaped", path, static_cast<unsigned>(size));
+      continue;
+    }
+
+    size_t read = 0;
+    while (read < size) {
+      const int chunk = file.read(buffer.get() + read, size - read);
+      if (chunk <= 0) break;
+      read += static_cast<size_t>(chunk);
+    }
+    file.close();
+    if (read != size) {
+      LOG_ERR("SDFS", "Short read on %s (%u of %u bytes)", path, static_cast<unsigned>(read),
+              static_cast<unsigned>(size));
+      continue;
+    }
+
+    const size_t slot = IndicShape::scriptCount();
+    if (!IndicShape::registerScript(buffer.get(), size)) {
+      LOG_ERR("SDFS", "Ignoring shaping file %s", path);
+      continue;
+    }
+    ShapingFile& entry = shapingFiles_[shapingFileCount_++];
+    entry.data = std::move(buffer);
+    entry.family = family.name;
+    entry.probe = IndicShape::probeCodepoint(slot);
+    LOG_INF("SDFS", "Loaded shaping for %s (%u bytes, %s)", family.name.c_str(), static_cast<unsigned>(size),
+            memoryPoolName(byteBufferPool(entry.data.get())));
+  }
+}
+
+void SdCardFontSystem::setupReaderScriptFallback(GfxRenderer& renderer) {
+  ensureShapingLoaded();
+
+  const std::string& familyName = manager_.currentFamilyName();
+
+  // File names, titles and the reader footer draw with the built-in UI fonts,
+  // which carry no Indic glyphs, so each script also falls back at the UI sizes.
+  for (size_t i = 0; i < shapingFileCount_; i++) {
+    const ShapingFile& script = shapingFiles_[i];
+    for (const auto& ui : kUiFontSizes) {
+      const auto uiIt = renderer.getFontMap().find(ui.fontId);
+      if (uiIt == renderer.getFontMap().end() || uiIt->second.hasCodepoint(script.probe)) continue;
+      char path[160] = {};
+      uint8_t pointSize = 0;
+      if (!findInstalledFontFile(script.family.c_str(), ui.pointSize, FontFileSelection::Closest, path, sizeof(path),
+                                 pointSize)) {
+        continue;
+      }
+      const int fallbackFontId = manager_.loadFamilyExtraFile(path, script.family.c_str(), pointSize, renderer);
+      if (fallbackFontId == 0) continue;
+      const auto fallbackIt = renderer.getFontMap().find(fallbackFontId);
+      if (fallbackIt == renderer.getFontMap().end() || !fallbackIt->second.hasCodepoint(script.probe)) continue;
+      renderer.addFallbackFont(ui.fontId, fallbackFontId);
+      renderer.setFallbackPrewarmOnDemand(ui.fontId);
+      LOG_INF("SDFS", "UI fallback %u pt -> %s @%upt", ui.pointSize, script.family.c_str(), pointSize);
+    }
+  }
+
+  if (familyName.empty()) return;
   const int readerFontId = manager_.getFontId(familyName);
   const auto readerIt = renderer.getFontMap().find(readerFontId);
   if (readerIt == renderer.getFontMap().end()) return;
 
-  // ಕ: any font with real Kannada coverage carries this. If the reader font
-  // already draws it there is nothing to route elsewhere.
-  static constexpr uint32_t kKannadaProbe = 0x0C95;
-  if (readerIt->second.hasCodepoint(kKannadaProbe)) return;
-
-  for (const char* candidate : kScriptFallbackFamilies) {
-    if (familyName == candidate) continue;
+  // Each script is considered on its own: a reader with Tamil and Telugu books
+  // gets a fallback for both, and a reader font that already covers one of them
+  // (including the Indic font itself, when it is the reading font) keeps
+  // drawing it.
+  for (size_t i = 0; i < shapingFileCount_; i++) {
+    const ShapingFile& script = shapingFiles_[i];
+    if (familyName == script.family) continue;
+    if (readerIt->second.hasCodepoint(script.probe)) continue;
 
     // Closest, not exact: the scalable reader offers every point size from 8 to
     // 22, while an installed .cpfont family ships a subset (8/9/10/12/14/...).
     // Requiring an exact match would leave the odd sizes with no fallback at
-    // all, which reads as "Kannada support is broken" rather than as a font a
+    // all, which reads as "this script is broken" rather than as a font a
     // point size off.
     char path[160] = {};
     uint8_t pointSize = 0;
-    if (!findInstalledFontFile(candidate, manager_.currentPointSize(), FontFileSelection::Closest, path,
+    if (!findInstalledFontFile(script.family.c_str(), manager_.currentPointSize(), FontFileSelection::Closest, path,
                                sizeof(path), pointSize)) {
-      LOG_DBG("SDFS", "No installed file for script fallback family %s", candidate);
+      LOG_DBG("SDFS", "No installed file for script fallback family %s", script.family.c_str());
       continue;
     }
 
-    const int fallbackFontId = manager_.loadFamilyExtraFile(path, candidate, pointSize, renderer);
+    const int fallbackFontId = manager_.loadFamilyExtraFile(path, script.family.c_str(), pointSize, renderer);
     if (fallbackFontId == 0) {
-      LOG_DBG("SDFS", "Failed to load script fallback %s at %u pt", candidate, pointSize);
+      LOG_DBG("SDFS", "Failed to load script fallback %s at %u pt", script.family.c_str(), pointSize);
       continue;
     }
     const auto fallbackIt = renderer.getFontMap().find(fallbackFontId);
-    if (fallbackIt == renderer.getFontMap().end() || !fallbackIt->second.hasCodepoint(kKannadaProbe)) continue;
+    if (fallbackIt == renderer.getFontMap().end() || !fallbackIt->second.hasCodepoint(script.probe)) continue;
 
-    renderer.setFallbackFont(readerFontId, fallbackFontId);
-    LOG_INF("SDFS", "Kannada fallback for %s @%upt -> %s @%upt", familyName.c_str(), manager_.currentPointSize(),
-            candidate, pointSize);
-    return;
+    renderer.addFallbackFont(readerFontId, fallbackFontId);
+    LOG_INF("SDFS", "Script fallback for %s @%upt -> %s @%upt", familyName.c_str(), manager_.currentPointSize(),
+            script.family.c_str(), pointSize);
   }
 }
 
@@ -454,7 +583,10 @@ void SdCardFontSystem::setupUiFallbacksDirect(GfxRenderer& renderer, const char*
       continue;
     }
     const int sdFontId = manager_.loadFamilyExtraFile(path, familyName, pointSize, renderer);
-    if (sdFontId != 0) renderer.setFallbackFont(ui.fontId, sdFontId);
+    if (sdFontId != 0) {
+      renderer.addFallbackFont(ui.fontId, sdFontId);
+      renderer.setFallbackPrewarmOnDemand(ui.fontId);
+    }
   }
 }
 
@@ -563,7 +695,7 @@ DictionaryFontActivation SdCardFontSystem::activateDictionaryFont(GfxRenderer& r
     // after releasing it so its font data does not cause a false low-memory
     // fallback.
     const auto beforeReaderUnload = heap;
-    if (!manager_.currentFamilyName().empty()) manager_.unloadAll(renderer);
+    if (manager_.hasLoadedFonts()) manager_.unloadAll(renderer);
     loadedFontPointSize_ = 0;
     heap = MemoryBudget::snapshot();
     LOG_DBG("SDFS", "Released reader font before dictionary swap retry: free=%u->%u maxAlloc=%u->%u",
@@ -580,7 +712,7 @@ DictionaryFontActivation SdCardFontSystem::activateDictionaryFont(GfxRenderer& r
 
   // unloadAll() also drops optional CJK UI sizes before the dictionary file is
   // allocated, so both families are never resident at once.
-  if (!manager_.currentFamilyName().empty()) {
+  if (manager_.hasLoadedFonts()) {
     manager_.unloadAll(renderer);
   }
   loadedFontPointSize_ = 0;
@@ -604,7 +736,7 @@ int SdCardFontSystem::restoreReaderFont(GfxRenderer& renderer) {
 #endif
   const char* familyName = SETTINGS.sdFontFamilyName;
   if (!familyName || familyName[0] == '\0') {
-    if (!manager_.currentFamilyName().empty()) manager_.unloadAll(renderer);
+    if (manager_.hasLoadedFonts()) manager_.unloadAll(renderer);
     loadedFontPointSize_ = 0;
     MemoryBudget::logHeapShape("dict.font_after_restore");
     return ensureBuiltInReaderFont(renderer);
@@ -628,14 +760,14 @@ int SdCardFontSystem::restoreReaderFont(GfxRenderer& renderer) {
   if (!findInstalledFontFile(familyName, SETTINGS.getSdFontTargetPointSize(), FontFileSelection::Closest, path,
                              sizeof(path), selectedPointSize)) {
     LOG_ERR("SDFS", "Reader font unavailable while restoring: %s", familyName);
-    if (!manager_.currentFamilyName().empty()) manager_.unloadAll(renderer);
+    if (manager_.hasLoadedFonts()) manager_.unloadAll(renderer);
     loadedFontPointSize_ = 0;
     MemoryBudget::logHeapShape("dict.font_after_restore");
     return ensureBuiltInReaderFont(renderer);
   }
 
   if (manager_.currentFamilyName() != familyName || manager_.currentPointSize() != selectedPointSize) {
-    if (!manager_.currentFamilyName().empty()) manager_.unloadAll(renderer);
+    if (manager_.hasLoadedFonts()) manager_.unloadAll(renderer);
     if (!manager_.loadFamilyFile(path, familyName, selectedPointSize, renderer)) {
       LOG_ERR("SDFS", "Failed to restore reader font: %s", familyName);
       MemoryBudget::logHeapShape("dict.font_after_restore");
@@ -643,6 +775,7 @@ int SdCardFontSystem::restoreReaderFont(GfxRenderer& renderer) {
     }
     loadedFontPointSize_ = SETTINGS.getSdFontTargetPointSize();
     setupUiFallbacksDirect(renderer, familyName);
+    setupReaderScriptFallback(renderer);
   }
 
   const int fontId = manager_.getFontId(manager_.currentFamilyName());

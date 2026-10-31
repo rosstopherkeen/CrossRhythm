@@ -54,7 +54,16 @@ INTERVAL_PRESETS = {
     "cjk":         [(0x3000, 0x303F), (0x3040, 0x309F), (0x30A0, 0x30FF),
                     (0x4E00, 0x9FFF), (0xF900, 0xFAFF), (0xFF00, 0xFFEF)],
     "hangul":      [(0xAC00, 0xD7AF), (0x1100, 0x11FF), (0x3130, 0x318F)],
-    "kannada":     [(0x0C80, 0x0CFF)],
+    # Indic blocks. U+0964-0965 (danda, double danda) live in the Devanagari
+    # block but are the sentence punctuation of every one of these scripts, and
+    # no other preset carries them.
+    "devanagari":  [(0x0900, 0x097F), (0xA8E0, 0xA8FF)],
+    "bengali":     [(0x0980, 0x09FF), (0x0964, 0x0965)],
+    "oriya":       [(0x0B00, 0x0B7F), (0x0964, 0x0965)],
+    "tamil":       [(0x0B80, 0x0BFF), (0x0964, 0x0965)],
+    "telugu":      [(0x0C00, 0x0C7F), (0x0964, 0x0965)],
+    "kannada":     [(0x0C80, 0x0CFF), (0x0964, 0x0965)],
+    "malayalam":   [(0x0D00, 0x0D7F), (0x0964, 0x0965)],
     "cherokee":    [(0x13A0, 0x13FF), (0xAB70, 0xABBF)],
     "tifinagh":    [(0x2D30, 0x2D7F)],
     # Symbol blocks commonly seen in scifi/popsci/literary fiction.
@@ -105,31 +114,38 @@ def is_synthetic_blank_codepoint(code_point: int) -> bool:
     return any(start <= code_point <= end for start, end in SYNTHETIC_BLANK_CODEPOINT_RANGES)
 
 
-# Shaped Kannada forms (conjuncts, below-base consonants, merged vowel signs)
+# Shaped Indic forms (conjuncts, below-base consonants, merged vowel signs)
 # exist only as GSUB outputs with no cmap entry, so they are addressed by
-# private-use codepoints assigned in gen_kannada_shaping.py. That script writes
-# the map below; this script rasterizes the named glyphs at those codepoints so
-# the device shaper has something to draw.
-KANNADA_PUA_MAP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                    "kannada_pua_map.json")
+# private-use codepoints assigned in gen_indic_shaping.py. That script writes
+# one map per script; this script rasterizes the named glyphs at those
+# codepoints so the device shaper has something to draw.
+#
+# The key is the interval preset name, so requesting a script's block also
+# requests its shaped forms.
+SHAPED_SCRIPTS = ("devanagari", "bengali", "oriya", "tamil", "telugu", "kannada", "malayalam")
 
 
-def load_kannada_pua_forms():
+def shaped_pua_map_path(script):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{script}_pua_map.json")
+
+
+def load_shaped_pua_forms(script):
     """Return [(codepoint, glyph_name), ...], or [] when the map is absent."""
+    path = shaped_pua_map_path(script)
     try:
-        with open(KANNADA_PUA_MAP_PATH, encoding="utf-8") as handle:
+        with open(path, encoding="utf-8") as handle:
             payload = json.load(handle)
     except FileNotFoundError:
         return []
     except (OSError, ValueError) as exc:
-        print(f"warning: ignoring unreadable {KANNADA_PUA_MAP_PATH}: {exc}", file=sys.stderr)
+        print(f"warning: ignoring unreadable {path}: {exc}", file=sys.stderr)
         return []
     return [(form["codepoint"], form["glyph"]) for form in payload.get("forms", [])]
 
 
-def kannada_pua_interval():
+def shaped_pua_interval(script):
     """The interval covering every assigned shaped-form codepoint, or None."""
-    forms = load_kannada_pua_forms()
+    forms = load_shaped_pua_forms(script)
     if not forms:
         return None
     codepoints = [cp for cp, _ in forms]
@@ -168,17 +184,17 @@ def resolve_intervals(preset_str):
             all_intervals.append(unnamed_interval)
         else:
             all_intervals.extend(INTERVAL_PRESETS[name])
-            # Asking for Kannada means asking for readable Kannada, which needs
-            # the shaped forms too -- the block on its own renders conjuncts as
-            # separate letters with visible viramas.
-            if name == "kannada":
-                pua = kannada_pua_interval()
+            # Asking for an Indic script means asking for readable text in it,
+            # which needs the shaped forms too -- the block on its own renders
+            # conjuncts as separate letters with visible viramas.
+            if name in SHAPED_SCRIPTS:
+                pua = shaped_pua_interval(name)
                 if pua is not None:
                     all_intervals.append(pua)
                 else:
-                    print("warning: kannada requested but no shaped-form map found; "
-                          "run gen_kannada_shaping.py for correct conjunct rendering",
-                          file=sys.stderr)
+                    print(f"warning: {name} requested but no shaped-form map found; "
+                          f"run gen_indic_shaping.py --script {name} for correct "
+                          "conjunct rendering", file=sys.stderr)
 
     # Always add replacement character
     all_intervals.append((0xFFFD, 0xFFFD))
@@ -672,20 +688,29 @@ def rasterize_font_style(fontfile, size, intervals, style_id=0, force_autohint=F
     # Invalid_Size_Handle on some fonts.
     face.set_char_size(size << 6, size << 6, 150, 150)
     ligature_glyph_indices = extract_ligature_glyph_indices_fonttools(fontfile)
-    # Shaped Kannada forms are unencoded, so they reuse the same
+    # Shaped Indic forms are unencoded, so they reuse the same
     # codepoint -> glyph-index override path as unencoded ligatures. Names are
     # resolved against this face, so a font without them simply contributes
     # nothing and the PUA interval validates away.
-    kannada_missing = []
-    for pua_code_point, glyph_name in load_kannada_pua_forms():
-        glyph_index = face.get_name_index(glyph_name.encode("ascii"))
-        if glyph_index:
-            ligature_glyph_indices[pua_code_point] = glyph_index
-        else:
-            kannada_missing.append(glyph_name)
-    if kannada_missing:
-        print(f"  [{style_label}] {len(kannada_missing)} shaped Kannada form(s) absent from this "
-              f"face (first: {kannada_missing[0]})", file=sys.stderr)
+    #
+    # Every script's map is consulted because this function is not told which
+    # presets were requested. A face that is not this script at all resolves
+    # none of its glyph names, which is the normal case and not worth a warning;
+    # resolving some but not all means the font IS this script and is missing
+    # forms the shaper will ask for, which is.
+    for script in SHAPED_SCRIPTS:
+        missing = []
+        resolved = 0
+        for pua_code_point, glyph_name in load_shaped_pua_forms(script):
+            glyph_index = face.get_name_index(glyph_name.encode("ascii"))
+            if glyph_index:
+                ligature_glyph_indices[pua_code_point] = glyph_index
+                resolved += 1
+            else:
+                missing.append(glyph_name)
+        if missing and resolved:
+            print(f"  [{style_label}] {len(missing)} shaped {script} form(s) absent from this "
+                  f"face (first: {missing[0]})", file=sys.stderr)
     # ``fallback_fontfile`` is retained as a compatibility alias for callers
     # that used the original single-fallback API. New callers should pass an
     # ordered list through ``fallback_fontfiles``.

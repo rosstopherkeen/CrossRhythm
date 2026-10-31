@@ -1,0 +1,1192 @@
+{
+  "comment": "Shaped Oriya forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "script": "oriya",
+  "source_font": "NotoSansOriya.ttf",
+  "pua_base": 61952,
+  "forms": [
+    {
+      "codepoint": 61952,
+      "glyph": "uni0B3F.wide"
+    },
+    {
+      "codepoint": 61953,
+      "glyph": "uni0B56.stem"
+    },
+    {
+      "codepoint": 61954,
+      "glyph": "uni0B56.umbrella"
+    },
+    {
+      "codepoint": 61955,
+      "glyph": "uni0B300B4D"
+    },
+    {
+      "codepoint": 61956,
+      "glyph": "kharaoriya"
+    },
+    {
+      "codepoint": 61957,
+      "glyph": "garaoriya"
+    },
+    {
+      "codepoint": 61958,
+      "glyph": "gharaoriya"
+    },
+    {
+      "codepoint": 61959,
+      "glyph": "caraoriya"
+    },
+    {
+      "codepoint": 61960,
+      "glyph": "jharaoriya"
+    },
+    {
+      "codepoint": 61961,
+      "glyph": "nyaraoriya"
+    },
+    {
+      "codepoint": 61962,
+      "glyph": "ttaraoriya"
+    },
+    {
+      "codepoint": 61963,
+      "glyph": "ttharaoriya"
+    },
+    {
+      "codepoint": 61964,
+      "glyph": "ddharaoriya"
+    },
+    {
+      "codepoint": 61965,
+      "glyph": "nnaraoriya"
+    },
+    {
+      "codepoint": 61966,
+      "glyph": "taraoriya"
+    },
+    {
+      "codepoint": 61967,
+      "glyph": "tharaoriya"
+    },
+    {
+      "codepoint": 61968,
+      "glyph": "daraoriya"
+    },
+    {
+      "codepoint": 61969,
+      "glyph": "dharaoriya"
+    },
+    {
+      "codepoint": 61970,
+      "glyph": "naraoriya"
+    },
+    {
+      "codepoint": 61971,
+      "glyph": "paraoriya"
+    },
+    {
+      "codepoint": 61972,
+      "glyph": "pharaoriya"
+    },
+    {
+      "codepoint": 61973,
+      "glyph": "baraoriya"
+    },
+    {
+      "codepoint": 61974,
+      "glyph": "maraoriya"
+    },
+    {
+      "codepoint": 61975,
+      "glyph": "yaraoriya"
+    },
+    {
+      "codepoint": 61976,
+      "glyph": "laraoriya"
+    },
+    {
+      "codepoint": 61977,
+      "glyph": "llaraoriya"
+    },
+    {
+      "codepoint": 61978,
+      "glyph": "sharaoriya"
+    },
+    {
+      "codepoint": 61979,
+      "glyph": "ssaraoriya"
+    },
+    {
+      "codepoint": 61980,
+      "glyph": "saraoriya"
+    },
+    {
+      "codepoint": 61981,
+      "glyph": "haraoriya"
+    },
+    {
+      "codepoint": 61982,
+      "glyph": "rraraoriya"
+    },
+    {
+      "codepoint": 61983,
+      "glyph": "rharaoriya"
+    },
+    {
+      "codepoint": 61984,
+      "glyph": "yyaraoriya"
+    },
+    {
+      "codepoint": 61985,
+      "glyph": "uni0B15.base"
+    },
+    {
+      "codepoint": 61986,
+      "glyph": "uni0B16.base"
+    },
+    {
+      "codepoint": 61987,
+      "glyph": "uni0B17.base"
+    },
+    {
+      "codepoint": 61988,
+      "glyph": "uni0B18.base"
+    },
+    {
+      "codepoint": 61989,
+      "glyph": "uni0B19.base"
+    },
+    {
+      "codepoint": 61990,
+      "glyph": "uni0B1A.base"
+    },
+    {
+      "codepoint": 61991,
+      "glyph": "uni0B1B.base"
+    },
+    {
+      "codepoint": 61992,
+      "glyph": "uni0B1D.base"
+    },
+    {
+      "codepoint": 61993,
+      "glyph": "uni0B1E.base"
+    },
+    {
+      "codepoint": 61994,
+      "glyph": "uni0B1F.base"
+    },
+    {
+      "codepoint": 61995,
+      "glyph": "uni0B20.base"
+    },
+    {
+      "codepoint": 61996,
+      "glyph": "uni0B21.base"
+    },
+    {
+      "codepoint": 61997,
+      "glyph": "uni0B22.base"
+    },
+    {
+      "codepoint": 61998,
+      "glyph": "uni0B23.base"
+    },
+    {
+      "codepoint": 61999,
+      "glyph": "uni0B24.base"
+    },
+    {
+      "codepoint": 62000,
+      "glyph": "uni0B25.base"
+    },
+    {
+      "codepoint": 62001,
+      "glyph": "uni0B26.base"
+    },
+    {
+      "codepoint": 62002,
+      "glyph": "uni0B27.base"
+    },
+    {
+      "codepoint": 62003,
+      "glyph": "uni0B28.base"
+    },
+    {
+      "codepoint": 62004,
+      "glyph": "uni0B2A.base"
+    },
+    {
+      "codepoint": 62005,
+      "glyph": "uni0B2B.base"
+    },
+    {
+      "codepoint": 62006,
+      "glyph": "uni0B2C.base"
+    },
+    {
+      "codepoint": 62007,
+      "glyph": "uni0B2D.base"
+    },
+    {
+      "codepoint": 62008,
+      "glyph": "uni0B2E.base"
+    },
+    {
+      "codepoint": 62009,
+      "glyph": "uni0B2F.base"
+    },
+    {
+      "codepoint": 62010,
+      "glyph": "uni0B32.base"
+    },
+    {
+      "codepoint": 62011,
+      "glyph": "uni0B33.base"
+    },
+    {
+      "codepoint": 62012,
+      "glyph": "uni0B36.base"
+    },
+    {
+      "codepoint": 62013,
+      "glyph": "uni0B37.base"
+    },
+    {
+      "codepoint": 62014,
+      "glyph": "uni0B38.base"
+    },
+    {
+      "codepoint": 62015,
+      "glyph": "uni0B39.base"
+    },
+    {
+      "codepoint": 62016,
+      "glyph": "uni0B4D0B15"
+    },
+    {
+      "codepoint": 62017,
+      "glyph": "uni0B4D0B16"
+    },
+    {
+      "codepoint": 62018,
+      "glyph": "uni0B4D0B17"
+    },
+    {
+      "codepoint": 62019,
+      "glyph": "uni0B4D0B18"
+    },
+    {
+      "codepoint": 62020,
+      "glyph": "uni0B4D0B19"
+    },
+    {
+      "codepoint": 62021,
+      "glyph": "uni0B4D0B1A"
+    },
+    {
+      "codepoint": 62022,
+      "glyph": "uni0B4D0B1B"
+    },
+    {
+      "codepoint": 62023,
+      "glyph": "uni0B4D0B1C"
+    },
+    {
+      "codepoint": 62024,
+      "glyph": "uni0B4D0B1D"
+    },
+    {
+      "codepoint": 62025,
+      "glyph": "uni0B4D0B1F"
+    },
+    {
+      "codepoint": 62026,
+      "glyph": "uni0B4D0B20"
+    },
+    {
+      "codepoint": 62027,
+      "glyph": "uni0B4D0B21"
+    },
+    {
+      "codepoint": 62028,
+      "glyph": "uni0B4D0B22"
+    },
+    {
+      "codepoint": 62029,
+      "glyph": "uni0B4D0B23"
+    },
+    {
+      "codepoint": 62030,
+      "glyph": "uni0B4D0B24"
+    },
+    {
+      "codepoint": 62031,
+      "glyph": "uni0B4D0B25"
+    },
+    {
+      "codepoint": 62032,
+      "glyph": "uni0B4D0B26"
+    },
+    {
+      "codepoint": 62033,
+      "glyph": "uni0B4D0B27"
+    },
+    {
+      "codepoint": 62034,
+      "glyph": "uni0B4D0B28"
+    },
+    {
+      "codepoint": 62035,
+      "glyph": "uni0B4D0B2A"
+    },
+    {
+      "codepoint": 62036,
+      "glyph": "uni0B4D0B2B"
+    },
+    {
+      "codepoint": 62037,
+      "glyph": "uni0B4D0B2D"
+    },
+    {
+      "codepoint": 62038,
+      "glyph": "uni0B4D0B2E"
+    },
+    {
+      "codepoint": 62039,
+      "glyph": "uni0B4D0B2F"
+    },
+    {
+      "codepoint": 62040,
+      "glyph": "uni0B4D0B30"
+    },
+    {
+      "codepoint": 62041,
+      "glyph": "uni0B4D0B32"
+    },
+    {
+      "codepoint": 62042,
+      "glyph": "uni0B4D0B33"
+    },
+    {
+      "codepoint": 62043,
+      "glyph": "uni0B4D0B35"
+    },
+    {
+      "codepoint": 62044,
+      "glyph": "uni0B4D0B36"
+    },
+    {
+      "codepoint": 62045,
+      "glyph": "uni0B4D0B37"
+    },
+    {
+      "codepoint": 62046,
+      "glyph": "uni0B4D0B38"
+    },
+    {
+      "codepoint": 62047,
+      "glyph": "uni0B4D0B39"
+    },
+    {
+      "codepoint": 62048,
+      "glyph": "uni0B4D0B5F"
+    },
+    {
+      "codepoint": 62049,
+      "glyph": "uni0B3F.below"
+    },
+    {
+      "codepoint": 62050,
+      "glyph": "kakaoriya"
+    },
+    {
+      "codepoint": 62051,
+      "glyph": "kacaoriya"
+    },
+    {
+      "codepoint": 62052,
+      "glyph": "kataoriya"
+    },
+    {
+      "codepoint": 62053,
+      "glyph": "kattaoriya"
+    },
+    {
+      "codepoint": 62054,
+      "glyph": "kavaoriya"
+    },
+    {
+      "codepoint": 62055,
+      "glyph": "kallaoriya"
+    },
+    {
+      "codepoint": 62056,
+      "glyph": "kassaoriya"
+    },
+    {
+      "codepoint": 62057,
+      "glyph": "kasaoriya"
+    },
+    {
+      "codepoint": 62058,
+      "glyph": "gadaoriya"
+    },
+    {
+      "codepoint": 62059,
+      "glyph": "gadhaoriya"
+    },
+    {
+      "codepoint": 62060,
+      "glyph": "ganaoriya"
+    },
+    {
+      "codepoint": 62061,
+      "glyph": "gallaoriya"
+    },
+    {
+      "codepoint": 62062,
+      "glyph": "ghanaoriya"
+    },
+    {
+      "codepoint": 62063,
+      "glyph": "ngakaoriya"
+    },
+    {
+      "codepoint": 62064,
+      "glyph": "ngakhaoriya"
+    },
+    {
+      "codepoint": 62065,
+      "glyph": "ngagaoriya"
+    },
+    {
+      "codepoint": 62066,
+      "glyph": "ngaghaoriya"
+    },
+    {
+      "codepoint": 62067,
+      "glyph": "cacaoriya"
+    },
+    {
+      "codepoint": 62068,
+      "glyph": "cachaoriya"
+    },
+    {
+      "codepoint": 62069,
+      "glyph": "jajaoriya"
+    },
+    {
+      "codepoint": 62070,
+      "glyph": "janyaoriya"
+    },
+    {
+      "codepoint": 62071,
+      "glyph": "javaoriya"
+    },
+    {
+      "codepoint": 62072,
+      "glyph": "nyacaoriya"
+    },
+    {
+      "codepoint": 62073,
+      "glyph": "nyachaoriya"
+    },
+    {
+      "codepoint": 62074,
+      "glyph": "nyajaoriya"
+    },
+    {
+      "codepoint": 62075,
+      "glyph": "nyajhaoriya"
+    },
+    {
+      "codepoint": 62076,
+      "glyph": "ttattaoriya"
+    },
+    {
+      "codepoint": 62077,
+      "glyph": "ddagaoriya"
+    },
+    {
+      "codepoint": 62078,
+      "glyph": "ddaddaoriya"
+    },
+    {
+      "codepoint": 62079,
+      "glyph": "nnattaoriya"
+    },
+    {
+      "codepoint": 62080,
+      "glyph": "nnatthaoriya"
+    },
+    {
+      "codepoint": 62081,
+      "glyph": "nnaddaoriya"
+    },
+    {
+      "codepoint": 62082,
+      "glyph": "nnaddhaoriya"
+    },
+    {
+      "codepoint": 62083,
+      "glyph": "nnannaoriya"
+    },
+    {
+      "codepoint": 62084,
+      "glyph": "tataoriya"
+    },
+    {
+      "codepoint": 62085,
+      "glyph": "tathaoriya"
+    },
+    {
+      "codepoint": 62086,
+      "glyph": "tanaoriya"
+    },
+    {
+      "codepoint": 62087,
+      "glyph": "tapaoriya"
+    },
+    {
+      "codepoint": 62088,
+      "glyph": "tavaoriya"
+    },
+    {
+      "codepoint": 62089,
+      "glyph": "tamaoriya"
+    },
+    {
+      "codepoint": 62090,
+      "glyph": "tasaoriya"
+    },
+    {
+      "codepoint": 62091,
+      "glyph": "dagaoriya"
+    },
+    {
+      "codepoint": 62092,
+      "glyph": "daghaoriya"
+    },
+    {
+      "codepoint": 62093,
+      "glyph": "dadaoriya"
+    },
+    {
+      "codepoint": 62094,
+      "glyph": "dadhaoriya"
+    },
+    {
+      "codepoint": 62095,
+      "glyph": "davaoriya"
+    },
+    {
+      "codepoint": 62096,
+      "glyph": "dabhaoriya"
+    },
+    {
+      "codepoint": 62097,
+      "glyph": "dhavaoriya"
+    },
+    {
+      "codepoint": 62098,
+      "glyph": "dhayaoriya"
+    },
+    {
+      "codepoint": 62099,
+      "glyph": "dhayyaoriya"
+    },
+    {
+      "codepoint": 62100,
+      "glyph": "nataoriya"
+    },
+    {
+      "codepoint": 62101,
+      "glyph": "nathaoriya"
+    },
+    {
+      "codepoint": 62102,
+      "glyph": "nadaoriya"
+    },
+    {
+      "codepoint": 62103,
+      "glyph": "nadhaoriya"
+    },
+    {
+      "codepoint": 62104,
+      "glyph": "nanaoriya"
+    },
+    {
+      "codepoint": 62105,
+      "glyph": "pakaoriya"
+    },
+    {
+      "codepoint": 62106,
+      "glyph": "pataoriya"
+    },
+    {
+      "codepoint": 62107,
+      "glyph": "pattaoriya"
+    },
+    {
+      "codepoint": 62108,
+      "glyph": "papaoriya"
+    },
+    {
+      "codepoint": 62109,
+      "glyph": "pallaoriya"
+    },
+    {
+      "codepoint": 62110,
+      "glyph": "pasaoriya"
+    },
+    {
+      "codepoint": 62111,
+      "glyph": "bajaoriya"
+    },
+    {
+      "codepoint": 62112,
+      "glyph": "badaoriya"
+    },
+    {
+      "codepoint": 62113,
+      "glyph": "badhaoriya"
+    },
+    {
+      "codepoint": 62114,
+      "glyph": "babaoriya"
+    },
+    {
+      "codepoint": 62115,
+      "glyph": "mapaoriya"
+    },
+    {
+      "codepoint": 62116,
+      "glyph": "maphaoriya"
+    },
+    {
+      "codepoint": 62117,
+      "glyph": "mabaoriya"
+    },
+    {
+      "codepoint": 62118,
+      "glyph": "mabhaoriya"
+    },
+    {
+      "codepoint": 62119,
+      "glyph": "mamaoriya"
+    },
+    {
+      "codepoint": 62120,
+      "glyph": "llakaoriya"
+    },
+    {
+      "codepoint": 62121,
+      "glyph": "llallaoriya"
+    },
+    {
+      "codepoint": 62122,
+      "glyph": "llapaoriya"
+    },
+    {
+      "codepoint": 62123,
+      "glyph": "llaphaoriya"
+    },
+    {
+      "codepoint": 62124,
+      "glyph": "lakaoriya"
+    },
+    {
+      "codepoint": 62125,
+      "glyph": "lagaoriya"
+    },
+    {
+      "codepoint": 62126,
+      "glyph": "lapaoriya"
+    },
+    {
+      "codepoint": 62127,
+      "glyph": "laphaoriya"
+    },
+    {
+      "codepoint": 62128,
+      "glyph": "lamaoriya"
+    },
+    {
+      "codepoint": 62129,
+      "glyph": "lalaoriya"
+    },
+    {
+      "codepoint": 62130,
+      "glyph": "lallaoriya"
+    },
+    {
+      "codepoint": 62131,
+      "glyph": "shacaoriya"
+    },
+    {
+      "codepoint": 62132,
+      "glyph": "shachaoriya"
+    },
+    {
+      "codepoint": 62133,
+      "glyph": "shavaoriya"
+    },
+    {
+      "codepoint": 62134,
+      "glyph": "shallaoriya"
+    },
+    {
+      "codepoint": 62135,
+      "glyph": "ssakaoriya"
+    },
+    {
+      "codepoint": 62136,
+      "glyph": "ssattaoriya"
+    },
+    {
+      "codepoint": 62137,
+      "glyph": "ssatthaoriya"
+    },
+    {
+      "codepoint": 62138,
+      "glyph": "ssannaoriya"
+    },
+    {
+      "codepoint": 62139,
+      "glyph": "ssapaoriya"
+    },
+    {
+      "codepoint": 62140,
+      "glyph": "ssaphaoriya"
+    },
+    {
+      "codepoint": 62141,
+      "glyph": "sakaoriya"
+    },
+    {
+      "codepoint": 62142,
+      "glyph": "sakhaoriya"
+    },
+    {
+      "codepoint": 62143,
+      "glyph": "sataoriya"
+    },
+    {
+      "codepoint": 62144,
+      "glyph": "sathaoriya"
+    },
+    {
+      "codepoint": 62145,
+      "glyph": "sanaoriya"
+    },
+    {
+      "codepoint": 62146,
+      "glyph": "sapaoriya"
+    },
+    {
+      "codepoint": 62147,
+      "glyph": "saphaoriya"
+    },
+    {
+      "codepoint": 62148,
+      "glyph": "savaoriya"
+    },
+    {
+      "codepoint": 62149,
+      "glyph": "samaoriya"
+    },
+    {
+      "codepoint": 62150,
+      "glyph": "hakaoriya"
+    },
+    {
+      "codepoint": 62151,
+      "glyph": "hajaoriya"
+    },
+    {
+      "codepoint": 62152,
+      "glyph": "hanaoriya"
+    },
+    {
+      "codepoint": 62153,
+      "glyph": "hamaoriya"
+    },
+    {
+      "codepoint": 62154,
+      "glyph": "halaoriya"
+    },
+    {
+      "codepoint": 62155,
+      "glyph": "hallaoriya"
+    },
+    {
+      "codepoint": 62156,
+      "glyph": "havaoriya"
+    },
+    {
+      "codepoint": 62157,
+      "glyph": "hauoriya"
+    },
+    {
+      "codepoint": 62158,
+      "glyph": "hauuoriya"
+    },
+    {
+      "codepoint": 62159,
+      "glyph": "harVocalicoriya"
+    },
+    {
+      "codepoint": 62160,
+      "glyph": "iMatrarephoriya"
+    },
+    {
+      "codepoint": 62161,
+      "glyph": "iMatrarephoriya.wide"
+    },
+    {
+      "codepoint": 62162,
+      "glyph": "rephaiLengthoriya"
+    },
+    {
+      "codepoint": 62163,
+      "glyph": "rephaiLengthoriya.stem"
+    },
+    {
+      "codepoint": 62164,
+      "glyph": "rephaiLengthoriya.umbrella"
+    },
+    {
+      "codepoint": 62165,
+      "glyph": "rephauLengthoriya"
+    },
+    {
+      "codepoint": 62166,
+      "glyph": "rauMatraoriya.below"
+    },
+    {
+      "codepoint": 62167,
+      "glyph": "rauuMatraoriya.below"
+    },
+    {
+      "codepoint": 62168,
+      "glyph": "rarVocalicMatraoriya.below"
+    },
+    {
+      "codepoint": 62169,
+      "glyph": "rarrVocalicMatraoriya.below"
+    },
+    {
+      "codepoint": 62170,
+      "glyph": "tarauMatraoriya"
+    },
+    {
+      "codepoint": 62171,
+      "glyph": "darauMatraoriya"
+    },
+    {
+      "codepoint": 62172,
+      "glyph": "natauMatraoriya"
+    },
+    {
+      "codepoint": 62173,
+      "glyph": "saparVocalicMatraoriya"
+    },
+    {
+      "codepoint": 62174,
+      "glyph": "uni0B5C.base.alt"
+    },
+    {
+      "codepoint": 62175,
+      "glyph": "uni0B5D.base.alt"
+    },
+    {
+      "codepoint": 62176,
+      "glyph": "uni0B41.001"
+    },
+    {
+      "codepoint": 62177,
+      "glyph": "uni0B41.003"
+    },
+    {
+      "codepoint": 62178,
+      "glyph": "uni0B41.005"
+    },
+    {
+      "codepoint": 62179,
+      "glyph": "uni0B41.006"
+    },
+    {
+      "codepoint": 62180,
+      "glyph": "uni0B41.008"
+    },
+    {
+      "codepoint": 62181,
+      "glyph": "uni0B41.009"
+    },
+    {
+      "codepoint": 62182,
+      "glyph": "uni0B41.011"
+    },
+    {
+      "codepoint": 62183,
+      "glyph": "uni0B41.012"
+    },
+    {
+      "codepoint": 62184,
+      "glyph": "uni0B41.013"
+    },
+    {
+      "codepoint": 62185,
+      "glyph": "uni0B41.014"
+    },
+    {
+      "codepoint": 62186,
+      "glyph": "uni0B41.015"
+    },
+    {
+      "codepoint": 62187,
+      "glyph": "uni0B41.016"
+    },
+    {
+      "codepoint": 62188,
+      "glyph": "uni0B41.017"
+    },
+    {
+      "codepoint": 62189,
+      "glyph": "uni0B41.018"
+    },
+    {
+      "codepoint": 62190,
+      "glyph": "uni0B41.019"
+    },
+    {
+      "codepoint": 62191,
+      "glyph": "uni0B41.020"
+    },
+    {
+      "codepoint": 62192,
+      "glyph": "uni0B41.021"
+    },
+    {
+      "codepoint": 62193,
+      "glyph": "uni0B41.022"
+    },
+    {
+      "codepoint": 62194,
+      "glyph": "uni0B41.024"
+    },
+    {
+      "codepoint": 62195,
+      "glyph": "uni0B41.025"
+    },
+    {
+      "codepoint": 62196,
+      "glyph": "uni0B41.027"
+    },
+    {
+      "codepoint": 62197,
+      "glyph": "uni0B41.028"
+    },
+    {
+      "codepoint": 62198,
+      "glyph": "uni0B42.001"
+    },
+    {
+      "codepoint": 62199,
+      "glyph": "uni0B42.003"
+    },
+    {
+      "codepoint": 62200,
+      "glyph": "uni0B42.005"
+    },
+    {
+      "codepoint": 62201,
+      "glyph": "uni0B42.006"
+    },
+    {
+      "codepoint": 62202,
+      "glyph": "uni0B42.008"
+    },
+    {
+      "codepoint": 62203,
+      "glyph": "uni0B42.009"
+    },
+    {
+      "codepoint": 62204,
+      "glyph": "uni0B42.011"
+    },
+    {
+      "codepoint": 62205,
+      "glyph": "uni0B42.012"
+    },
+    {
+      "codepoint": 62206,
+      "glyph": "uni0B42.013"
+    },
+    {
+      "codepoint": 62207,
+      "glyph": "uni0B42.014"
+    },
+    {
+      "codepoint": 62208,
+      "glyph": "uni0B42.015"
+    },
+    {
+      "codepoint": 62209,
+      "glyph": "uni0B42.016"
+    },
+    {
+      "codepoint": 62210,
+      "glyph": "uni0B42.017"
+    },
+    {
+      "codepoint": 62211,
+      "glyph": "uni0B42.018"
+    },
+    {
+      "codepoint": 62212,
+      "glyph": "uni0B42.019"
+    },
+    {
+      "codepoint": 62213,
+      "glyph": "uni0B42.020"
+    },
+    {
+      "codepoint": 62214,
+      "glyph": "uni0B42.021"
+    },
+    {
+      "codepoint": 62215,
+      "glyph": "uni0B42.022"
+    },
+    {
+      "codepoint": 62216,
+      "glyph": "uni0B42.024"
+    },
+    {
+      "codepoint": 62217,
+      "glyph": "uni0B42.025"
+    },
+    {
+      "codepoint": 62218,
+      "glyph": "uni0B42.027"
+    },
+    {
+      "codepoint": 62219,
+      "glyph": "uni0B42.028"
+    },
+    {
+      "codepoint": 62220,
+      "glyph": "uni0B2D.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62221,
+      "glyph": "bharaoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62222,
+      "glyph": "uni0B1B.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62223,
+      "glyph": "charaoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62224,
+      "glyph": "uni0B21.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62225,
+      "glyph": "ddaraoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62226,
+      "glyph": "uni0B22.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62227,
+      "glyph": "uni0B39.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62228,
+      "glyph": "uni0B1C.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62229,
+      "glyph": "uni0B1C.base.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62230,
+      "glyph": "jajhaoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62231,
+      "glyph": "jaraoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62232,
+      "glyph": "uni0B15.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62233,
+      "glyph": "karaoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62234,
+      "glyph": "uni0B19.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62235,
+      "glyph": "ngaraoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62236,
+      "glyph": "uni0B5D.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62237,
+      "glyph": "uni0B5D.alt.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62238,
+      "glyph": "uni0B44.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62239,
+      "glyph": "uni0B5C.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62240,
+      "glyph": "uni0B5C.alt.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62241,
+      "glyph": "uni0B37.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62242,
+      "glyph": "uni0B24.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62243,
+      "glyph": "takaoriya.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62244,
+      "glyph": "uni0B42.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62245,
+      "glyph": "uni0B35.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62246,
+      "glyph": "uni0B35.base.BRACKET.varAlt01"
+    },
+    {
+      "codepoint": 62247,
+      "glyph": "varaoriya.BRACKET.varAlt01"
+    }
+  ]
+}

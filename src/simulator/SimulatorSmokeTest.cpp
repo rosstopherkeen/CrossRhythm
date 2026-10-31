@@ -7,10 +7,12 @@
 #include <LibraryBuilder.h>
 #include <LibraryIndexFile.h>
 #include <Logging.h>
+#include <Memory.h>
 
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
+#include <cstring>
 #include <exception>
 #include <filesystem>
 
@@ -36,6 +38,10 @@
 #include "SettingsList.h"
 #include "activities/Activity.h"
 #include "activities/ActivityManager.h"
+#include "activities/boot_sleep/ChargingAnimation.h"
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+#include "activities/boot_sleep/ChargingFramesBuiltin.h"
+#endif
 #include "activities/home/HomeActivity.h"
 #include "activities/home/RecentBookProgress.h"
 #include "activities/library/LibraryActivity.h"
@@ -357,6 +363,380 @@ class SimulatorSmokeTest {
     }
     std::fclose(image);
   }
+
+  // Every setting the device persists must be reachable from some Settings page. Pages are hand-picked
+  // lists, so a setting added only to the base list silently never shows up on the device.
+  static void verifyEverySettingIsOnAPage() {
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+    // City Scape is listed only while City Scapes is the wallpaper; select it so the check sees it.
+    const uint8_t savedSleepScreen = SETTINGS.sleepScreen;
+    SETTINGS.sleepScreen = CrossPointSettings::CITY_SCAPES;
+#endif
+    const auto all = getSettingsList();
+    std::vector<const char*> shown;
+    auto collect = [&shown](const std::vector<SettingInfo>& page) {
+      for (const auto& item : page) {
+        if (item.key) shown.push_back(item.key);
+      }
+    };
+    collect(buildReaderSettingsParentList(all));
+    collect(buildBookReaderSettingsParentList(all));
+    collect(buildReaderFontSettingsList(all));
+    collect(buildReaderPageLayoutSettingsList(all));
+    collect(buildReaderScreenMarginSettingsList(all));
+    collect(buildControlsSettingsParentList(all));
+    collect(buildControlsTapsGesturesSettingsList(all));
+    collect(buildControlsTwoFingerSwipeSettingsList(all));
+    collect(buildControlsEdgeGestureSettingsList(all));
+    collect(buildControlsHomeButtonSettingsList(all));
+    collect(buildControlsPowerSettingsList(all));
+    collect(buildControlsFrontButtonSettingsList(all));
+    collect(buildControlsSideButtonSettingsList(all));
+    collect(buildGroupedDisplaySettingsList(all));
+    collect(buildDisplayFrontlightSettingsList(all));
+    collect(buildDisplaySleepSettingsList(all));
+    collect(buildSystemSettingsParentList(all));
+    collect(buildSystemDeviceSettingsList(all));
+    collect(buildSystemFilesCacheSettingsList(all));
+    collect(buildFileBrowserSettingsList(all));
+    collect(buildSystemReadingStatsSettingsList(all));
+    collect(buildSystemGlobalStatsSettingsList(all));
+    // Settings that already existed off these pages when this check was added: edited from their own
+    // screens (status bar, KOReader, frontlight, file transfer), shown conditionally, or internal flags.
+    // A new setting must not be added here; put it on a page.
+    static constexpr const char* kOffPage[] = {
+        "clockHasBeenSynced", "frontlightBrightness", "frontlightOn", "frontlightWarmth", "hideClock", "koMatchMethod",
+        "koPassword", "koSendMetadata", "koServerUrl", "koSyncBehavior", "koUsername", "libraryUseMetadata",
+        "nearbyReceiveFolder", "opdsDownloadFolder", "pwrBtnFootnoteBack", "stablePageNumbers", "statusBarBattery",
+        "statusBarBookPercentageFormat", "statusBarBookProgressPercentage", "statusBarChapterPageCount",
+        "statusBarProgressBar", "statusBarProgressBarThickness", "statusBarTimeLeft", "statusBarTitle",
+        "swapLibraryFileBrowser", "touchReaderControls", "xtcStatusBarMode",
+        // Shown only on boards with a clock, a frontlight or the side-button chord.
+        "autoBackupStats", "clockFormat", "clockUtcOffsetQ", "dateFormat", "dateSeparator", "frontlightScheduleEnabled",
+        "frontlightScheduleEnd", "frontlightScheduleStart", "sideButtonChordAction"};
+    int missing = 0;
+    for (const auto& setting : all) {
+      if (!setting.key) continue;
+      if (std::any_of(std::begin(kOffPage), std::end(kOffPage),
+                      [&setting](const char* key) { return std::strcmp(key, setting.key) == 0; }))
+        continue;
+      const bool onPage = std::any_of(shown.begin(), shown.end(),
+                                      [&setting](const char* key) { return std::strcmp(key, setting.key) == 0; });
+      if (!onPage) {
+        LOG_ERR("SMOKE", "Setting not on any Settings page: %s", setting.key);
+        ++missing;
+      }
+    }
+    if (missing > 0) fail("%d settings are not on any Settings page", missing);
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+    // The charging animation is its own line on the Display page, not part of the Sleep Screen menu.
+    const auto display = buildGroupedDisplaySettingsList(all);
+    if (std::none_of(display.begin(), display.end(),
+                     [](const SettingInfo& item) { return settingKeyIs(item, "chargingAnimation"); }))
+      fail("Charging Animation is not on the Display page");
+    // Every 5% step decodes to exactly the generator's image: with the charge underline (charging
+    // animation) and without it (City Scapes).
+    auto pixels = makeUniqueNoThrow<uint8_t[]>(ChargingAnimation::kFrameBufferBytes);
+    if (!pixels) fail("No memory for a charging frame");
+    for (uint16_t percent = 0; percent <= 100; percent += 5) {
+      for (const bool chargeBars : {true, false}) {
+        if (!ChargingAnimation::decodeFrame(pixels.get(), percent, chargeBars))
+          fail("Built-in frame for %u%% (bars=%d) did not decode", percent, chargeBars);
+        const uint32_t crc = crc32(pixels.get(), ChargingAnimation::kFrameBufferBytes - 1);
+        if (crc != ChargingAnimation::expectedFrameCrc(percent, chargeBars))
+          fail("Built-in frame for %u%% (bars=%d) differs from the generator: crc %08x", percent, chargeBars,
+               static_cast<unsigned>(crc));
+      }
+      if (!ChargingAnimation::drawFrame(renderer, percent, true)) fail("Charging frame for %u%% did not draw", percent);
+    }
+    renderer.clearScreen();
+    LOG_INF("SMOKE", "Charging Animation is on the Display page; all frames match with and without bars");
+    verifyCityScapesSettings(all, savedSleepScreen);
+    verifyCardScenes();
+    verifySdScenes();
+#endif
+    LOG_INF("SMOKE", "All %zu settings are on a Settings page", all.size());
+  }
+
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+  // zlib CRC-32 (reflected, polynomial 0xEDB88320), matching Python's zlib.crc32.
+  static uint32_t crc32(const uint8_t* data, const size_t size) {
+    uint32_t crc = 0xFFFFFFFFu;
+    for (size_t i = 0; i < size; ++i) {
+      crc ^= data[i];
+      for (int bit = 0; bit < 8; ++bit) crc = (crc >> 1) ^ (0xEDB88320u & (0u - (crc & 1u)));
+    }
+    return ~crc;
+  }
+
+  static void verifyCityScapesSettings(const std::vector<SettingInfo>& all, const uint8_t savedSleepScreen) {
+    const auto findKey = [](const std::vector<SettingInfo>& page, const char* key) {
+      return std::find_if(page.begin(), page.end(), [key](const SettingInfo& item) { return settingKeyIs(item, key); });
+    };
+    // Wallpaper offers City Scapes.
+    const auto wallpaper = findKey(all, "sleepScreen");
+    if (wallpaper == all.end() || std::find(wallpaper->enumValues.begin(), wallpaper->enumValues.end(),
+                                            StrId::STR_CITY_SCAPES) == wallpaper->enumValues.end())
+      fail("Wallpaper has no City Scapes option");
+    // With City Scapes selected, City Scape is the row right after Wallpaper; otherwise it is absent.
+    const auto withCityScapes = buildDisplaySleepSettingsList(all);
+    if (withCityScapes.size() < 2 || !settingKeyIs(withCityScapes[0], "sleepScreen") ||
+        !settingKeyIs(withCityScapes[1], "cityScape"))
+      fail("City Scape is not the row after Wallpaper when City Scapes is selected");
+    SETTINGS.sleepScreen = CrossPointSettings::COVER;
+    const auto withCover = buildDisplaySleepSettingsList(getSettingsList());
+    if (findKey(withCover, "cityScape") != withCover.end())
+      fail("City Scape is listed while Wallpaper is not City Scapes");
+    // Both pickers open their option list instead of cycling in place.
+    const auto cityScape = findKey(all, "cityScape");
+    const auto charging = findKey(all, "chargingAnimation");
+    if (cityScape == all.end() || charging == all.end() || !settingAlwaysOpensOptionList(*cityScape) ||
+        !settingAlwaysOpensOptionList(*charging))
+      fail("City Scape / Charging Animation do not open an option list");
+    if (cityScape->enumStringValues.empty() || cityScape->enumStringValues[0] != ChargingAnimation::builtinTitle())
+      fail("City Scape does not offer the built-in scene first");
+    // City Scapes survives a save/load round trip.
+    SETTINGS.sleepScreen = CrossPointSettings::CITY_SCAPES;
+    JsonDocument saved;
+    SETTINGS.toJson(saved);
+    SETTINGS.sleepScreen = CrossPointSettings::DARK;
+    SETTINGS.fromJson(saved.as<JsonVariantConst>());
+    if (SETTINGS.sleepScreen != CrossPointSettings::CITY_SCAPES) fail("City Scapes did not survive save/load");
+    SETTINGS.sleepScreen = savedSleepScreen;
+
+    // The City Scape frame follows the percent the UI shows for the book: for every progress value,
+    // the whole percent the sleep screen draws is the one formatPercent prints, and that percent's
+    // frame is the one decoded (so a book shown as 100% gets the final step, not the 95% one).
+    for (int hundredths = 0; hundredths <= 10000; ++hundredths) {
+      const float progress = static_cast<float>(hundredths) / 100.0f;
+      const uint16_t whole = RecentBookProgress::wholePercent(progress);
+      if (std::to_string(whole) + "%" != RecentBookProgress::formatPercent(progress))
+        fail("Progress %.2f draws %u%% but is labelled %s", progress, whole,
+             RecentBookProgress::formatPercent(progress).c_str());
+    }
+    auto pixels = makeUniqueNoThrow<uint8_t[]>(ChargingAnimation::kFrameBufferBytes);
+    if (!pixels) fail("No memory for a scene frame");
+    for (int shown = 0; shown <= 100; ++shown) {
+      for (const float progress : {static_cast<float>(shown) - 0.49f, static_cast<float>(shown) + 0.49f}) {
+        if (progress < 0.0f || progress > 100.0f) continue;
+        if (!ChargingAnimation::decodeFrame(pixels.get(), RecentBookProgress::wholePercent(progress), false))
+          fail("City Scape frame for %.2f%% did not decode", progress);
+        if (crc32(pixels.get(), ChargingAnimation::kFrameBufferBytes - 1) !=
+            charging_frames_builtin::kPlainCrc[shown / charging_frames_builtin::kStepPercent])
+          fail("Progress %.2f (shown as %d%%) draws the wrong City Scape step", progress, shown);
+      }
+    }
+    LOG_INF("SMOKE", "City Scapes wallpaper, City Scape row, option lists and progress-to-step mapping verified");
+  }
+#endif
+
+#if CROSSINK_APP_CAP_CHARGING_ANIMATION
+  // A .rhythmscene holding the built-in frames in reverse order, so a frame decoded from the file can be
+  // told apart from the built-in fallback.
+  static std::vector<uint8_t> reversedTestScene(const char* title) {
+    namespace f = charging_frames_builtin;
+    std::vector<uint8_t> out(128, 0);
+    const auto put16 = [&out](size_t at, uint16_t v) {
+      out[at] = v & 0xFF;
+      out[at + 1] = v >> 8;
+    };
+    const auto push32 = [&out](uint32_t v) {
+      for (int k = 0; k < 4; ++k) out.push_back((v >> (8 * k)) & 0xFF);
+    };
+    memcpy(out.data(), "CPSC", 4);
+    put16(4, 1);
+    put16(6, 128);
+    put16(8, f::kWidth);
+    put16(10, f::kHeight);
+    out[12] = f::kStepPercent;
+    out[13] = f::kFrameCount;
+    const int16_t geometry[12] = {
+        f::kPlaqueX,      f::kPlaqueY, f::kPlaqueWidth, f::kPlaqueBarsHeight, f::kPlaqueTextBottom, f::kPlaqueShadow,
+        f::kPlaqueBorder, f::kBarX,    f::kBarY,        f::kBarHeight,        f::kBarSegment,       f::kBarGap};
+    for (int k = 0; k < 12; ++k) put16(14 + k * 2, static_cast<uint16_t>(geometry[k]));
+    strncpy(reinterpret_cast<char*>(out.data() + 38), title, 31);
+    uint32_t at = 0;
+    for (int s = 0; s <= f::kFrameCount; ++s) {
+      push32(at);
+      if (s < f::kFrameCount) at += f::kOffsets[f::kFrameCount - s] - f::kOffsets[f::kFrameCount - 1 - s];
+    }
+    for (int s = 0; s < f::kFrameCount; ++s) push32(f::kPlainCrc[f::kFrameCount - 1 - s]);
+    for (int s = 0; s < f::kFrameCount; ++s) push32(f::kBarsCrc[f::kFrameCount - 1 - s]);
+    for (int s = 0; s < f::kFrameCount; ++s) {
+      const int src = f::kFrameCount - 1 - s;
+      out.insert(out.end(), f::kData + f::kOffsets[src], f::kData + f::kOffsets[src + 1]);
+    }
+    return out;
+  }
+
+  static void writeTestFile(const char* path, const uint8_t* data, size_t size) {
+    HalFile file;
+    if (!Storage.openFileForWrite("SMOKE", path, file) || file.write(data, size) != size)
+      fail("Could not write %s", path);
+    file.close();
+  }
+
+  // Real scene files already on the card (run_simulator_smoke_test.py --scenes): every one is listed
+  // and every frame, with and without the charge stops, decodes from the file itself (not the
+  // built-in fallback) to the CRC the generator recorded in it.
+  static void verifyCardScenes() {
+    ChargingAnimation::refreshScenes();
+    const auto scenes = ChargingAnimation::sdScenes();
+    auto pixels = makeUniqueNoThrow<uint8_t[]>(ChargingAnimation::kFrameBufferBytes);
+    if (!pixels) fail("No memory for a scene frame");
+    for (const auto& scene : scenes) {
+      for (uint16_t percent = 0; percent <= 100; percent += 5) {
+        for (const bool bars : {false, true}) {
+          if (!ChargingAnimation::decodeFrame(pixels.get(), percent, bars, scene.id))
+            fail("Scene %s %u%% did not decode", scene.id, percent);
+          const uint32_t crc = crc32(pixels.get(), ChargingAnimation::kFrameBufferBytes - 1);
+          const uint32_t builtin = ChargingAnimation::expectedFrameCrc(percent, bars, "");
+          if (crc != ChargingAnimation::expectedFrameCrc(percent, bars, scene.id) || crc == builtin)
+            fail("Scene %s (%s) %u%% (bars=%d) is not the file's frame", scene.id, scene.title, percent, bars);
+        }
+      }
+      LOG_INF("SMOKE", "Card scene %s (%s): 21 frames decode to the file's CRCs", scene.id, scene.title);
+    }
+  }
+
+  // SD scenes: discovered from /.scenes and /scenes, listed in both pickers, decoded byte for byte,
+  // remembered across save/load, and replaced by the built-in frames when missing or corrupt.
+  static void verifySdScenes() {
+    namespace f = charging_frames_builtin;
+    const char* kHidden = "/.scenes/smoke_scene.rhythmscene";
+    const char* kVisibleDup = "/scenes/smoke_scene.rhythmscene";
+    const char* kJunk = "/scenes/smoke_junk.rhythmscene";
+    Storage.mkdir("/.scenes");
+    Storage.mkdir("/scenes");
+    const auto scene = reversedTestScene("Smoke Scene");
+    writeTestFile(kHidden, scene.data(), scene.size());
+    writeTestFile(kVisibleDup, scene.data(), scene.size());
+    const uint8_t junk[200] = {'N', 'O', 'P', 'E'};
+    writeTestFile(kJunk, junk, sizeof(junk));
+    ChargingAnimation::refreshScenes();
+    const auto& found = ChargingAnimation::sdScenes();
+    const auto count = std::count_if(
+        found.begin(), found.end(), [](const ChargingAnimation::Scene& s) { return strcmp(s.id, "smoke_scene") == 0; });
+    if (count != 1) fail("Smoke scene listed %d times (expected once)", static_cast<int>(count));
+    if (std::any_of(found.begin(), found.end(),
+                    [](const ChargingAnimation::Scene& s) { return strcmp(s.id, "smoke_junk") == 0; }))
+      fail("An invalid scene file was listed");
+    const auto smoke = std::find_if(found.begin(), found.end(),
+                                    [](const ChargingAnimation::Scene& s) { return strcmp(s.id, "smoke_scene") == 0; });
+    if (strcmp(smoke->title, "Smoke Scene") != 0) fail("Smoke scene title is '%s'", smoke->title);
+
+    auto pixels = makeUniqueNoThrow<uint8_t[]>(ChargingAnimation::kFrameBufferBytes);
+    if (!pixels) fail("No memory for a scene frame");
+    const auto crcOf = [&](uint16_t percent, bool bars, const char* id) {
+      if (!ChargingAnimation::decodeFrame(pixels.get(), percent, bars, id))
+        fail("Scene %s %u%% did not decode", id, percent);
+      return crc32(pixels.get(), ChargingAnimation::kFrameBufferBytes - 1);
+    };
+    for (uint16_t percent = 0; percent <= 100; percent += 5) {
+      const int reversed = f::kFrameCount - 1 - percent / 5;
+      const uint32_t crc = crcOf(percent, false, "smoke_scene");
+      if (crc != f::kPlainCrc[reversed] || crc != ChargingAnimation::expectedFrameCrc(percent, false, "smoke_scene"))
+        fail("SD scene frame %u%% is not the file's frame", percent);
+    }
+    // The charge stops follow the percent, not the frame: only at 50% (the middle frame, the same in
+    // either order) does the underlined file frame equal the built-in one.
+    if (crcOf(50, true, "smoke_scene") != f::kBarsCrc[10] ||
+        ChargingAnimation::expectedFrameCrc(50, true, "smoke_scene") != f::kBarsCrc[10])
+      fail("SD scene frame 50%% with the charge stops is wrong");
+
+    // Both pickers list it; choosing it stores the scene id and survives save/load.
+    const auto all = getSettingsList();
+    const auto picker = [&all](const char* key) -> const SettingInfo& {
+      const auto it =
+          std::find_if(all.begin(), all.end(), [key](const SettingInfo& s) { return settingKeyIs(s, key); });
+      if (it == all.end()) fail("No %s setting", key);
+      return *it;
+    };
+    const SettingInfo& charging = picker("chargingAnimation");
+    const SettingInfo& cityScape = picker("cityScape");
+    const auto indexOf = [](const SettingInfo& s, const char* label) {
+      const auto it = std::find(s.enumStringValues.begin(), s.enumStringValues.end(), label);
+      return it == s.enumStringValues.end() ? -1 : static_cast<int>(it - s.enumStringValues.begin());
+    };
+    const int chargingIdx = indexOf(charging, "Smoke Scene");
+    const int lifeIdx = indexOf(cityScape, "Smoke Scene");
+    if (chargingIdx < 2 || lifeIdx < 1 || indexOf(charging, ChargingAnimation::builtinTitle()) != 1)
+      fail("Scene pickers do not list Off / built-in / SD scenes");
+    const uint8_t savedOnOff = SETTINGS.chargingAnimation;
+    charging.valueSetter(static_cast<uint8_t>(chargingIdx));
+    cityScape.valueSetter(static_cast<uint8_t>(lifeIdx));
+    if (SETTINGS.chargingAnimation != CrossPointSettings::CHARGING_ANIMATION_ON ||
+        strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.cityScapeScene, "smoke_scene") != 0 ||
+        charging.valueGetter() != chargingIdx || cityScape.valueGetter() != lifeIdx)
+      fail("Choosing the SD scene did not store it");
+    // Through text, as on the card (the document only points at the settings' strings).
+    JsonDocument saved;
+    SETTINGS.toJson(saved);
+    std::vector<char> text(measureJson(saved) + 1);
+    serializeJson(saved, text.data(), text.size());
+    SETTINGS.chargingScene[0] = SETTINGS.cityScapeScene[0] = '\0';
+    JsonDocument loaded;
+    if (deserializeJson(loaded, text.data())) fail("Saved settings did not parse");
+    SETTINGS.fromJson(loaded.as<JsonVariantConst>());
+    if (strcmp(SETTINGS.chargingScene, "smoke_scene") != 0 || strcmp(SETTINGS.cityScapeScene, "smoke_scene") != 0)
+      fail("SD scene choice did not survive save/load");
+
+    // Cycle All is the City Scape list's last option (not offered for charging) and walks every scene,
+    // built-in first, one per sleep, wrapping round; the position survives a state save/load.
+    const int cycleIdx = indexOf(cityScape, I18N.get(StrId::STR_CYCLE_ALL));
+    if (cycleIdx != static_cast<int>(cityScape.enumStringValues.size()) - 1 ||
+        indexOf(charging, I18N.get(StrId::STR_CYCLE_ALL)) != -1)
+      fail("Cycle All should be the last City Scape option and only there");
+    cityScape.valueSetter(static_cast<uint8_t>(cycleIdx));
+    if (strcmp(SETTINGS.cityScapeScene, ChargingAnimation::kCycleAllScenes) != 0 || cityScape.valueGetter() != cycleIdx)
+      fail("Choosing Cycle All did not store it");
+    const std::string savedCycle = APP_STATE.cityScapeCycleScene;
+    APP_STATE.cityScapeCycleScene.clear();
+    std::vector<std::string> shownIds;
+    for (size_t k = 0; k <= found.size() + 1; ++k) {
+      shownIds.emplace_back(ChargingAnimation::cityScapeSceneForSleep());
+      JsonDocument state;
+      APP_STATE.toJson(state);
+      APP_STATE.cityScapeCycleScene = "stale";
+      APP_STATE.fromJson(state.as<JsonVariantConst>());
+      if (APP_STATE.cityScapeCycleScene != shownIds.back()) fail("Cycle position did not survive save/load");
+    }
+    // The first sleep after choosing Cycle All moves on from the built-in scene.
+    for (size_t k = 0; k < shownIds.size(); ++k) {
+      const std::string want = k % (found.size() + 1) == found.size() ? "" : found[k % (found.size() + 1)].id;
+      if (shownIds[k] != want) fail("Cycle All sleep %u showed '%s', expected '%s'", static_cast<unsigned>(k),
+                                    shownIds[k].c_str(), want.c_str());
+    }
+    if (std::find(shownIds.begin(), shownIds.end(), "smoke_scene") == shownIds.end())
+      fail("Cycle All never showed the SD scene");
+    APP_STATE.cityScapeCycleScene = savedCycle;
+    cityScape.valueSetter(static_cast<uint8_t>(lifeIdx));
+
+    // Missing or corrupt scenes fall back to the built-in frames; the pickers then read as built-in.
+    if (crcOf(0, true, "no_such_scene") != f::kBarsCrc[0]) fail("Missing scene did not fall back to the built-in");
+    std::vector<uint8_t> truncated(scene.begin(), scene.begin() + 128 + 40);
+    writeTestFile(kHidden, truncated.data(), truncated.size());
+    Storage.remove(kVisibleDup);
+    if (crcOf(0, false, "smoke_scene") != f::kPlainCrc[0]) fail("Corrupt scene did not fall back to the built-in");
+    std::vector<uint8_t> badOffsets = scene;
+    badOffsets[128 + 4] = 0xFF;  // frame 1 now claims a huge length
+    badOffsets[128 + 7] = 0x7F;
+    writeTestFile(kHidden, badOffsets.data(), badOffsets.size());
+    if (crcOf(0, false, "smoke_scene") != f::kPlainCrc[0]) fail("Bad offsets did not fall back to the built-in");
+    Storage.remove(kHidden);
+    Storage.remove(kJunk);
+    ChargingAnimation::refreshScenes();
+    const auto after = getSettingsList();
+    const auto chargingAfter = std::find_if(after.begin(), after.end(),
+                                            [](const SettingInfo& s) { return settingKeyIs(s, "chargingAnimation"); });
+    if (chargingAfter == after.end() || chargingAfter->valueGetter() != 1)
+      fail("A missing SD scene should read as the built-in scene");
+    SETTINGS.chargingAnimation = savedOnOff;
+    SETTINGS.chargingScene[0] = SETTINGS.cityScapeScene[0] = '\0';
+    LOG_INF("SMOKE", "SD scenes: discovery, pickers, Cycle All, byte-exact frames, save/load and fallback verified");
+  }
+
+#endif
 
   static void verifyReaderControlsSettings() {
     const auto& base = getBaseSettingsList();
@@ -1278,6 +1658,7 @@ class SimulatorSmokeTest {
         verifyUpDownShortcutAvailability();
         verifySideButtonMigrationAndInput();
         verifyReaderControlsSettings();
+        verifyEverySettingIsOnAPage();
         verifyStatusBarSettings();
         verifyMixedPageGestures();
 #if CROSSINK_SCALABLE_FONTS
@@ -2857,7 +3238,8 @@ class SimulatorSmokeTest {
         break;
       }
       case ScriptActionType::AssertActivity:
-        if (!activityManager.isCurrentActivityNamed(action.label)) fail("Expected current activity: %s", action.label);
+        if (!activityManager.isCurrentActivityNamed(action.label))
+          fail("Expected current activity: %s, was %s", action.label, activityManager.simulatorCurrentActivityName());
         break;
       case ScriptActionType::Render:
         queueStep(action.label, SmokeStep::ReaderInput, action.settleFrames);

@@ -1,0 +1,2168 @@
+{
+  "comment": "Shaped Telugu forms with no cmap entry, mapped to private-use codepoints. fontconvert_sdcard.py rasterizes these by glyph name.",
+  "script": "telugu",
+  "source_font": "NotoSansTelugu.ttf",
+  "pua_base": 58368,
+  "forms": [
+    {
+      "codepoint": 58368,
+      "glyph": "kassatelu"
+    },
+    {
+      "codepoint": 58369,
+      "glyph": "kahalanttelu"
+    },
+    {
+      "codepoint": 58370,
+      "glyph": "khahalanttelu"
+    },
+    {
+      "codepoint": 58371,
+      "glyph": "gahalanttelu"
+    },
+    {
+      "codepoint": 58372,
+      "glyph": "ghahalanttelu"
+    },
+    {
+      "codepoint": 58373,
+      "glyph": "ngahalanttelu"
+    },
+    {
+      "codepoint": 58374,
+      "glyph": "cahalanttelu"
+    },
+    {
+      "codepoint": 58375,
+      "glyph": "chahalanttelu"
+    },
+    {
+      "codepoint": 58376,
+      "glyph": "jahalanttelu"
+    },
+    {
+      "codepoint": 58377,
+      "glyph": "jhahalanttelu"
+    },
+    {
+      "codepoint": 58378,
+      "glyph": "nyahalanttelu"
+    },
+    {
+      "codepoint": 58379,
+      "glyph": "ttahalanttelu"
+    },
+    {
+      "codepoint": 58380,
+      "glyph": "tthahalanttelu"
+    },
+    {
+      "codepoint": 58381,
+      "glyph": "ddahalanttelu"
+    },
+    {
+      "codepoint": 58382,
+      "glyph": "ddhahalanttelu"
+    },
+    {
+      "codepoint": 58383,
+      "glyph": "nnahalanttelu"
+    },
+    {
+      "codepoint": 58384,
+      "glyph": "tahalanttelu"
+    },
+    {
+      "codepoint": 58385,
+      "glyph": "thahalanttelu"
+    },
+    {
+      "codepoint": 58386,
+      "glyph": "dahalanttelu"
+    },
+    {
+      "codepoint": 58387,
+      "glyph": "dhahalanttelu"
+    },
+    {
+      "codepoint": 58388,
+      "glyph": "nahalanttelu"
+    },
+    {
+      "codepoint": 58389,
+      "glyph": "pahalanttelu"
+    },
+    {
+      "codepoint": 58390,
+      "glyph": "phahalanttelu"
+    },
+    {
+      "codepoint": 58391,
+      "glyph": "bahalanttelu"
+    },
+    {
+      "codepoint": 58392,
+      "glyph": "bhahalanttelu"
+    },
+    {
+      "codepoint": 58393,
+      "glyph": "mahalanttelu"
+    },
+    {
+      "codepoint": 58394,
+      "glyph": "yahalanttelu"
+    },
+    {
+      "codepoint": 58395,
+      "glyph": "rahalanttelu"
+    },
+    {
+      "codepoint": 58396,
+      "glyph": "rrahalanttelu"
+    },
+    {
+      "codepoint": 58397,
+      "glyph": "lahalanttelu"
+    },
+    {
+      "codepoint": 58398,
+      "glyph": "llahalanttelu"
+    },
+    {
+      "codepoint": 58399,
+      "glyph": "vahalanttelu"
+    },
+    {
+      "codepoint": 58400,
+      "glyph": "shahalanttelu"
+    },
+    {
+      "codepoint": 58401,
+      "glyph": "ssahalanttelu"
+    },
+    {
+      "codepoint": 58402,
+      "glyph": "sahalanttelu"
+    },
+    {
+      "codepoint": 58403,
+      "glyph": "hahalanttelu"
+    },
+    {
+      "codepoint": 58404,
+      "glyph": "kassahalanttelu"
+    },
+    {
+      "codepoint": 58405,
+      "glyph": "kaavoweltelu"
+    },
+    {
+      "codepoint": 58406,
+      "glyph": "khaavoweltelu"
+    },
+    {
+      "codepoint": 58407,
+      "glyph": "gaavoweltelu"
+    },
+    {
+      "codepoint": 58408,
+      "glyph": "ghaavoweltelu"
+    },
+    {
+      "codepoint": 58409,
+      "glyph": "ngaavoweltelu"
+    },
+    {
+      "codepoint": 58410,
+      "glyph": "caavoweltelu"
+    },
+    {
+      "codepoint": 58411,
+      "glyph": "chaavoweltelu"
+    },
+    {
+      "codepoint": 58412,
+      "glyph": "jaavoweltelu"
+    },
+    {
+      "codepoint": 58413,
+      "glyph": "jhaavoweltelu"
+    },
+    {
+      "codepoint": 58414,
+      "glyph": "nyaavoweltelu"
+    },
+    {
+      "codepoint": 58415,
+      "glyph": "ttaavoweltelu"
+    },
+    {
+      "codepoint": 58416,
+      "glyph": "tthaavoweltelu"
+    },
+    {
+      "codepoint": 58417,
+      "glyph": "ddaavoweltelu"
+    },
+    {
+      "codepoint": 58418,
+      "glyph": "ddhaavoweltelu"
+    },
+    {
+      "codepoint": 58419,
+      "glyph": "nnaavoweltelu"
+    },
+    {
+      "codepoint": 58420,
+      "glyph": "taavoweltelu"
+    },
+    {
+      "codepoint": 58421,
+      "glyph": "thaavoweltelu"
+    },
+    {
+      "codepoint": 58422,
+      "glyph": "daavoweltelu"
+    },
+    {
+      "codepoint": 58423,
+      "glyph": "dhaavoweltelu"
+    },
+    {
+      "codepoint": 58424,
+      "glyph": "naavoweltelu"
+    },
+    {
+      "codepoint": 58425,
+      "glyph": "paavoweltelu"
+    },
+    {
+      "codepoint": 58426,
+      "glyph": "phaavoweltelu"
+    },
+    {
+      "codepoint": 58427,
+      "glyph": "baavoweltelu"
+    },
+    {
+      "codepoint": 58428,
+      "glyph": "bhaavoweltelu"
+    },
+    {
+      "codepoint": 58429,
+      "glyph": "maavoweltelu"
+    },
+    {
+      "codepoint": 58430,
+      "glyph": "yaavoweltelu"
+    },
+    {
+      "codepoint": 58431,
+      "glyph": "raavoweltelu"
+    },
+    {
+      "codepoint": 58432,
+      "glyph": "rraavoweltelu"
+    },
+    {
+      "codepoint": 58433,
+      "glyph": "laavoweltelu"
+    },
+    {
+      "codepoint": 58434,
+      "glyph": "llaavoweltelu"
+    },
+    {
+      "codepoint": 58435,
+      "glyph": "vaavoweltelu"
+    },
+    {
+      "codepoint": 58436,
+      "glyph": "shaavoweltelu"
+    },
+    {
+      "codepoint": 58437,
+      "glyph": "ssaavoweltelu"
+    },
+    {
+      "codepoint": 58438,
+      "glyph": "saavoweltelu"
+    },
+    {
+      "codepoint": 58439,
+      "glyph": "haavoweltelu"
+    },
+    {
+      "codepoint": 58440,
+      "glyph": "kassaavoweltelu"
+    },
+    {
+      "codepoint": 58441,
+      "glyph": "kivoweltelu"
+    },
+    {
+      "codepoint": 58442,
+      "glyph": "khivoweltelu"
+    },
+    {
+      "codepoint": 58443,
+      "glyph": "givoweltelu"
+    },
+    {
+      "codepoint": 58444,
+      "glyph": "ghivoweltelu"
+    },
+    {
+      "codepoint": 58445,
+      "glyph": "ngivoweltelu"
+    },
+    {
+      "codepoint": 58446,
+      "glyph": "civoweltelu"
+    },
+    {
+      "codepoint": 58447,
+      "glyph": "chivoweltelu"
+    },
+    {
+      "codepoint": 58448,
+      "glyph": "jivoweltelu"
+    },
+    {
+      "codepoint": 58449,
+      "glyph": "jhivoweltelu"
+    },
+    {
+      "codepoint": 58450,
+      "glyph": "nyivoweltelu"
+    },
+    {
+      "codepoint": 58451,
+      "glyph": "ttivoweltelu"
+    },
+    {
+      "codepoint": 58452,
+      "glyph": "tthivoweltelu"
+    },
+    {
+      "codepoint": 58453,
+      "glyph": "ddivoweltelu"
+    },
+    {
+      "codepoint": 58454,
+      "glyph": "ddhivoweltelu"
+    },
+    {
+      "codepoint": 58455,
+      "glyph": "nnivoweltelu"
+    },
+    {
+      "codepoint": 58456,
+      "glyph": "tivoweltelu"
+    },
+    {
+      "codepoint": 58457,
+      "glyph": "thivoweltelu"
+    },
+    {
+      "codepoint": 58458,
+      "glyph": "divoweltelu"
+    },
+    {
+      "codepoint": 58459,
+      "glyph": "dhivoweltelu"
+    },
+    {
+      "codepoint": 58460,
+      "glyph": "nivoweltelu"
+    },
+    {
+      "codepoint": 58461,
+      "glyph": "pivoweltelu"
+    },
+    {
+      "codepoint": 58462,
+      "glyph": "phivoweltelu"
+    },
+    {
+      "codepoint": 58463,
+      "glyph": "bivoweltelu"
+    },
+    {
+      "codepoint": 58464,
+      "glyph": "bhivoweltelu"
+    },
+    {
+      "codepoint": 58465,
+      "glyph": "mivoweltelu"
+    },
+    {
+      "codepoint": 58466,
+      "glyph": "yivoweltelu"
+    },
+    {
+      "codepoint": 58467,
+      "glyph": "rivoweltelu"
+    },
+    {
+      "codepoint": 58468,
+      "glyph": "rrivoweltelu"
+    },
+    {
+      "codepoint": 58469,
+      "glyph": "livoweltelu"
+    },
+    {
+      "codepoint": 58470,
+      "glyph": "llivoweltelu"
+    },
+    {
+      "codepoint": 58471,
+      "glyph": "vivoweltelu"
+    },
+    {
+      "codepoint": 58472,
+      "glyph": "shivoweltelu"
+    },
+    {
+      "codepoint": 58473,
+      "glyph": "ssivoweltelu"
+    },
+    {
+      "codepoint": 58474,
+      "glyph": "sivoweltelu"
+    },
+    {
+      "codepoint": 58475,
+      "glyph": "hivoweltelu"
+    },
+    {
+      "codepoint": 58476,
+      "glyph": "kassivoweltelu"
+    },
+    {
+      "codepoint": 58477,
+      "glyph": "kiivoweltelu"
+    },
+    {
+      "codepoint": 58478,
+      "glyph": "khiivoweltelu"
+    },
+    {
+      "codepoint": 58479,
+      "glyph": "giivoweltelu"
+    },
+    {
+      "codepoint": 58480,
+      "glyph": "ghiivoweltelu"
+    },
+    {
+      "codepoint": 58481,
+      "glyph": "ngiivoweltelu"
+    },
+    {
+      "codepoint": 58482,
+      "glyph": "ciivoweltelu"
+    },
+    {
+      "codepoint": 58483,
+      "glyph": "chiivoweltelu"
+    },
+    {
+      "codepoint": 58484,
+      "glyph": "jiivoweltelu"
+    },
+    {
+      "codepoint": 58485,
+      "glyph": "jhiivoweltelu"
+    },
+    {
+      "codepoint": 58486,
+      "glyph": "nyiivoweltelu"
+    },
+    {
+      "codepoint": 58487,
+      "glyph": "ttiivoweltelu"
+    },
+    {
+      "codepoint": 58488,
+      "glyph": "tthiivoweltelu"
+    },
+    {
+      "codepoint": 58489,
+      "glyph": "ddiivoweltelu"
+    },
+    {
+      "codepoint": 58490,
+      "glyph": "ddhiivoweltelu"
+    },
+    {
+      "codepoint": 58491,
+      "glyph": "nniivoweltelu"
+    },
+    {
+      "codepoint": 58492,
+      "glyph": "tiivoweltelu"
+    },
+    {
+      "codepoint": 58493,
+      "glyph": "thiivoweltelu"
+    },
+    {
+      "codepoint": 58494,
+      "glyph": "diivoweltelu"
+    },
+    {
+      "codepoint": 58495,
+      "glyph": "dhiivoweltelu"
+    },
+    {
+      "codepoint": 58496,
+      "glyph": "niivoweltelu"
+    },
+    {
+      "codepoint": 58497,
+      "glyph": "piivoweltelu"
+    },
+    {
+      "codepoint": 58498,
+      "glyph": "phiivoweltelu"
+    },
+    {
+      "codepoint": 58499,
+      "glyph": "biivoweltelu"
+    },
+    {
+      "codepoint": 58500,
+      "glyph": "bhiivoweltelu"
+    },
+    {
+      "codepoint": 58501,
+      "glyph": "miivoweltelu"
+    },
+    {
+      "codepoint": 58502,
+      "glyph": "yiivoweltelu"
+    },
+    {
+      "codepoint": 58503,
+      "glyph": "riivoweltelu"
+    },
+    {
+      "codepoint": 58504,
+      "glyph": "rriivoweltelu"
+    },
+    {
+      "codepoint": 58505,
+      "glyph": "liivoweltelu"
+    },
+    {
+      "codepoint": 58506,
+      "glyph": "lliivoweltelu"
+    },
+    {
+      "codepoint": 58507,
+      "glyph": "viivoweltelu"
+    },
+    {
+      "codepoint": 58508,
+      "glyph": "shiivoweltelu"
+    },
+    {
+      "codepoint": 58509,
+      "glyph": "ssiivoweltelu"
+    },
+    {
+      "codepoint": 58510,
+      "glyph": "siivoweltelu"
+    },
+    {
+      "codepoint": 58511,
+      "glyph": "hiivoweltelu"
+    },
+    {
+      "codepoint": 58512,
+      "glyph": "kassiivoweltelu"
+    },
+    {
+      "codepoint": 58513,
+      "glyph": "juvoweltelu"
+    },
+    {
+      "codepoint": 58514,
+      "glyph": "puvoweltelu"
+    },
+    {
+      "codepoint": 58515,
+      "glyph": "phuvoweltelu"
+    },
+    {
+      "codepoint": 58516,
+      "glyph": "vuvoweltelu"
+    },
+    {
+      "codepoint": 58517,
+      "glyph": "juuvoweltelu"
+    },
+    {
+      "codepoint": 58518,
+      "glyph": "puuvoweltelu"
+    },
+    {
+      "codepoint": 58519,
+      "glyph": "phuuvoweltelu"
+    },
+    {
+      "codepoint": 58520,
+      "glyph": "vuuvoweltelu"
+    },
+    {
+      "codepoint": 58521,
+      "glyph": "kevoweltelu"
+    },
+    {
+      "codepoint": 58522,
+      "glyph": "khevoweltelu"
+    },
+    {
+      "codepoint": 58523,
+      "glyph": "gevoweltelu"
+    },
+    {
+      "codepoint": 58524,
+      "glyph": "ghevoweltelu"
+    },
+    {
+      "codepoint": 58525,
+      "glyph": "ngevoweltelu"
+    },
+    {
+      "codepoint": 58526,
+      "glyph": "cevoweltelu"
+    },
+    {
+      "codepoint": 58527,
+      "glyph": "chevoweltelu"
+    },
+    {
+      "codepoint": 58528,
+      "glyph": "jevoweltelu"
+    },
+    {
+      "codepoint": 58529,
+      "glyph": "jhevoweltelu"
+    },
+    {
+      "codepoint": 58530,
+      "glyph": "nyevoweltelu"
+    },
+    {
+      "codepoint": 58531,
+      "glyph": "ttevoweltelu"
+    },
+    {
+      "codepoint": 58532,
+      "glyph": "tthevoweltelu"
+    },
+    {
+      "codepoint": 58533,
+      "glyph": "ddevoweltelu"
+    },
+    {
+      "codepoint": 58534,
+      "glyph": "ddhevoweltelu"
+    },
+    {
+      "codepoint": 58535,
+      "glyph": "nnevoweltelu"
+    },
+    {
+      "codepoint": 58536,
+      "glyph": "tevoweltelu"
+    },
+    {
+      "codepoint": 58537,
+      "glyph": "thevoweltelu"
+    },
+    {
+      "codepoint": 58538,
+      "glyph": "devoweltelu"
+    },
+    {
+      "codepoint": 58539,
+      "glyph": "dhevoweltelu"
+    },
+    {
+      "codepoint": 58540,
+      "glyph": "nevoweltelu"
+    },
+    {
+      "codepoint": 58541,
+      "glyph": "pevoweltelu"
+    },
+    {
+      "codepoint": 58542,
+      "glyph": "phevoweltelu"
+    },
+    {
+      "codepoint": 58543,
+      "glyph": "bevoweltelu"
+    },
+    {
+      "codepoint": 58544,
+      "glyph": "bhevoweltelu"
+    },
+    {
+      "codepoint": 58545,
+      "glyph": "mevoweltelu"
+    },
+    {
+      "codepoint": 58546,
+      "glyph": "yevoweltelu"
+    },
+    {
+      "codepoint": 58547,
+      "glyph": "revoweltelu"
+    },
+    {
+      "codepoint": 58548,
+      "glyph": "rrevoweltelu"
+    },
+    {
+      "codepoint": 58549,
+      "glyph": "levoweltelu"
+    },
+    {
+      "codepoint": 58550,
+      "glyph": "llevoweltelu"
+    },
+    {
+      "codepoint": 58551,
+      "glyph": "vevoweltelu"
+    },
+    {
+      "codepoint": 58552,
+      "glyph": "shevoweltelu"
+    },
+    {
+      "codepoint": 58553,
+      "glyph": "ssevoweltelu"
+    },
+    {
+      "codepoint": 58554,
+      "glyph": "sevoweltelu"
+    },
+    {
+      "codepoint": 58555,
+      "glyph": "hevoweltelu"
+    },
+    {
+      "codepoint": 58556,
+      "glyph": "kassevoweltelu"
+    },
+    {
+      "codepoint": 58557,
+      "glyph": "keevoweltelu"
+    },
+    {
+      "codepoint": 58558,
+      "glyph": "kheevoweltelu"
+    },
+    {
+      "codepoint": 58559,
+      "glyph": "geevoweltelu"
+    },
+    {
+      "codepoint": 58560,
+      "glyph": "gheevoweltelu"
+    },
+    {
+      "codepoint": 58561,
+      "glyph": "ngeevoweltelu"
+    },
+    {
+      "codepoint": 58562,
+      "glyph": "ceevoweltelu"
+    },
+    {
+      "codepoint": 58563,
+      "glyph": "cheevoweltelu"
+    },
+    {
+      "codepoint": 58564,
+      "glyph": "jeevoweltelu"
+    },
+    {
+      "codepoint": 58565,
+      "glyph": "jheevoweltelu"
+    },
+    {
+      "codepoint": 58566,
+      "glyph": "nyeevoweltelu"
+    },
+    {
+      "codepoint": 58567,
+      "glyph": "tteevoweltelu"
+    },
+    {
+      "codepoint": 58568,
+      "glyph": "ttheevoweltelu"
+    },
+    {
+      "codepoint": 58569,
+      "glyph": "ddeevoweltelu"
+    },
+    {
+      "codepoint": 58570,
+      "glyph": "ddheevoweltelu"
+    },
+    {
+      "codepoint": 58571,
+      "glyph": "nneevoweltelu"
+    },
+    {
+      "codepoint": 58572,
+      "glyph": "teevoweltelu"
+    },
+    {
+      "codepoint": 58573,
+      "glyph": "theevoweltelu"
+    },
+    {
+      "codepoint": 58574,
+      "glyph": "deevoweltelu"
+    },
+    {
+      "codepoint": 58575,
+      "glyph": "dheevoweltelu"
+    },
+    {
+      "codepoint": 58576,
+      "glyph": "neevoweltelu"
+    },
+    {
+      "codepoint": 58577,
+      "glyph": "peevoweltelu"
+    },
+    {
+      "codepoint": 58578,
+      "glyph": "pheevoweltelu"
+    },
+    {
+      "codepoint": 58579,
+      "glyph": "beevoweltelu"
+    },
+    {
+      "codepoint": 58580,
+      "glyph": "bheevoweltelu"
+    },
+    {
+      "codepoint": 58581,
+      "glyph": "meevoweltelu"
+    },
+    {
+      "codepoint": 58582,
+      "glyph": "yeevoweltelu"
+    },
+    {
+      "codepoint": 58583,
+      "glyph": "reevoweltelu"
+    },
+    {
+      "codepoint": 58584,
+      "glyph": "rreevoweltelu"
+    },
+    {
+      "codepoint": 58585,
+      "glyph": "leevoweltelu"
+    },
+    {
+      "codepoint": 58586,
+      "glyph": "lleevoweltelu"
+    },
+    {
+      "codepoint": 58587,
+      "glyph": "veevoweltelu"
+    },
+    {
+      "codepoint": 58588,
+      "glyph": "sheevoweltelu"
+    },
+    {
+      "codepoint": 58589,
+      "glyph": "sseevoweltelu"
+    },
+    {
+      "codepoint": 58590,
+      "glyph": "seevoweltelu"
+    },
+    {
+      "codepoint": 58591,
+      "glyph": "heevoweltelu"
+    },
+    {
+      "codepoint": 58592,
+      "glyph": "kasseevoweltelu"
+    },
+    {
+      "codepoint": 58593,
+      "glyph": "kaivoweltelu"
+    },
+    {
+      "codepoint": 58594,
+      "glyph": "khaivoweltelu"
+    },
+    {
+      "codepoint": 58595,
+      "glyph": "gaivoweltelu"
+    },
+    {
+      "codepoint": 58596,
+      "glyph": "ghaivoweltelu"
+    },
+    {
+      "codepoint": 58597,
+      "glyph": "ngaivoweltelu"
+    },
+    {
+      "codepoint": 58598,
+      "glyph": "caivoweltelu"
+    },
+    {
+      "codepoint": 58599,
+      "glyph": "chaivoweltelu"
+    },
+    {
+      "codepoint": 58600,
+      "glyph": "jaivoweltelu"
+    },
+    {
+      "codepoint": 58601,
+      "glyph": "jhaivoweltelu"
+    },
+    {
+      "codepoint": 58602,
+      "glyph": "nyaivoweltelu"
+    },
+    {
+      "codepoint": 58603,
+      "glyph": "ttaivoweltelu"
+    },
+    {
+      "codepoint": 58604,
+      "glyph": "tthaivoweltelu"
+    },
+    {
+      "codepoint": 58605,
+      "glyph": "ddaivoweltelu"
+    },
+    {
+      "codepoint": 58606,
+      "glyph": "ddhaivoweltelu"
+    },
+    {
+      "codepoint": 58607,
+      "glyph": "nnaivoweltelu"
+    },
+    {
+      "codepoint": 58608,
+      "glyph": "taivoweltelu"
+    },
+    {
+      "codepoint": 58609,
+      "glyph": "thaivoweltelu"
+    },
+    {
+      "codepoint": 58610,
+      "glyph": "daivoweltelu"
+    },
+    {
+      "codepoint": 58611,
+      "glyph": "dhaivoweltelu"
+    },
+    {
+      "codepoint": 58612,
+      "glyph": "naivoweltelu"
+    },
+    {
+      "codepoint": 58613,
+      "glyph": "paivoweltelu"
+    },
+    {
+      "codepoint": 58614,
+      "glyph": "phaivoweltelu"
+    },
+    {
+      "codepoint": 58615,
+      "glyph": "baivoweltelu"
+    },
+    {
+      "codepoint": 58616,
+      "glyph": "bhaivoweltelu"
+    },
+    {
+      "codepoint": 58617,
+      "glyph": "maivoweltelu"
+    },
+    {
+      "codepoint": 58618,
+      "glyph": "yaivoweltelu"
+    },
+    {
+      "codepoint": 58619,
+      "glyph": "raivoweltelu"
+    },
+    {
+      "codepoint": 58620,
+      "glyph": "rraivoweltelu"
+    },
+    {
+      "codepoint": 58621,
+      "glyph": "laivoweltelu"
+    },
+    {
+      "codepoint": 58622,
+      "glyph": "llaivoweltelu"
+    },
+    {
+      "codepoint": 58623,
+      "glyph": "vaivoweltelu"
+    },
+    {
+      "codepoint": 58624,
+      "glyph": "shaivoweltelu"
+    },
+    {
+      "codepoint": 58625,
+      "glyph": "ssaivoweltelu"
+    },
+    {
+      "codepoint": 58626,
+      "glyph": "saivoweltelu"
+    },
+    {
+      "codepoint": 58627,
+      "glyph": "haivoweltelu"
+    },
+    {
+      "codepoint": 58628,
+      "glyph": "kassaivoweltelu"
+    },
+    {
+      "codepoint": 58629,
+      "glyph": "kovoweltelu"
+    },
+    {
+      "codepoint": 58630,
+      "glyph": "khovoweltelu"
+    },
+    {
+      "codepoint": 58631,
+      "glyph": "govoweltelu"
+    },
+    {
+      "codepoint": 58632,
+      "glyph": "ghovoweltelu"
+    },
+    {
+      "codepoint": 58633,
+      "glyph": "ngovoweltelu"
+    },
+    {
+      "codepoint": 58634,
+      "glyph": "covoweltelu"
+    },
+    {
+      "codepoint": 58635,
+      "glyph": "chovoweltelu"
+    },
+    {
+      "codepoint": 58636,
+      "glyph": "jovoweltelu"
+    },
+    {
+      "codepoint": 58637,
+      "glyph": "jhovoweltelu"
+    },
+    {
+      "codepoint": 58638,
+      "glyph": "nyovoweltelu"
+    },
+    {
+      "codepoint": 58639,
+      "glyph": "ttovoweltelu"
+    },
+    {
+      "codepoint": 58640,
+      "glyph": "tthovoweltelu"
+    },
+    {
+      "codepoint": 58641,
+      "glyph": "ddovoweltelu"
+    },
+    {
+      "codepoint": 58642,
+      "glyph": "ddhovoweltelu"
+    },
+    {
+      "codepoint": 58643,
+      "glyph": "nnovoweltelu"
+    },
+    {
+      "codepoint": 58644,
+      "glyph": "tovoweltelu"
+    },
+    {
+      "codepoint": 58645,
+      "glyph": "thovoweltelu"
+    },
+    {
+      "codepoint": 58646,
+      "glyph": "dovoweltelu"
+    },
+    {
+      "codepoint": 58647,
+      "glyph": "dhovoweltelu"
+    },
+    {
+      "codepoint": 58648,
+      "glyph": "novoweltelu"
+    },
+    {
+      "codepoint": 58649,
+      "glyph": "povoweltelu"
+    },
+    {
+      "codepoint": 58650,
+      "glyph": "phovoweltelu"
+    },
+    {
+      "codepoint": 58651,
+      "glyph": "bovoweltelu"
+    },
+    {
+      "codepoint": 58652,
+      "glyph": "bhovoweltelu"
+    },
+    {
+      "codepoint": 58653,
+      "glyph": "movoweltelu"
+    },
+    {
+      "codepoint": 58654,
+      "glyph": "yovoweltelu"
+    },
+    {
+      "codepoint": 58655,
+      "glyph": "rovoweltelu"
+    },
+    {
+      "codepoint": 58656,
+      "glyph": "rrovoweltelu"
+    },
+    {
+      "codepoint": 58657,
+      "glyph": "lovoweltelu"
+    },
+    {
+      "codepoint": 58658,
+      "glyph": "llovoweltelu"
+    },
+    {
+      "codepoint": 58659,
+      "glyph": "vovoweltelu"
+    },
+    {
+      "codepoint": 58660,
+      "glyph": "shovoweltelu"
+    },
+    {
+      "codepoint": 58661,
+      "glyph": "ssovoweltelu"
+    },
+    {
+      "codepoint": 58662,
+      "glyph": "sovoweltelu"
+    },
+    {
+      "codepoint": 58663,
+      "glyph": "hovoweltelu"
+    },
+    {
+      "codepoint": 58664,
+      "glyph": "kassovoweltelu"
+    },
+    {
+      "codepoint": 58665,
+      "glyph": "koovoweltelu"
+    },
+    {
+      "codepoint": 58666,
+      "glyph": "khoovoweltelu"
+    },
+    {
+      "codepoint": 58667,
+      "glyph": "goovoweltelu"
+    },
+    {
+      "codepoint": 58668,
+      "glyph": "ghoovoweltelu"
+    },
+    {
+      "codepoint": 58669,
+      "glyph": "ngoovoweltelu"
+    },
+    {
+      "codepoint": 58670,
+      "glyph": "coovoweltelu"
+    },
+    {
+      "codepoint": 58671,
+      "glyph": "choovoweltelu"
+    },
+    {
+      "codepoint": 58672,
+      "glyph": "joovoweltelu"
+    },
+    {
+      "codepoint": 58673,
+      "glyph": "jhoovoweltelu"
+    },
+    {
+      "codepoint": 58674,
+      "glyph": "nyoovoweltelu"
+    },
+    {
+      "codepoint": 58675,
+      "glyph": "ttoovoweltelu"
+    },
+    {
+      "codepoint": 58676,
+      "glyph": "tthoovoweltelu"
+    },
+    {
+      "codepoint": 58677,
+      "glyph": "ddoovoweltelu"
+    },
+    {
+      "codepoint": 58678,
+      "glyph": "ddhoovoweltelu"
+    },
+    {
+      "codepoint": 58679,
+      "glyph": "nnoovoweltelu"
+    },
+    {
+      "codepoint": 58680,
+      "glyph": "toovoweltelu"
+    },
+    {
+      "codepoint": 58681,
+      "glyph": "thoovoweltelu"
+    },
+    {
+      "codepoint": 58682,
+      "glyph": "doovoweltelu"
+    },
+    {
+      "codepoint": 58683,
+      "glyph": "dhoovoweltelu"
+    },
+    {
+      "codepoint": 58684,
+      "glyph": "noovoweltelu"
+    },
+    {
+      "codepoint": 58685,
+      "glyph": "poovoweltelu"
+    },
+    {
+      "codepoint": 58686,
+      "glyph": "phoovoweltelu"
+    },
+    {
+      "codepoint": 58687,
+      "glyph": "boovoweltelu"
+    },
+    {
+      "codepoint": 58688,
+      "glyph": "bhoovoweltelu"
+    },
+    {
+      "codepoint": 58689,
+      "glyph": "moovoweltelu"
+    },
+    {
+      "codepoint": 58690,
+      "glyph": "yoovoweltelu"
+    },
+    {
+      "codepoint": 58691,
+      "glyph": "roovoweltelu"
+    },
+    {
+      "codepoint": 58692,
+      "glyph": "rroovoweltelu"
+    },
+    {
+      "codepoint": 58693,
+      "glyph": "loovoweltelu"
+    },
+    {
+      "codepoint": 58694,
+      "glyph": "lloovoweltelu"
+    },
+    {
+      "codepoint": 58695,
+      "glyph": "voovoweltelu"
+    },
+    {
+      "codepoint": 58696,
+      "glyph": "shoovoweltelu"
+    },
+    {
+      "codepoint": 58697,
+      "glyph": "ssoovoweltelu"
+    },
+    {
+      "codepoint": 58698,
+      "glyph": "soovoweltelu"
+    },
+    {
+      "codepoint": 58699,
+      "glyph": "hoovoweltelu"
+    },
+    {
+      "codepoint": 58700,
+      "glyph": "kassoovoweltelu"
+    },
+    {
+      "codepoint": 58701,
+      "glyph": "kauvoweltelu"
+    },
+    {
+      "codepoint": 58702,
+      "glyph": "khauvoweltelu"
+    },
+    {
+      "codepoint": 58703,
+      "glyph": "gauvoweltelu"
+    },
+    {
+      "codepoint": 58704,
+      "glyph": "ghauvoweltelu"
+    },
+    {
+      "codepoint": 58705,
+      "glyph": "ngauvoweltelu"
+    },
+    {
+      "codepoint": 58706,
+      "glyph": "cauvoweltelu"
+    },
+    {
+      "codepoint": 58707,
+      "glyph": "chauvoweltelu"
+    },
+    {
+      "codepoint": 58708,
+      "glyph": "jauvoweltelu"
+    },
+    {
+      "codepoint": 58709,
+      "glyph": "jhauvoweltelu"
+    },
+    {
+      "codepoint": 58710,
+      "glyph": "nyauvoweltelu"
+    },
+    {
+      "codepoint": 58711,
+      "glyph": "ttauvoweltelu"
+    },
+    {
+      "codepoint": 58712,
+      "glyph": "tthauvoweltelu"
+    },
+    {
+      "codepoint": 58713,
+      "glyph": "ddauvoweltelu"
+    },
+    {
+      "codepoint": 58714,
+      "glyph": "ddhauvoweltelu"
+    },
+    {
+      "codepoint": 58715,
+      "glyph": "nnauvoweltelu"
+    },
+    {
+      "codepoint": 58716,
+      "glyph": "tauvoweltelu"
+    },
+    {
+      "codepoint": 58717,
+      "glyph": "thauvoweltelu"
+    },
+    {
+      "codepoint": 58718,
+      "glyph": "dauvoweltelu"
+    },
+    {
+      "codepoint": 58719,
+      "glyph": "dhauvoweltelu"
+    },
+    {
+      "codepoint": 58720,
+      "glyph": "nauvoweltelu"
+    },
+    {
+      "codepoint": 58721,
+      "glyph": "pauvoweltelu"
+    },
+    {
+      "codepoint": 58722,
+      "glyph": "phauvoweltelu"
+    },
+    {
+      "codepoint": 58723,
+      "glyph": "bauvoweltelu"
+    },
+    {
+      "codepoint": 58724,
+      "glyph": "bhauvoweltelu"
+    },
+    {
+      "codepoint": 58725,
+      "glyph": "mauvoweltelu"
+    },
+    {
+      "codepoint": 58726,
+      "glyph": "yauvoweltelu"
+    },
+    {
+      "codepoint": 58727,
+      "glyph": "rauvoweltelu"
+    },
+    {
+      "codepoint": 58728,
+      "glyph": "rrauvoweltelu"
+    },
+    {
+      "codepoint": 58729,
+      "glyph": "lauvoweltelu"
+    },
+    {
+      "codepoint": 58730,
+      "glyph": "llauvoweltelu"
+    },
+    {
+      "codepoint": 58731,
+      "glyph": "vauvoweltelu"
+    },
+    {
+      "codepoint": 58732,
+      "glyph": "shauvoweltelu"
+    },
+    {
+      "codepoint": 58733,
+      "glyph": "ssauvoweltelu"
+    },
+    {
+      "codepoint": 58734,
+      "glyph": "sauvoweltelu"
+    },
+    {
+      "codepoint": 58735,
+      "glyph": "hauvoweltelu"
+    },
+    {
+      "codepoint": 58736,
+      "glyph": "kassauvoweltelu"
+    },
+    {
+      "codepoint": 58737,
+      "glyph": "khasubscripttelu"
+    },
+    {
+      "codepoint": 58738,
+      "glyph": "gasubscripttelu"
+    },
+    {
+      "codepoint": 58739,
+      "glyph": "ghasubscripttelu"
+    },
+    {
+      "codepoint": 58740,
+      "glyph": "ngasubscripttelu"
+    },
+    {
+      "codepoint": 58741,
+      "glyph": "jasubscripttelu"
+    },
+    {
+      "codepoint": 58742,
+      "glyph": "jhasubscripttelu"
+    },
+    {
+      "codepoint": 58743,
+      "glyph": "nyasubscripttelu"
+    },
+    {
+      "codepoint": 58744,
+      "glyph": "ttasubscripttelu"
+    },
+    {
+      "codepoint": 58745,
+      "glyph": "tthasubscripttelu"
+    },
+    {
+      "codepoint": 58746,
+      "glyph": "ddasubscripttelu"
+    },
+    {
+      "codepoint": 58747,
+      "glyph": "ddhasubscripttelu"
+    },
+    {
+      "codepoint": 58748,
+      "glyph": "nnasubscripttelu"
+    },
+    {
+      "codepoint": 58749,
+      "glyph": "tasubscripttelu"
+    },
+    {
+      "codepoint": 58750,
+      "glyph": "thasubscripttelu"
+    },
+    {
+      "codepoint": 58751,
+      "glyph": "dasubscripttelu"
+    },
+    {
+      "codepoint": 58752,
+      "glyph": "dhasubscripttelu"
+    },
+    {
+      "codepoint": 58753,
+      "glyph": "rrasubscripttelu"
+    },
+    {
+      "codepoint": 58754,
+      "glyph": "lasubscripttelu"
+    },
+    {
+      "codepoint": 58755,
+      "glyph": "ssasubscripttelu"
+    },
+    {
+      "codepoint": 58756,
+      "glyph": "hasubscripttelu"
+    },
+    {
+      "codepoint": 58757,
+      "glyph": "uvowelsigntelu.spacing"
+    },
+    {
+      "codepoint": 58758,
+      "glyph": "uvoweltelu.spacing2"
+    },
+    {
+      "codepoint": 58759,
+      "glyph": "uvoweltelu.spacing3"
+    },
+    {
+      "codepoint": 58760,
+      "glyph": "uuvowelsigntelu.spacing"
+    },
+    {
+      "codepoint": 58761,
+      "glyph": "uuvoweltelu.spacing2"
+    },
+    {
+      "codepoint": 58762,
+      "glyph": "uuvoweltelu.spacing3"
+    },
+    {
+      "codepoint": 58763,
+      "glyph": "ngasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58764,
+      "glyph": "jhasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58765,
+      "glyph": "nyasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58766,
+      "glyph": "tthasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58767,
+      "glyph": "ddhasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58768,
+      "glyph": "rrasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58769,
+      "glyph": "rvocalicvowelsigntelu.spacing"
+    },
+    {
+      "codepoint": 58770,
+      "glyph": "rrvocalicvowelsigntelu.spacing"
+    },
+    {
+      "codepoint": 58771,
+      "glyph": "karasubscripttelu"
+    },
+    {
+      "codepoint": 58772,
+      "glyph": "kharasubscripttelu"
+    },
+    {
+      "codepoint": 58773,
+      "glyph": "garasubscripttelu"
+    },
+    {
+      "codepoint": 58774,
+      "glyph": "gharasubscripttelu"
+    },
+    {
+      "codepoint": 58775,
+      "glyph": "ngarasubscripttelu"
+    },
+    {
+      "codepoint": 58776,
+      "glyph": "carasubscripttelu"
+    },
+    {
+      "codepoint": 58777,
+      "glyph": "charasubscripttelu"
+    },
+    {
+      "codepoint": 58778,
+      "glyph": "jarasubscripttelu"
+    },
+    {
+      "codepoint": 58779,
+      "glyph": "jharasubscripttelu"
+    },
+    {
+      "codepoint": 58780,
+      "glyph": "nyarasubscripttelu"
+    },
+    {
+      "codepoint": 58781,
+      "glyph": "ttarasubscripttelu"
+    },
+    {
+      "codepoint": 58782,
+      "glyph": "ttharasubscripttelu"
+    },
+    {
+      "codepoint": 58783,
+      "glyph": "ddarasubscripttelu"
+    },
+    {
+      "codepoint": 58784,
+      "glyph": "ddharasubscripttelu"
+    },
+    {
+      "codepoint": 58785,
+      "glyph": "nnarasubscripttelu"
+    },
+    {
+      "codepoint": 58786,
+      "glyph": "tarasubscripttelu"
+    },
+    {
+      "codepoint": 58787,
+      "glyph": "tharasubscripttelu"
+    },
+    {
+      "codepoint": 58788,
+      "glyph": "darasubscripttelu"
+    },
+    {
+      "codepoint": 58789,
+      "glyph": "dharasubscripttelu"
+    },
+    {
+      "codepoint": 58790,
+      "glyph": "narasubscripttelu"
+    },
+    {
+      "codepoint": 58791,
+      "glyph": "parasubscripttelu"
+    },
+    {
+      "codepoint": 58792,
+      "glyph": "pharasubscripttelu"
+    },
+    {
+      "codepoint": 58793,
+      "glyph": "barasubscripttelu"
+    },
+    {
+      "codepoint": 58794,
+      "glyph": "bharasubscripttelu"
+    },
+    {
+      "codepoint": 58795,
+      "glyph": "marasubscripttelu"
+    },
+    {
+      "codepoint": 58796,
+      "glyph": "yarasubscripttelu"
+    },
+    {
+      "codepoint": 58797,
+      "glyph": "rarasubscripttelu"
+    },
+    {
+      "codepoint": 58798,
+      "glyph": "rrarasubscripttelu"
+    },
+    {
+      "codepoint": 58799,
+      "glyph": "larasubscripttelu"
+    },
+    {
+      "codepoint": 58800,
+      "glyph": "llarasubscripttelu"
+    },
+    {
+      "codepoint": 58801,
+      "glyph": "varasubscripttelu"
+    },
+    {
+      "codepoint": 58802,
+      "glyph": "sharasubscripttelu"
+    },
+    {
+      "codepoint": 58803,
+      "glyph": "ssarasubscripttelu"
+    },
+    {
+      "codepoint": 58804,
+      "glyph": "sarasubscripttelu"
+    },
+    {
+      "codepoint": 58805,
+      "glyph": "harasubscripttelu"
+    },
+    {
+      "codepoint": 58806,
+      "glyph": "rasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58807,
+      "glyph": "tasubscriptnarrowtelu"
+    },
+    {
+      "codepoint": 58808,
+      "glyph": "tasubscriptwidetelu"
+    },
+    {
+      "codepoint": 58809,
+      "glyph": "tasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58810,
+      "glyph": "tailengthmarknarrowtelu"
+    },
+    {
+      "codepoint": 58811,
+      "glyph": "tailengthmarktelu"
+    },
+    {
+      "codepoint": 58812,
+      "glyph": "tailengthmarkwidetelu"
+    },
+    {
+      "codepoint": 58813,
+      "glyph": "khailengthmarktelu"
+    },
+    {
+      "codepoint": 58814,
+      "glyph": "gailengthmarktelu"
+    },
+    {
+      "codepoint": 58815,
+      "glyph": "ghailengthmarktelu"
+    },
+    {
+      "codepoint": 58816,
+      "glyph": "jailengthmarktelu"
+    },
+    {
+      "codepoint": 58817,
+      "glyph": "ttailengthmarktelu"
+    },
+    {
+      "codepoint": 58818,
+      "glyph": "ddailengthmarktelu"
+    },
+    {
+      "codepoint": 58819,
+      "glyph": "nnailengthmarktelu"
+    },
+    {
+      "codepoint": 58820,
+      "glyph": "thailengthmarktelu"
+    },
+    {
+      "codepoint": 58821,
+      "glyph": "dailengthmarktelu"
+    },
+    {
+      "codepoint": 58822,
+      "glyph": "dhailengthmarktelu"
+    },
+    {
+      "codepoint": 58823,
+      "glyph": "lailengthmarktelu"
+    },
+    {
+      "codepoint": 58824,
+      "glyph": "ssailengthmarktelu"
+    },
+    {
+      "codepoint": 58825,
+      "glyph": "hailengthmarktelu"
+    },
+    {
+      "codepoint": 58826,
+      "glyph": "jasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58827,
+      "glyph": "ttasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58828,
+      "glyph": "ddasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58829,
+      "glyph": "dasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58830,
+      "glyph": "lasubscriptlowtelu"
+    },
+    {
+      "codepoint": 58831,
+      "glyph": "lllahalanttelu"
+    },
+    {
+      "codepoint": 58832,
+      "glyph": "lllaavoweltelu"
+    },
+    {
+      "codepoint": 58833,
+      "glyph": "lllivoweltelu"
+    },
+    {
+      "codepoint": 58834,
+      "glyph": "llliivoweltelu"
+    },
+    {
+      "codepoint": 58835,
+      "glyph": "lllevoweltelu"
+    },
+    {
+      "codepoint": 58836,
+      "glyph": "llleevoweltelu"
+    },
+    {
+      "codepoint": 58837,
+      "glyph": "lllaivoweltelu"
+    },
+    {
+      "codepoint": 58838,
+      "glyph": "lllovoweltelu"
+    },
+    {
+      "codepoint": 58839,
+      "glyph": "llloovoweltelu"
+    },
+    {
+      "codepoint": 58840,
+      "glyph": "lllauvoweltelu"
+    },
+    {
+      "codepoint": 58841,
+      "glyph": "lllasubscripttelu"
+    },
+    {
+      "codepoint": 58842,
+      "glyph": "lllasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58843,
+      "glyph": "lllarasubscripttelu"
+    },
+    {
+      "codepoint": 58844,
+      "glyph": "rrrahalanttelu"
+    },
+    {
+      "codepoint": 58845,
+      "glyph": "rrraavoweltelu"
+    },
+    {
+      "codepoint": 58846,
+      "glyph": "rrrivoweltelu"
+    },
+    {
+      "codepoint": 58847,
+      "glyph": "rrriivoweltelu"
+    },
+    {
+      "codepoint": 58848,
+      "glyph": "rrrevoweltelu"
+    },
+    {
+      "codepoint": 58849,
+      "glyph": "rrreevoweltelu"
+    },
+    {
+      "codepoint": 58850,
+      "glyph": "rrraivoweltelu"
+    },
+    {
+      "codepoint": 58851,
+      "glyph": "rrrovoweltelu"
+    },
+    {
+      "codepoint": 58852,
+      "glyph": "rrroovoweltelu"
+    },
+    {
+      "codepoint": 58853,
+      "glyph": "rrrauvoweltelu"
+    },
+    {
+      "codepoint": 58854,
+      "glyph": "rrrasubscripttelu"
+    },
+    {
+      "codepoint": 58855,
+      "glyph": "rrrasubscripttelu.spacing"
+    },
+    {
+      "codepoint": 58856,
+      "glyph": "rrrarasubscripttelu"
+    },
+    {
+      "codepoint": 58857,
+      "glyph": "tsahalanttelu"
+    },
+    {
+      "codepoint": 58858,
+      "glyph": "tsaavoweltelu"
+    },
+    {
+      "codepoint": 58859,
+      "glyph": "tsivoweltelu"
+    },
+    {
+      "codepoint": 58860,
+      "glyph": "tsiivoweltelu"
+    },
+    {
+      "codepoint": 58861,
+      "glyph": "tsevoweltelu"
+    },
+    {
+      "codepoint": 58862,
+      "glyph": "tseevoweltelu"
+    },
+    {
+      "codepoint": 58863,
+      "glyph": "tsaivoweltelu"
+    },
+    {
+      "codepoint": 58864,
+      "glyph": "tsovoweltelu"
+    },
+    {
+      "codepoint": 58865,
+      "glyph": "tsoovoweltelu"
+    },
+    {
+      "codepoint": 58866,
+      "glyph": "tsauvoweltelu"
+    },
+    {
+      "codepoint": 58867,
+      "glyph": "dzahalanttelu"
+    },
+    {
+      "codepoint": 58868,
+      "glyph": "dzaavoweltelu"
+    },
+    {
+      "codepoint": 58869,
+      "glyph": "dzivoweltelu"
+    },
+    {
+      "codepoint": 58870,
+      "glyph": "dziivoweltelu"
+    },
+    {
+      "codepoint": 58871,
+      "glyph": "dzuvoweltelu"
+    },
+    {
+      "codepoint": 58872,
+      "glyph": "dzuuvoweltelu"
+    },
+    {
+      "codepoint": 58873,
+      "glyph": "dzevoweltelu"
+    },
+    {
+      "codepoint": 58874,
+      "glyph": "dzeevoweltelu"
+    },
+    {
+      "codepoint": 58875,
+      "glyph": "dzaivoweltelu"
+    },
+    {
+      "codepoint": 58876,
+      "glyph": "dzovoweltelu"
+    },
+    {
+      "codepoint": 58877,
+      "glyph": "dzoovoweltelu"
+    },
+    {
+      "codepoint": 58878,
+      "glyph": "dzauvoweltelu"
+    },
+    {
+      "codepoint": 58879,
+      "glyph": "rapostscripttelu"
+    },
+    {
+      "codepoint": 58880,
+      "glyph": "bapostscripttelu"
+    },
+    {
+      "codepoint": 58881,
+      "glyph": "bhapostscripttelu"
+    },
+    {
+      "codepoint": 58882,
+      "glyph": "capostscripttelu"
+    },
+    {
+      "codepoint": 58883,
+      "glyph": "chapostscripttelu"
+    },
+    {
+      "codepoint": 58884,
+      "glyph": "kapostscripttelu"
+    },
+    {
+      "codepoint": 58885,
+      "glyph": "llapostscripttelu"
+    },
+    {
+      "codepoint": 58886,
+      "glyph": "mapostscripttelu"
+    },
+    {
+      "codepoint": 58887,
+      "glyph": "napostscripttelu"
+    },
+    {
+      "codepoint": 58888,
+      "glyph": "papostscripttelu"
+    },
+    {
+      "codepoint": 58889,
+      "glyph": "phapostscripttelu"
+    },
+    {
+      "codepoint": 58890,
+      "glyph": "sapostscripttelu"
+    },
+    {
+      "codepoint": 58891,
+      "glyph": "shapostscripttelu"
+    },
+    {
+      "codepoint": 58892,
+      "glyph": "vapostscripttelu"
+    },
+    {
+      "codepoint": 58893,
+      "glyph": "yapostscripttelu"
+    },
+    {
+      "codepoint": 58894,
+      "glyph": "bapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58895,
+      "glyph": "bhapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58896,
+      "glyph": "capostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58897,
+      "glyph": "chapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58898,
+      "glyph": "kapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58899,
+      "glyph": "llapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58900,
+      "glyph": "mapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58901,
+      "glyph": "napostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58902,
+      "glyph": "papostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58903,
+      "glyph": "phapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58904,
+      "glyph": "sapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58905,
+      "glyph": "shapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58906,
+      "glyph": "vapostscripttelu.spacing"
+    },
+    {
+      "codepoint": 58907,
+      "glyph": "yapostscripttelu.spacing"
+    }
+  ]
+}

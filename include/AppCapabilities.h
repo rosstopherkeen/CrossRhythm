@@ -19,6 +19,12 @@
 #error "CROSSINK_APP_CAP_USB_DRIVE must be 0 or 1"
 #endif
 
+// Built-in charging animation on the sleep screen. Opt-in per environment: it embeds ~690 KB of
+// frames and relies on a timed deep-sleep wake while on USB power; only the X4 Pro enables it.
+#ifndef CROSSINK_APP_CAP_CHARGING_ANIMATION
+#define CROSSINK_APP_CAP_CHARGING_ANIMATION 0
+#endif
+
 // Native simulator BoardConfig intentionally exposes only simulated runtime
 // profiles, so keep this firmware-image identity available at the app layer.
 #if defined(FREEINK_DEVICE_X4CLASSIC) && FREEINK_DEVICE_X4CLASSIC

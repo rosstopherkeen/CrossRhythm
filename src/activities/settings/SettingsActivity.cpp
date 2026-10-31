@@ -558,7 +558,7 @@ void SettingsActivity::closeSubmenu() {
 
 bool SettingsActivity::currentSettingUsesOptionMenu(const SettingInfo& setting) const {
   return setting.nameId != StrId::STR_FONT_FAMILY && setting.type == SettingType::ENUM &&
-         settingEnumOptionCount(setting) > 2 &&
+         (settingEnumOptionCount(setting) > 2 || settingAlwaysOpensOptionList(setting)) &&
          (setting.valuePtr != nullptr || (setting.valueGetter && setting.valueSetter));
 }
 
@@ -751,6 +751,8 @@ void SettingsActivity::onEnter() {
     // Dictionary names and paths are needed only while the full settings tree
     // is open. Keep the catalog out of the lightweight File Browser editor.
     dictionaryRegistry.discover();
+    // Same for the scene pickers: a scene copied to the card shows up the next time Settings opens.
+    ChargingAnimation::refreshScenes();
   }
 
   selectedCategoryIndex = isFileBrowserView() ? 3 : 0;
@@ -906,11 +908,15 @@ void SettingsActivity::loop() {
     return;
   }
 
+  const auto swipe = mappedInput.wasSwipe();
   // Touch goes through the FreeInkApp: render() registered the tab and row
-  // hit rects; route the snapshot and let the handlers dispatch.
+  // hit rects; route the snapshot and let the handlers dispatch. A vertical
+  // swipe scrolls the list, so releasing it over a row must not also tap that
+  // row (that would open its options popup under the finger).
+  const bool verticalSwipe = swipe == MappedInputManager::SwipeDir::Up || swipe == MappedInputManager::SwipeDir::Down;
   if (uiReady) {
     const fui::InputSnapshot snap = touchSnapshotFrom(mappedInput);
-    if (snap.touchPressed || snap.touchReleased) {
+    if (snap.touchPressed || (snap.touchReleased && !verticalSwipe)) {
       const auto event = app.route(snap);
       // No pressed-state repaint here: it would cost a second e-ink refresh
       // per tap and paint a transient double pill on tab switches whose
@@ -922,7 +928,6 @@ void SettingsActivity::loop() {
 
   // Swipes scroll the viewport; the selection stays put (it may scroll
   // off-screen) and button navigation pulls the view back to it.
-  const auto swipe = mappedInput.wasSwipe();
 #if CROSSINK_APP_CAP_TOUCH
   // Settings opened from the frontlight panel keeps its quick exit, but only
   // from the lower-edge gesture band. Ordinary upward swipes scroll the list

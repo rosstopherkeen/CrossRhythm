@@ -50,9 +50,14 @@ def build_simulator(env_name: str) -> None:
         raise SystemExit(proc.returncode)
 
 
-def prepare_fs(temp_root: Path, book: Path) -> str:
+def prepare_fs(temp_root: Path, book: Path, scenes: list[Path] | None = None) -> str:
     books_dir = temp_root / "fs_" / "books"
     books_dir.mkdir(parents=True, exist_ok=True)
+    if scenes:                                   # real .rhythmscene files: the smoke test checks each one
+        scene_dir = temp_root / "fs_" / ".scenes"
+        scene_dir.mkdir(parents=True, exist_ok=True)
+        for scene in scenes:
+            shutil.copy2(scene, scene_dir / scene.name)
 
     target = books_dir / book.name
     shutil.copy2(book, target)
@@ -76,7 +81,7 @@ def run_smoke(args: argparse.Namespace) -> int:
 
     with tempfile.TemporaryDirectory(prefix="crossink-sim-smoke-") as temp_dir_name:
         temp_root = Path(temp_dir_name)
-        simulator_book_path = prepare_fs(temp_root, book)
+        simulator_book_path = prepare_fs(temp_root, book, [Path(s).resolve() for s in args.scenes])
 
         if args.font_dir:
             shutil.copytree(Path(args.font_dir), temp_root / "fs_" / "fonts", dirs_exist_ok=True)
@@ -154,6 +159,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--frontlight-captures", help="Directory for frontlight layout framebuffer captures (PGM)")
     parser.add_argument("--home-themes", action="store_true", help="Compare drawer theme changes with fresh Home renders (X4 Pro)")
     parser.add_argument("--no-build", dest="build", action="store_false", help="Run the existing simulator binary")
+    parser.add_argument("--scenes", nargs="*", default=[], help=".rhythmscene files copied to /.scenes; each is checked frame by frame")
     parser.add_argument("--window", dest="headless", action="store_false", help="Show the SDL window instead of using dummy video")
     parser.set_defaults(build=True, headless=True)
     return parser.parse_args()
