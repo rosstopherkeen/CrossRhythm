@@ -1,8 +1,9 @@
 name: Release
 
-# Builds the X4 Pro firmware and attaches it to a draft GitHub release.
-# Manual only (a tag trigger would re-run this when you publish the draft, since
-# publishing creates the tag). Version: the manual input, else the latest vX.Y.Z
+# Builds the X4 Pro firmware and publishes it as a GitHub release (files linked
+# at the top of the notes, since GitHub always lists assets last).
+# Manual only (a tag trigger would re-run this when the release is created, since
+# creating the release also creates the tag). Version: the manual input, else the latest vX.Y.Z
 # tag with the patch number +1 (1.0.0 for the first release). `version` in
 # platformio.ini tracks the CrossInk base and is not the release number.
 on:
@@ -143,32 +144,34 @@ jobs:
             exit 1
           fi
 
+          BASE_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/v${RELEASE_VERSION}"
           cat > release-notes.md <<NOTES
-          Based on [CrossInk ${CROSSINK_BASE}](https://github.com/uxjulia/CrossInk/releases/tag/v${CROSSINK_BASE}). Built from commit \`${GITHUB_SHA::7}\`. Built and tested on the **Xteink X4 Pro** only.
+          Firmware for the **Xteink X4 Pro**, based on [CrossInk ${CROSSINK_BASE}](https://github.com/uxjulia/CrossInk/releases/tag/v${CROSSINK_BASE}).
+
+          ## Downloads
+          | | |
+          | --- | --- |
+          | **Firmware** | [\`${FW}\`](${BASE_URL}/${FW}) |
+          | **Fonts** (Indic books) | [Kannada](${BASE_URL}/NotoSansKannada.zip) · [Tamil](${BASE_URL}/NotoSansTamil.zip) · [Telugu](${BASE_URL}/NotoSansTelugu.zip) · [Malayalam](${BASE_URL}/NotoSansMalayalam.zip) · [Devanagari](${BASE_URL}/NotoSansDevanagari.zip) (Hindi, Marathi, Sanskrit) · [Bengali](${BASE_URL}/NotoSansBengali.zip) and [Odia](${BASE_URL}/NotoSansOriya.zip) (experimental) |
+          | **Scenes** | [Lalbagh](${BASE_URL}/lalbagh.rhythmscene) · [KR Market](${BASE_URL}/kr_market.rhythmscene) · [State Library](${BASE_URL}/state_library.rhythmscene) |
+          | **Wallpapers** | [\`CrossRhythm-page-overlays.zip\`](${BASE_URL}/CrossRhythm-page-overlays.zip) |
+          | Checksums | [\`SHA256SUMS.txt\`](${BASE_URL}/SHA256SUMS.txt) |
 
           ## Install
           1. Back up \`/.crosspoint/\` on your SD card.
-          2. Copy \`${FW}\` to the card.
-          3. Install it from **Settings › System › SD Card Firmware Update**.
+          2. Copy the firmware \`.bin\` to the card and install it from **Settings › System › SD Card Firmware Update**. Later updates: **Settings › Check for Updates**.
+          3. Optional, on the SD card: unzip a font into \`/.fonts/\`, copy scenes to \`/.scenes/\`, unzip the wallpapers into \`/.sleep/\`. If you opened a book before installing its font, choose **Delete Book Cache** in the reader menu.
 
-          Later updates come through **Settings › Check for Updates**. To go back, flash a stock CrossInk release: your stats files are not changed.
+          Go back any time by flashing a stock CrossInk release; your stats files are not changed.
 
-          ## Optional files for the SD card
-          | Download | Copy to | For |
-          | --- | --- | --- |
-          | \`NotoSans<Script>.zip\` (Kannada, Telugu, Tamil, Devanagari, Malayalam, Bengali, Odia) | unzip into \`/.fonts/\` | Books in that script (Devanagari covers Hindi, Marathi and Sanskrit; Bengali and Odia are experimental) |
-          | \`*.rhythmscene\` (Lalbagh, KR Market, State Library) | \`/.scenes/\` | More Charging Animation and City Scape scenes (Glass House is built in) |
-          | \`CrossRhythm-page-overlays.zip\` | unzip into \`/.sleep/\` | Page Overlay sleep screen wallpapers |
+          <details>
+          <summary><b>What's new</b></summary>
 
-          If you opened a book in a script before installing its font, choose **Delete Book Cache** in the reader menu.
-
-          ## Changes
           ${CHANGES}
 
-          ## Checksums
-          SHA-256 of \`${FW}\`: \`${SHA}\`. All files are listed in \`SHA256SUMS.txt\`.
+          </details>
 
-          Scene maps are © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Fonts are Noto Sans (SIL Open Font License 1.1). See the [README](https://github.com/${GITHUB_REPOSITORY}#readme) for details.
+          <sub>Built from commit \`${GITHUB_SHA::7}\`. SHA-256 of the firmware: \`${SHA}\`. Scene maps are © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Fonts are Noto Sans (SIL Open Font License 1.1). See the [README](https://github.com/${GITHUB_REPOSITORY}#readme).</sub>
 
           <p align="center">
             <picture>
@@ -181,17 +184,15 @@ jobs:
               <img src="${BRAND}/made-in-bengaluru-black.png" height="56" alt="Made in Bengaluru." />
             </picture>
           </p>
-
           NOTES
 
-      - name: Create draft release
+      - name: Publish release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ env.RELEASE_VERSION }}
           target_commitish: ${{ github.sha }}
           name: CrossRhythm v${{ env.RELEASE_VERSION }}
-          draft: true
+          draft: false
           body_path: release-notes.md
-          generate_release_notes: true
           fail_on_unmatched_files: true
           files: release-files/*

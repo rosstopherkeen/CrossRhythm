@@ -20,7 +20,7 @@
 
 - Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
 - Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
-- Settings shows the firmware as "CrossRhythm v<version>".
+- Settings shows the firmware as `CrossRhythm vX.Y.Z`.
 
 ### Fixed
 
