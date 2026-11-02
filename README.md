@@ -27,6 +27,8 @@
   </tr>
 </table>
 
+Website: [crossrhythm.prajwalb.com](https://crossrhythm.prajwalb.com).
+
 Everything else is stock CrossInk: the same fonts, themes, reader features, settings and SD card layout. Your existing stats files are never changed, so you can flash stock CrossInk back at any time.
 
 ## What it adds
@@ -216,7 +218,7 @@ The default boot screen shows the CrossRhythm logo, stored in about 5 KB of flas
 
 ## Installation
 
-1. Download `firmware-x4-pro.bin` from the [releases](https://github.com/rosstopherkeen/CrossRhythm/releases), or build it (see [Building](#building)).
+1. Download `firmware-x4-pro-v<version>.bin` from the [releases](https://github.com/rosstopherkeen/CrossRhythm/releases), or build it (see [Building](#building)).
 2. Back up `/.crosspoint/` on your SD card.
 3. Copy the `.bin` to the card and install it from **Settings › System › SD Card Firmware Update**.
 
