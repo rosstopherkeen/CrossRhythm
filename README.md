@@ -299,12 +299,12 @@ This is a personal fork. Issues with CrossInk itself belong in the [CrossInk rep
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/images/brand/gandaberunda-light.webp" />
-    <img src="./docs/images/brand/gandaberunda.webp" height="64" alt="The gandaberunda, the two-headed bird of Karnataka, in dots" />
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/images/brand/mono/gandaberunda-white.png" />
+    <img src="./docs/images/brand/mono/gandaberunda-black.png" height="64" alt="The gandaberunda, the two-headed bird of Karnataka, in dots" />
   </picture>
   &nbsp;
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/images/brand/made-in-bengaluru-light.webp" />
-    <img src="./docs/images/brand/made-in-bengaluru.webp" height="56" alt="Made in Bengaluru." />
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/images/brand/mono/made-in-bengaluru-white.png" />
+    <img src="./docs/images/brand/mono/made-in-bengaluru-black.png" height="56" alt="Made in Bengaluru." />
   </picture>
 </p>
