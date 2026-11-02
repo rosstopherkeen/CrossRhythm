@@ -17,7 +17,33 @@ permissions:
   contents: write
 
 jobs:
+  fonts:
+    # Indic font packs for the SD card (one zip per script, unzip into /.fonts/).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install font tools
+        run: pip install -r lib/EpdFont/scripts/requirements.txt
+
+      - name: Build Indic font packs
+        run: |
+          python3 lib/EpdFont/scripts/build-sd-fonts.py \
+            --only NotoSansKannada,NotoSansTelugu,NotoSansTamil,NotoSansDevanagari,NotoSansMalayalam \
+            --output-dir .pio/sd-fonts
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sd-fonts
+          path: .pio/sd-fonts/*.zip
+          if-no-files-found: error
+
   release:
+    needs: fonts
     runs-on: ubuntu-latest
     env:
       RELEASE_VERSION: ${{ inputs.version || (github.ref_type == 'tag' && github.ref_name) || '' }}
@@ -74,30 +100,64 @@ jobs:
           CROSSINK_RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: pio run -j1 -e x4-pro
 
+      - uses: actions/download-artifact@v7
+        with:
+          name: sd-fonts
+          path: release-files
+
+      - name: Collect release files
+        run: |
+          set -euo pipefail
+          cp ".pio/build/x4-pro/firmware-x4-pro-v${RELEASE_VERSION}.bin" release-files/
+          cp assets/scenes/*.rhythmscene release-files/
+          zip -j release-files/CrossRhythm-page-overlays.zip assets/page-overlays/*.bmp
+          (cd release-files && sha256sum * > SHA256SUMS.txt)
+
       - name: Write release notes
         run: |
           set -euo pipefail
-          BIN=".pio/build/x4-pro/firmware-x4-pro-v${RELEASE_VERSION}.bin"
-          (cd "$(dirname "$BIN")" && sha256sum "$(basename "$BIN")" > "$(basename "$BIN").sha256")
-          SHA="$(cut -d' ' -f1 "$BIN.sha256")"
-          SIZE="$(du -h "$BIN" | cut -f1)"
+          FW="firmware-x4-pro-v${RELEASE_VERSION}.bin"
+          SHA="$(grep " ${FW}\$" release-files/SHA256SUMS.txt | cut -d' ' -f1)"
+
+          # This version's CHANGELOG section, else [Unreleased].
+          section() {
+            awk -v h="$1" 'index($0, "## [" h "]") == 1 {on=1; next} /^## \[/ {on=0} on' CHANGELOG.md
+          }
+          CHANGES="$(section "v${RELEASE_VERSION}")"
+          [ -n "$CHANGES" ] || CHANGES="$(section "${RELEASE_VERSION}")"
+          [ -n "$CHANGES" ] || CHANGES="$(section "Unreleased")"
+          if [ -z "$CHANGES" ]; then
+            echo "::error::no CHANGELOG section for ${RELEASE_VERSION} or Unreleased"
+            exit 1
+          fi
+
           cat > release-notes.md <<NOTES
-          Based on [CrossInk ${CROSSINK_BASE}](https://github.com/uxjulia/CrossInk/releases/tag/v${CROSSINK_BASE}). Built from commit \`${GITHUB_SHA::7}\`.
+          Based on [CrossInk ${CROSSINK_BASE}](https://github.com/uxjulia/CrossInk/releases/tag/v${CROSSINK_BASE}). Built from commit \`${GITHUB_SHA::7}\`. Built and tested on the **Xteink X4 Pro** only.
 
           ## Install
           1. Back up \`/.crosspoint/\` on your SD card.
-          2. Copy \`firmware-x4-pro-v${RELEASE_VERSION}.bin\` to the card.
+          2. Copy \`${FW}\` to the card.
           3. Install it from **Settings › System › SD Card Firmware Update**.
 
-          Built and tested on the **Xteink X4 Pro** only. Indic books need the matching font folder in \`/.fonts/\`. Stock CrossInk can be flashed back at any time; your stats files are not changed.
+          Later updates come through **Settings › Check for Updates**. To go back, flash a stock CrossInk release: your stats files are not changed.
 
-          | File | Size | SHA-256 |
+          ## Optional files for the SD card
+          | Download | Copy to | For |
           | --- | --- | --- |
-          | \`firmware-x4-pro-v${RELEASE_VERSION}.bin\` | ${SIZE} | \`${SHA}\` |
+          | \`NotoSans<Script>.zip\` (Kannada, Telugu, Tamil, Devanagari, Malayalam) | unzip into \`/.fonts/\` | Books in that script (Devanagari covers Hindi and Marathi) |
+          | \`*.rhythmscene\` (Lalbagh, KR Market, State Library) | \`/.scenes/\` | More Charging Animation and City Scape scenes (Glass House is built in) |
+          | \`CrossRhythm-page-overlays.zip\` | unzip into \`/.sleep/\` | Page Overlay sleep screen wallpapers |
 
-          See the [README](https://github.com/${GITHUB_REPOSITORY}#readme) for features and the [CHANGELOG](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/CHANGELOG.md) for details.
+          If you opened a book in a script before installing its font, choose **Delete Book Cache** in the reader menu.
 
-          ## What's changed
+          ## Changes
+          ${CHANGES}
+
+          ## Checksums
+          SHA-256 of \`${FW}\`: \`${SHA}\`. All files are listed in \`SHA256SUMS.txt\`.
+
+          Scene maps are © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Fonts are Noto Sans (SIL Open Font License 1.1). See the [README](https://github.com/${GITHUB_REPOSITORY}#readme) for details.
+
           NOTES
 
       - name: Create draft release
@@ -110,6 +170,4 @@ jobs:
           body_path: release-notes.md
           generate_release_notes: true
           fail_on_unmatched_files: true
-          files: |
-            .pio/build/x4-pro/firmware-x4-pro-v${{ env.RELEASE_VERSION }}.bin
-            .pio/build/x4-pro/firmware-x4-pro-v${{ env.RELEASE_VERSION }}.bin.sha256
+          files: release-files/*
