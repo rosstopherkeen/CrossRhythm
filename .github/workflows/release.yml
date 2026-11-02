@@ -1,12 +1,11 @@
 name: Release
 
 # Builds the X4 Pro firmware and attaches it to a draft GitHub release.
-# Version: the pushed tag (vX.Y.Z), else the manual input, else the latest vX.Y.Z
+# Manual only (a tag trigger would re-run this when you publish the draft, since
+# publishing creates the tag). Version: the manual input, else the latest vX.Y.Z
 # tag with the patch number +1 (1.0.0 for the first release). `version` in
 # platformio.ini tracks the CrossInk base and is not the release number.
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       version:
@@ -48,7 +47,7 @@ jobs:
     needs: fonts
     runs-on: ubuntu-latest
     env:
-      RELEASE_VERSION: ${{ inputs.version || (github.ref_type == 'tag' && github.ref_name) || '' }}
+      RELEASE_VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v6
         with:
