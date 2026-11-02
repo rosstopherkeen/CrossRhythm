@@ -1,17 +1,16 @@
 name: Release
 
 # Builds the X4 Pro firmware and attaches it to a draft GitHub release.
-# Version: the pushed tag (vX.Y.Z), else the manual input, else `version` under
-# [crossink] in platformio.ini, so bumping that line is the whole release step.
+# Version: the pushed tag (vX.Y.Z), else the manual input. There is no fallback:
+# `version` in platformio.ini tracks the CrossInk base and is not the release number.
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
     inputs:
       version:
-        description: "Version override, e.g. 1.0.0 (blank = platformio.ini version)"
-        required: false
-        default: ""
+        description: "Version to build, e.g. 1.0.0 (no leading v)"
+        required: true
         type: string
 
 permissions:
@@ -30,10 +29,7 @@ jobs:
       - name: Resolve version
         run: |
           V="${RELEASE_VERSION#v}"
-          if [ -z "$V" ]; then
-            V="$(sed -n '/^\[crossink\]$/,/^\[/s/^version *= *//p' platformio.ini | head -1)"
-          fi
-          [ -n "$V" ] || { echo "::error::no version found"; exit 1; }
+          [ -n "$V" ] || { echo "::error::no version: push a v* tag or pass the version input"; exit 1; }
           echo "RELEASE_VERSION=$V" >> "$GITHUB_ENV"
 
       - uses: actions/setup-python@v6
