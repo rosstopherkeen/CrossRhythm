@@ -35,7 +35,7 @@ jobs:
       - name: Build Indic font packs
         run: |
           python3 lib/EpdFont/scripts/build-sd-fonts.py \
-            --only NotoSansKannada,NotoSansTelugu,NotoSansTamil,NotoSansDevanagari,NotoSansMalayalam \
+            --only NotoSansKannada,NotoSansTelugu,NotoSansTamil,NotoSansDevanagari,NotoSansMalayalam,NotoSansBengali,NotoSansOriya \
             --output-dir .pio/sd-fonts
 
       - uses: actions/upload-artifact@v7
@@ -157,7 +157,7 @@ jobs:
           ## Optional files for the SD card
           | Download | Copy to | For |
           | --- | --- | --- |
-          | \`NotoSans<Script>.zip\` (Kannada, Telugu, Tamil, Devanagari, Malayalam) | unzip into \`/.fonts/\` | Books in that script (Devanagari covers Hindi and Marathi) |
+          | \`NotoSans<Script>.zip\` (Kannada, Telugu, Tamil, Devanagari, Malayalam, Bengali, Odia) | unzip into \`/.fonts/\` | Books in that script (Devanagari covers Hindi, Marathi and Sanskrit; Bengali and Odia are experimental) |
           | \`*.rhythmscene\` (Lalbagh, KR Market, State Library) | \`/.scenes/\` | More Charging Animation and City Scape scenes (Glass House is built in) |
           | \`CrossRhythm-page-overlays.zip\` | unzip into \`/.sleep/\` | Page Overlay sleep screen wallpapers |
 
