@@ -61,6 +61,11 @@ jobs:
           pio pkg install -e x4-pro
           uv pip install --python ~/.platformio/penv/bin/python "pioarduino==6.1.19"
 
+      - name: Read CrossInk base version
+        run: |
+          BASE="$(sed -n '/^\[crossink\]$/,/^\[/s/^version *= *//p' platformio.ini | head -1)"
+          echo "CROSSINK_BASE=$BASE" >> "$GITHUB_ENV"
+
       - name: Set release version
         run: sed -i "/^\[crossink\]$/,/^\[/s/^version = .*/version = $RELEASE_VERSION/" platformio.ini
 
@@ -69,6 +74,32 @@ jobs:
           CROSSINK_RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: pio run -j1 -e x4-pro
 
+      - name: Write release notes
+        run: |
+          set -euo pipefail
+          BIN=".pio/build/x4-pro/firmware-x4-pro-v${RELEASE_VERSION}.bin"
+          (cd "$(dirname "$BIN")" && sha256sum "$(basename "$BIN")" > "$(basename "$BIN").sha256")
+          SHA="$(cut -d' ' -f1 "$BIN.sha256")"
+          SIZE="$(du -h "$BIN" | cut -f1)"
+          cat > release-notes.md <<NOTES
+          Based on [CrossInk ${CROSSINK_BASE}](https://github.com/uxjulia/CrossInk/releases/tag/v${CROSSINK_BASE}). Built from commit \`${GITHUB_SHA::7}\`.
+
+          ## Install
+          1. Back up \`/.crosspoint/\` on your SD card.
+          2. Copy \`firmware-x4-pro-v${RELEASE_VERSION}.bin\` to the card.
+          3. Install it from **Settings › System › SD Card Firmware Update**.
+
+          Built and tested on the **Xteink X4 Pro** only. Indic books need the matching font folder in \`/.fonts/\`. Stock CrossInk can be flashed back at any time; your stats files are not changed.
+
+          | File | Size | SHA-256 |
+          | --- | --- | --- |
+          | \`firmware-x4-pro-v${RELEASE_VERSION}.bin\` | ${SIZE} | \`${SHA}\` |
+
+          See the [README](https://github.com/${GITHUB_REPOSITORY}#readme) for features and the [CHANGELOG](https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/CHANGELOG.md) for details.
+
+          ## What's changed
+          NOTES
+
       - name: Create draft release
         uses: softprops/action-gh-release@v3
         with:
@@ -76,5 +107,9 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: CrossRhythm v${{ env.RELEASE_VERSION }}
           draft: true
+          body_path: release-notes.md
+          generate_release_notes: true
           fail_on_unmatched_files: true
-          files: .pio/build/x4-pro/firmware-x4-pro-v${{ env.RELEASE_VERSION }}.bin
+          files: |
+            .pio/build/x4-pro/firmware-x4-pro-v${{ env.RELEASE_VERSION }}.bin
+            .pio/build/x4-pro/firmware-x4-pro-v${{ env.RELEASE_VERSION }}.bin.sha256
