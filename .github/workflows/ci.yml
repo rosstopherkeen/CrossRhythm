@@ -1,9 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches: [main, release-01]
   pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
