@@ -117,6 +117,7 @@ jobs:
         run: |
           set -euo pipefail
           FW="firmware-x4-pro-v${RELEASE_VERSION}.bin"
+          BRAND="https://github.com/${GITHUB_REPOSITORY}/raw/${GITHUB_SHA}/docs/images/brand/mono"
           SHA="$(grep " ${FW}\$" release-files/SHA256SUMS.txt | cut -d' ' -f1)"
 
           # This version's CHANGELOG section, else [Unreleased].
@@ -157,6 +158,18 @@ jobs:
           SHA-256 of \`${FW}\`: \`${SHA}\`. All files are listed in \`SHA256SUMS.txt\`.
 
           Scene maps are © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Fonts are Noto Sans (SIL Open Font License 1.1). See the [README](https://github.com/${GITHUB_REPOSITORY}#readme) for details.
+
+          <p align="center">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="${BRAND}/gandaberunda-white.png" />
+              <img src="${BRAND}/gandaberunda-black.png" height="64" alt="The gandaberunda, the two-headed bird of Karnataka, in dots" />
+            </picture>
+            &nbsp;
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="${BRAND}/made-in-bengaluru-white.png" />
+              <img src="${BRAND}/made-in-bengaluru-black.png" height="56" alt="Made in Bengaluru." />
+            </picture>
+          </p>
 
           NOTES
 
