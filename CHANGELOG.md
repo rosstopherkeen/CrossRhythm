@@ -22,6 +22,7 @@
 - Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
 - Settings shows the firmware as `CrossRhythm vX.Y.Z`.
 - Dashboard home: the footer now shows your reading streak as a big number with "day streak" beside it, and your reader type ("Morning reader" and so on) with a larger icon for that time of day. The labels use Bitter when it is your reading font (always on X3/X4) and the interface font otherwise.
+- Interface font is now Bricolage Grotesque (menus, lists, settings, dashboard), replacing Inter. Cyrillic, Greek and Hebrew come from GSans (Google Sans) behind it, and Arabic from Noto Sans Arabic, so every interface language still shows all its letters; the Hebrew maqaf and geresh and the Ukrainian apostrophe, which were missing before, now show too.
 
 ### Fixed
 

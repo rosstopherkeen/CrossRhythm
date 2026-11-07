@@ -226,17 +226,17 @@ EpdFont bitter16BoldItalicFont(&bitter_16_bolditalic);
 EpdFontFamily bitter16FontFamily(&bitter16RegularFont, &bitter16BoldFont, &bitter16ItalicFont, &bitter16BoldItalicFont);
 
 #endif
-EpdFont smallFont(&inter_8_regular);
+EpdFont smallFont(&bricolage_8_regular);
 EpdFontFamily smallFontFamily(&smallFont);
 
 const EpdFont uiSymbols10Font(&ui_symbols_10);
 
-EpdFont ui10RegularFont(&inter_10_regular);
-EpdFont ui10BoldFont(&inter_10_bold);
+EpdFont ui10RegularFont(&bricolage_10_regular);
+EpdFont ui10BoldFont(&bricolage_10_bold);
 EpdFontFamily ui10FontFamily(&ui10RegularFont, &ui10BoldFont, nullptr, nullptr, &uiSymbols10Font);
 
-EpdFont ui12RegularFont(&inter_12_regular);
-EpdFont ui12BoldFont(&inter_12_bold);
+EpdFont ui12RegularFont(&bricolage_12_regular);
+EpdFont ui12BoldFont(&bricolage_12_bold);
 EpdFontFamily ui12FontFamily(&ui12RegularFont, &ui12BoldFont, nullptr, nullptr, &uiSymbols10Font);
 
 const char* resetReasonName(const esp_reset_reason_t reason) {

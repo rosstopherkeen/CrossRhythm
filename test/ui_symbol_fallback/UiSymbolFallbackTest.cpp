@@ -1,17 +1,17 @@
 #include <EpdFontFamily.h>
 #include <Utf8.h>
-#include <builtinFonts/inter_10_bold.h>
-#include <builtinFonts/inter_10_regular.h>
-#include <builtinFonts/inter_12_bold.h>
-#include <builtinFonts/inter_12_regular.h>
+#include <builtinFonts/bricolage_10_bold.h>
+#include <builtinFonts/bricolage_10_regular.h>
+#include <builtinFonts/bricolage_12_bold.h>
+#include <builtinFonts/bricolage_12_regular.h>
 #include <builtinFonts/ui_symbols_10.h>
 #include <gtest/gtest.h>
 
 namespace {
 constexpr uint32_t POWER = 0x23FB;
 const EpdFont symbols(&ui_symbols_10);
-const EpdFont smallRegular(&inter_10_regular), smallBold(&inter_10_bold);
-const EpdFont largeRegular(&inter_12_regular), largeBold(&inter_12_bold);
+const EpdFont smallRegular(&bricolage_10_regular), smallBold(&bricolage_10_bold);
+const EpdFont largeRegular(&bricolage_12_regular), largeBold(&bricolage_12_bold);
 const EpdFontFamily small(&smallRegular, &smallBold, nullptr, nullptr, &symbols);
 const EpdFontFamily large(&largeRegular, &largeBold, nullptr, nullptr, &symbols);
 }  // namespace
@@ -41,8 +41,8 @@ TEST(UiSymbolFallback, SharesTheSameRasterAtBothScalesAndStyles) {
 }
 
 TEST(UiSymbolFallback, PreservesNormalGlyphsAndMissingGlyphBehavior) {
-  EXPECT_EQ(small.getGlyphData('A').fontData, &inter_10_regular);
-  EXPECT_EQ(large.getGlyphData('*', EpdFontFamily::BOLD).fontData, &inter_12_bold);
+  EXPECT_EQ(small.getGlyphData('A').fontData, &bricolage_10_regular);
+  EXPECT_EQ(large.getGlyphData('*', EpdFontFamily::BOLD).fontData, &bricolage_12_bold);
   const EpdFontFamily noFallback(&smallRegular);
   EXPECT_FALSE(noFallback.hasCodepoint(POWER));
   EXPECT_EQ(noFallback.getGlyphData(POWER).glyph, smallRegular.getGlyph(REPLACEMENT_GLYPH));

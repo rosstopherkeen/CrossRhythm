@@ -27,6 +27,7 @@ parser.add_argument("--force-autohint", dest="force_autohint", action="store_tru
 parser.add_argument("--pnum", dest="pnum", action="store_true", help="Use proportional numerals (pnum OpenType feature) instead of default tabular figures. Reduces visual gaps between digits in running prose.")
 parser.add_argument("--darken-aa", dest="darken_aa", action="store_true", help="Use darker 2-bit anti-aliasing thresholds for reader fonts.")
 parser.add_argument("--no-default-intervals", action="store_true", help="Export only explicitly requested intervals, without default characters or controls.")
+parser.add_argument("--kern-faces", dest="kern_faces", help="Comma-separated font-stack indices whose kerning is kept (default: all). Use when fallback faces would push the kerning class count past the uint8 range.")
 args = parser.parse_args()
 
 import freetype
@@ -612,8 +613,12 @@ def extract_kerning_fonttools(font_path, codepoints, ppem, pnum_subs=None):
 # means size_pt at 150 DPI -> ppem = size * 150 / 72
 ppem = size * 150.0 / 72.0
 
+kern_faces = None if args.kern_faces is None else {int(i) for i in args.kern_faces.split(",") if i.strip()}
+
 kern_map = {}  # (leftCp, rightCp) -> adjust
 for face_idx, cps in face_idx_cps.items():
+    if kern_faces is not None and face_idx not in kern_faces:
+        continue
     font_path = args.fontstack[face_idx]
     subs = pnum_kern_subs.get(face_idx) if args.pnum else None
     kern_map.update(extract_kerning_fonttools(font_path, cps, ppem, pnum_subs=subs))

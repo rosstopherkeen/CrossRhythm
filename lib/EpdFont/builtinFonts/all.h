@@ -40,8 +40,8 @@
 #endif
 
 // UI fonts - no emoji or PHM variants.
-#include <builtinFonts/inter_10_bold.h>
-#include <builtinFonts/inter_10_regular.h>
-#include <builtinFonts/inter_12_bold.h>
-#include <builtinFonts/inter_12_regular.h>
-#include <builtinFonts/inter_8_regular.h>
+#include <builtinFonts/bricolage_10_bold.h>
+#include <builtinFonts/bricolage_10_regular.h>
+#include <builtinFonts/bricolage_12_bold.h>
+#include <builtinFonts/bricolage_12_regular.h>
+#include <builtinFonts/bricolage_8_regular.h>

@@ -174,9 +174,32 @@ generate_reading_fonts
 # Shared fixed-size UI symbols
 bash ./generate-ui-symbols.sh
 
-# UI Font - Inter
+# UI Font - Bricolage Grotesque
+#
+# source/BricolageGrotesque/ holds static instances of the OFL variable font
+# (wght 400/700, wdth 100, opsz 12 = its small-text optical size), one file per
+# subset it ships: latin, latin-ext, vietnamese. GSans (static Google Sans, see
+# source/GSans/README.md) sits behind it for everything Bricolage lacks:
+# Cyrillic, Greek, Hebrew, arrows, math. GSans has no Arabic presentation forms,
+# which is what MiniBidi's shaping outputs for UI text, so Noto Sans Arabic is
+# last, limited to those blocks (UI_ARABIC_FORMS). Kerning comes from the
+# Bricolage faces only (UI_KERN_FACES): adding GSans' pairs overflows the font
+# format's uint8 kerning class ids.
 
 UI_FONT_SIZES=(10 12)
+ui_font_stack() {
+  local style="$1"
+  local b="../builtinFonts/source/BricolageGrotesque/BricolageGrotesque-${style}"
+  echo "${b}-latin.ttf ${b}-latin-ext.ttf ${b}-vietnamese.ttf" \
+    "../builtinFonts/source/GSans/GSans-${style}.ttf" \
+    "../builtinFonts/source/NotoSansArabic/NotoSansArabic-${style}.ttf"
+}
+UI_ARABIC_FORMS=(--font-include-intervals 4:0xFB50,0xFDFF --font-include-intervals 4:0xFE70,0xFEFF)
+UI_KERN_FACES=(--kern-faces 0,1,2)
+# Characters the UI translations use beyond the default set: Ukrainian
+# apostrophe (U+02BC), Hebrew maqaf, geresh and gershayim (U+05BE, U+05F3-05F4).
+# test/ui_font_coverage checks every translation against every UI font.
+UI_EXTRA_INTERVALS=(--additional-intervals 0x02BC,0x02BC --additional-intervals 0x05BE,0x05BE --additional-intervals 0x05F3,0x05F4)
 UI_FONT_STYLES=("Regular" "Bold")
 
 # Arabic glyphs for UI text (menus, file browser titles). The built-in fonts
@@ -209,24 +232,18 @@ ARABIC_INTERVALS=(
 
 for size in ${UI_FONT_SIZES[@]}; do
   for style in ${UI_FONT_STYLES[@]}; do
-    font_name="inter_${size}_$(echo $style | tr '[:upper:]' '[:lower:]')"
-    font_path="../builtinFonts/source/Inter/Inter-${style}.ttf"
-    hebrew_path="../builtinFonts/source/IBMPlexSansHebrew/IBMPlexSansHebrew-${style}.ttf"
-    arabic_path="../builtinFonts/source/NotoSansArabic/NotoSansArabic-${style}.ttf"
+    font_name="bricolage_${size}_$(echo $style | tr '[:upper:]' '[:lower:]')"
     output_path="../builtinFonts/${font_name}.h"
-    python fontconvert.py $font_name $size $font_path $hebrew_path $arabic_path \
+    python fontconvert.py $font_name $size $(ui_font_stack $style) "${UI_KERN_FACES[@]}" "${UI_ARABIC_FORMS[@]}" "${UI_EXTRA_INTERVALS[@]}" \
       --additional-intervals 0x05D0,0x05EA "${ARABIC_INTERVALS[@]}" > $output_path
     echo "Generated $output_path"
   done
 done
 
-# Small UI Font - Inter
+# Small UI Font - Bricolage Grotesque
 
-python fontconvert.py inter_8_regular 8 \
-  ../builtinFonts/source/Inter/Inter-Regular.ttf \
-  ../builtinFonts/source/IBMPlexSansHebrew/IBMPlexSansHebrew-Regular.ttf \
-  ../builtinFonts/source/NotoSansArabic/NotoSansArabic-Regular.ttf \
-  --additional-intervals 0x05D0,0x05EA "${ARABIC_INTERVALS[@]}" > ../builtinFonts/inter_8_regular.h
+python fontconvert.py bricolage_8_regular 8 $(ui_font_stack Regular) "${UI_KERN_FACES[@]}" "${UI_ARABIC_FORMS[@]}" "${UI_EXTRA_INTERVALS[@]}" \
+  --additional-intervals 0x05D0,0x05EA "${ARABIC_INTERVALS[@]}" > ../builtinFonts/bricolage_8_regular.h
 
 echo ""
 echo "Running compression verification..."
