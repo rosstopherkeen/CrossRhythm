@@ -94,20 +94,30 @@ TEST(HomeFooterLayout, EveryStreakValueSitsOnTheBaseline) {
 }
 
 TEST(HomeFooterLayout, WidestStreakLeavesRoomForItsLabel) {
-  // X4 Pro: 480 px wide, content inset 20, so the number starts at 30 and the
+  // X4 Pro: 480 px wide, content inset 20, so the number starts at 20 (the cover edge) and the
   // left group must stay inside the left half with room for "streak".
   int widest = 0;
   for (int v = 0; v <= 730; ++v) {
-    const HomeFooter::NumberLayout n = HomeFooter::layoutNumber(static_cast<uint16_t>(v), 30, kBaseline);
+    const HomeFooter::NumberLayout n = HomeFooter::layoutNumber(static_cast<uint16_t>(v), 20, kBaseline);
     if (n.inkRight > widest) widest = n.inkRight;
   }
   EXPECT_LE(widest + HomeFooter::kNumberLabelGap + 60, 240);
 }
 
+TEST(HomeFooterLayout, ArtStartsAndEndsExactlyOnTheGivenEdges) {
+  // The caller passes the cover's x and the stats column's right edge; the art's ink
+  // must land on them exactly, for every value and every icon.
+  for (int v = 0; v <= 999; ++v) {
+    const HomeFooter::NumberLayout n = HomeFooter::layoutNumber(static_cast<uint16_t>(v), 20, kBaseline);
+    EXPECT_EQ(n.digits[0].x, 20) << v;
+  }
+  for (const HomeFooterIcon* icon : kIcons) EXPECT_EQ(HomeFooter::iconLeft(*icon, 460) + icon->width, 460);
+}
+
 TEST(HomeFooterLayout, IconBottomSitsOnTheBaseline) {
   for (const HomeFooterIcon* icon : kIcons) {
     EXPECT_EQ(HomeFooter::iconTop(*icon, kBaseline) + icon->height, kBaseline);
-    EXPECT_EQ(HomeFooter::iconLeft(*icon, 450) + icon->width, 450);
+    EXPECT_EQ(HomeFooter::iconLeft(*icon, 460) + icon->width, 460);
   }
 }
 

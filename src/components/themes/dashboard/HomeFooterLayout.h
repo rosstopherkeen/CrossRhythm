@@ -14,8 +14,8 @@
 
 namespace HomeFooter {
 
-// Art sits this far inside the content inset on both sides (reference layout).
-constexpr int kSideIndent = 10;
+// Horizontal edges come from the dashboard layout, not from here: the number's
+// ink starts at the cover's x, the icon's ink ends on the stats column's right edge.
 constexpr int kNumberLabelGap = 11;
 constexpr int kIconLabelGap = 12;
 // Baseline distance between the two label lines.

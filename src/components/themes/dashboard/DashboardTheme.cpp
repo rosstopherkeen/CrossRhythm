@@ -51,6 +51,11 @@ bool isWideScreen(const GfxRenderer& renderer) { return renderer.getScreenWidth(
 
 int contentInset(const GfxRenderer& renderer) { return isWideScreen(renderer) ? kContentInsetX3 : kContentInsetX4; }
 
+// Right edge of the stats column; the footer's reader icon ends on it too.
+int contentRightEdge(const GfxRenderer& renderer) {
+  return renderer.getScreenWidth() - contentInset(renderer) - (gpio.deviceIsX3() ? kPairInwardShiftX3 : 0);
+}
+
 Rect coverRectForScreen(const GfxRenderer& renderer, const Rect& rect) {
   const int inset = contentInset(renderer);
   const int statsW = isWideScreen(renderer) ? kStatsColumnWidthWide : kStatsColumnWidth;
@@ -244,7 +249,7 @@ void drawStatsRow(const GfxRenderer& renderer, const int rightX, const int y, co
 
 void drawDashboardStats(const GfxRenderer& renderer, const Rect& coverRect, const BookReadingStats* stats,
                         const float progressPercent, const bool showStats, const bool black = true) {
-  const int rightX = renderer.getScreenWidth() - contentInset(renderer) - (gpio.deviceIsX3() ? kPairInwardShiftX3 : 0);
+  const int rightX = contentRightEdge(renderer);
   const int blockH = statsBlockHeight(renderer);
   const bool showRtcStats = halClock.isAvailable();
   const int rowCount = showRtcStats ? kStatsRowCount : kStatsRowCountX4;
@@ -425,7 +430,7 @@ uint16_t currentStreakDays(const GlobalReadingStats* globalStats) {
   return getCurrentLocalReadingStatsDateTime(today) ? globalStats->currentReadingStreak(&today.date) : 0;
 }
 
-// Footer labels use Bitter 10 bold when Bitter is loaded. Scalable-font builds
+// Footer labels use Bitter 10 when Bitter is loaded. Scalable-font builds
 // (S3) load the built-in Bitter only when it is the reader font, so otherwise
 // the always-loaded UI font is used.
 int footerLabelFontId(const GfxRenderer& renderer) {
@@ -454,11 +459,14 @@ void drawFooterLabel(const GfxRenderer& renderer, const char* label, const int x
   const int secondTop = baselineY - renderer.getFontAscenderSize(fontId);
   const char* lines[2] = {line1, line2};
   const int tops[2] = {secondTop - HomeFooter::kLabelLineGap, secondTop};
+  // Regular weight: the built-in families have only regular and bold, and bold
+  // read too heavy next to the number.
+  constexpr auto kStyle = EpdFontFamily::REGULAR;
   for (int i = 0; i < 2; ++i) {
     if (lines[i] == nullptr || lines[i][0] == '\0') continue;
-    const std::string visible = renderer.truncatedText(fontId, lines[i], maxTextW, EpdFontFamily::BOLD);
-    const int w = renderer.getTextWidth(fontId, visible.c_str(), EpdFontFamily::BOLD);
-    renderer.drawText(fontId, alignRight ? x - w : x, tops[i], visible.c_str(), !inverted, EpdFontFamily::BOLD);
+    const std::string visible = renderer.truncatedText(fontId, lines[i], maxTextW, kStyle);
+    const int w = renderer.getTextWidth(fontId, visible.c_str(), kStyle);
+    renderer.drawText(fontId, alignRight ? x - w : x, tops[i], visible.c_str(), !inverted, kStyle);
   }
 }
 
@@ -519,8 +527,8 @@ void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const G
   const int baselineY = centerY + HomeFooter::kBaselineBelowCenter;
   const int halfW = renderer.getScreenWidth() / 2;
 
-  const HomeFooter::NumberLayout number =
-      HomeFooter::layoutNumber(currentStreakDays(globalStats), coverRect.x + HomeFooter::kSideIndent, baselineY);
+  // Number starts on the cover/title left edge.
+  const HomeFooter::NumberLayout number = HomeFooter::layoutNumber(currentStreakDays(globalStats), coverRect.x, baselineY);
   for (int i = 0; i < number.count; ++i) {
     const HomeFooter::DigitPlacement& d = number.digits[i];
     drawHomeFooterBitmap(renderer, d.glyph->bits, d.x, d.y, d.glyph->width, d.glyph->height, inverted);
@@ -530,9 +538,7 @@ void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const G
                   false, inverted);
 
   const HomeFooterIcon& icon = readerTypeIcon(globalStats);
-  const int iconRight =
-      renderer.getScreenWidth() - inset - (gpio.deviceIsX3() ? kPairInwardShiftX3 : 0) - HomeFooter::kSideIndent;
-  const int iconX = HomeFooter::iconLeft(icon, iconRight);
+  const int iconX = HomeFooter::iconLeft(icon, contentRightEdge(renderer));
   drawHomeFooterBitmap(renderer, icon.bits, iconX, HomeFooter::iconTop(icon, baselineY), icon.width, icon.height,
                        inverted);
   const int readerLabelRight = iconX - HomeFooter::kIconLabelGap;
