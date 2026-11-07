@@ -21,6 +21,7 @@
 - Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
 - Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
 - Settings shows the firmware as `CrossRhythm vX.Y.Z`.
+- Dashboard home: the footer now shows your reading streak as a big number with "day streak" beside it, and your reader type ("Morning reader" and so on) with a larger icon for that time of day. The labels use Bitter when it is your reading font (always on X3/X4) and the interface font otherwise.
 
 ### Fixed
 

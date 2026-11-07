@@ -26,12 +26,7 @@
 #include "components/TouchRegistry.h"
 #include "components/UITheme.h"
 #include "components/UiAppHelpers.h"
-#include "components/icons/afternoon.h"
-#include "components/icons/book24.h"
-#include "components/icons/evening.h"
-#include "components/icons/morning.h"
-#include "components/icons/night.h"
-#include "components/icons/streak.h"
+#include "components/themes/dashboard/HomeFooterLayout.h"
 #include "fontIds.h"
 
 namespace {
@@ -47,8 +42,6 @@ constexpr int kTitleTopGap = 28;
 constexpr int kTitleChapterGap = 8;
 constexpr int kBookTitleMaxLines = 2;
 constexpr int kBookChapterMaxLines = 2;
-constexpr int kFooterIconSize = 24;
-constexpr int kFooterIconTextGap = 18;
 constexpr int kFooterBottomGap = 57;
 constexpr int kStatsRowCount = 7;
 constexpr int kStatsRowCountX4 = 6;
@@ -403,74 +396,70 @@ const char* readerTypeLabel(const GlobalReadingStats* globalStats) {
   }
 }
 
-const uint8_t* readerTypeIcon(const GlobalReadingStats* globalStats) {
+const HomeFooterIcon& readerTypeIcon(const GlobalReadingStats* globalStats) {
   if (globalStats == nullptr) {
-    return Book24Icon;
+    return HomeFooterNewReaderIcon;
   }
 
   ReadingTimeBucket bucket = ReadingTimeBucket::Night;
   if (!dominantReaderTypeBucket(*globalStats, bucket)) {
-    return Book24Icon;
+    return HomeFooterNewReaderIcon;
   }
 
   switch (bucket) {
     case ReadingTimeBucket::Morning:
-      return MorningReaderIcon;
+      return HomeFooterMorningIcon;
     case ReadingTimeBucket::Afternoon:
-      return AfternoonReaderIcon;
+      return HomeFooterAfternoonIcon;
     case ReadingTimeBucket::Evening:
-      return EveningReaderIcon;
+      return HomeFooterEveningIcon;
     case ReadingTimeBucket::Night:
     default:
-      return NightReaderIcon;
+      return HomeFooterNightIcon;
   }
 }
 
-void formatStreakStat(const GlobalReadingStats* globalStats, char* buf, const size_t len) {
-  if (len == 0) {
-    return;
-  }
-  if (globalStats == nullptr) {
-    snprintf(buf, len, "%s", tr(STR_STATS_NO_STREAK));
-    return;
-  }
-
+uint16_t currentStreakDays(const GlobalReadingStats* globalStats) {
+  if (globalStats == nullptr) return 0;
   ReadingStatsDateTime today;
-  const uint16_t streak =
-      getCurrentLocalReadingStatsDateTime(today) ? globalStats->currentReadingStreak(&today.date) : 0;
-  if (streak == 0) {
-    snprintf(buf, len, "%s", tr(STR_STATS_NO_STREAK));
-    return;
-  }
-  snprintf(buf, len, tr(STR_STATS_DAY_STREAK_FORMAT), static_cast<unsigned>(streak));
+  return getCurrentLocalReadingStatsDateTime(today) ? globalStats->currentReadingStreak(&today.date) : 0;
 }
 
-void drawIconLabel(const GfxRenderer& renderer, const uint8_t* icon, const int iconX, const int centerY,
-                   const char* label, const int maxTextW, const bool inverted = false) {
-  const std::string visibleLabel = renderer.truncatedText(UI_10_FONT_ID, label, maxTextW);
-  const int lineH = renderer.getLineHeight(UI_10_FONT_ID);
-  if (inverted) {
-    renderer.drawIconInverted(icon, iconX, centerY - kFooterIconSize / 2, kFooterIconSize, kFooterIconSize);
-  } else {
-    renderer.drawIcon(icon, iconX, centerY - kFooterIconSize / 2, kFooterIconSize, kFooterIconSize);
-  }
-  renderer.drawText(UI_10_FONT_ID, iconX + kFooterIconSize + kFooterIconTextGap, centerY - lineH / 2,
-                    visibleLabel.c_str(), !inverted);
+// Footer labels use Bitter 10 bold when Bitter is loaded. Scalable-font builds
+// (S3) load the built-in Bitter only when it is the reader font, so otherwise
+// the always-loaded UI font is used.
+int footerLabelFontId(const GfxRenderer& renderer) {
+  const auto& fonts = renderer.getFontMap();
+  return fonts.find(BITTER_10_FONT_ID) != fonts.end() ? BITTER_10_FONT_ID : UI_10_FONT_ID;
 }
 
-void drawRightAlignedIconLabel(const GfxRenderer& renderer, const uint8_t* icon, const int rightX, const int centerY,
-                               const char* label, const int maxTextW, const bool inverted = false) {
-  const std::string visibleLabel = renderer.truncatedText(UI_10_FONT_ID, label, maxTextW);
-  const int labelW = renderer.getTextWidth(UI_10_FONT_ID, visibleLabel.c_str());
-  const int lineH = renderer.getLineHeight(UI_10_FONT_ID);
-  const int textX = rightX - labelW;
-  const int iconX = textX - kFooterIconTextGap - kFooterIconSize;
+void drawHomeFooterBitmap(const GfxRenderer& renderer, const uint8_t* bits, const int x, const int y, const int w,
+                          const int h, const bool inverted) {
   if (inverted) {
-    renderer.drawIconInverted(icon, iconX, centerY - kFooterIconSize / 2, kFooterIconSize, kFooterIconSize);
+    renderer.drawIconInverted(bits, x, y, w, h);
   } else {
-    renderer.drawIcon(icon, iconX, centerY - kFooterIconSize / 2, kFooterIconSize, kFooterIconSize);
+    renderer.drawIcon(bits, x, y, w, h);
   }
-  renderer.drawText(UI_10_FONT_ID, textX, centerY - lineH / 2, visibleLabel.c_str(), !inverted);
+}
+
+// Two-line label whose second line sits on baselineY. alignRight puts each
+// line's right edge at x; otherwise each line starts at x.
+void drawFooterLabel(const GfxRenderer& renderer, const char* label, const int x, const int baselineY,
+                     const int maxTextW, const bool alignRight, const bool inverted) {
+  char firstLine[48];
+  const char* line1 = nullptr;
+  const char* line2 = nullptr;
+  HomeFooter::splitLabel(label, firstLine, sizeof(firstLine), line1, line2);
+  const int fontId = footerLabelFontId(renderer);
+  const int secondTop = baselineY - renderer.getFontAscenderSize(fontId);
+  const char* lines[2] = {line1, line2};
+  const int tops[2] = {secondTop - HomeFooter::kLabelLineGap, secondTop};
+  for (int i = 0; i < 2; ++i) {
+    if (lines[i] == nullptr || lines[i][0] == '\0') continue;
+    const std::string visible = renderer.truncatedText(fontId, lines[i], maxTextW, EpdFontFamily::BOLD);
+    const int w = renderer.getTextWidth(fontId, visible.c_str(), EpdFontFamily::BOLD);
+    renderer.drawText(fontId, alignRight ? x - w : x, tops[i], visible.c_str(), !inverted, EpdFontFamily::BOLD);
+  }
 }
 
 void drawLeftAnchoredFooterStat(const GfxRenderer& renderer, const int labelX, const int centerY, const int maxTextW,
@@ -525,17 +514,30 @@ void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const G
     return;
   }
 
-  char streakBuf[48];
-  formatStreakStat(globalStats, streakBuf, sizeof(streakBuf));
+  // Big streak number + "day / streak" on the left, "<time> / reader" + icon on
+  // the right, all on one baseline (see HomeFooterLayout.h).
+  const int baselineY = centerY + HomeFooter::kBaselineBelowCenter;
+  const int halfW = renderer.getScreenWidth() / 2;
 
-  const int leftTextW = renderer.getScreenWidth() / 2 - inset - kFooterIconSize - kFooterIconTextGap;
-  drawIconLabel(renderer, StreakIcon, coverRect.x, centerY, streakBuf, leftTextW, inverted);
+  const HomeFooter::NumberLayout number =
+      HomeFooter::layoutNumber(currentStreakDays(globalStats), coverRect.x + HomeFooter::kSideIndent, baselineY);
+  for (int i = 0; i < number.count; ++i) {
+    const HomeFooter::DigitPlacement& d = number.digits[i];
+    drawHomeFooterBitmap(renderer, d.glyph->bits, d.x, d.y, d.glyph->width, d.glyph->height, inverted);
+  }
+  const int streakLabelX = number.inkRight + HomeFooter::kNumberLabelGap;
+  drawFooterLabel(renderer, tr(STR_STATS_DAY_STREAK_LBL), streakLabelX, baselineY, std::max(1, halfW - streakLabelX),
+                  false, inverted);
 
-  const char* readerLabel = readerTypeLabel(globalStats);
-  const int rightX = renderer.getScreenWidth() - inset - (gpio.deviceIsX3() ? kPairInwardShiftX3 : 0);
-  const int maxReaderTextW = std::max(1, renderer.getScreenWidth() / 2 - inset - kFooterIconSize - kFooterIconTextGap);
-  drawRightAlignedIconLabel(renderer, readerTypeIcon(globalStats), rightX, centerY, readerLabel, maxReaderTextW,
-                            inverted);
+  const HomeFooterIcon& icon = readerTypeIcon(globalStats);
+  const int iconRight =
+      renderer.getScreenWidth() - inset - (gpio.deviceIsX3() ? kPairInwardShiftX3 : 0) - HomeFooter::kSideIndent;
+  const int iconX = HomeFooter::iconLeft(icon, iconRight);
+  drawHomeFooterBitmap(renderer, icon.bits, iconX, HomeFooter::iconTop(icon, baselineY), icon.width, icon.height,
+                       inverted);
+  const int readerLabelRight = iconX - HomeFooter::kIconLabelGap;
+  drawFooterLabel(renderer, readerTypeLabel(globalStats), readerLabelRight, baselineY,
+                  std::max(1, readerLabelRight - halfW), true, inverted);
 }
 
 void drawBookText(const GfxRenderer& renderer, const Rect& coverRect, const RecentBook& book,
