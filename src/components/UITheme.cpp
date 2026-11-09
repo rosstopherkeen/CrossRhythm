@@ -125,6 +125,11 @@ void UITheme::setTheme(CrossPointSettings::UI_THEME type) {
       currentTheme = std::make_unique<DashboardTheme>();
       currentMetrics = &DashboardMetrics::values;
       break;
+    case CrossPointSettings::UI_THEME::GARDEN:
+      LOG_DBG("UI", "Using Garden theme");
+      currentTheme = std::make_unique<DashboardTheme>(DashboardTheme::Layout::Garden);
+      currentMetrics = &DashboardMetrics::values;
+      break;
     default:
       LOG_ERR("UI", "Unknown theme %d, falling back to Classic", static_cast<int>(type));
       currentTheme = std::make_unique<BaseTheme>();

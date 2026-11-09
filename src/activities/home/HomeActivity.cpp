@@ -321,8 +321,14 @@ bool isMinimalTheme() {
   return static_cast<CrossPointSettings::UI_THEME>(SETTINGS.uiTheme) == CrossPointSettings::UI_THEME::MINIMAL;
 }
 
+bool isGardenTheme() {
+  return static_cast<CrossPointSettings::UI_THEME>(SETTINGS.uiTheme) == CrossPointSettings::UI_THEME::GARDEN;
+}
+
+// Garden is a layout of the dashboard home: same book, stats, chapter title and footer data.
 bool isDashboardTheme() {
-  return static_cast<CrossPointSettings::UI_THEME>(SETTINGS.uiTheme) == CrossPointSettings::UI_THEME::DASHBOARD;
+  return static_cast<CrossPointSettings::UI_THEME>(SETTINGS.uiTheme) == CrossPointSettings::UI_THEME::DASHBOARD ||
+         isGardenTheme();
 }
 
 bool usesMinimalHomeInteraction() { return isMinimalTheme() || isDashboardTheme(); }
@@ -361,12 +367,12 @@ std::string minimalHomeCoverPath(const RecentBook& book, int coverHeight) {
 
 int dashboardHomeCoverWidth(int coverHeight) {
   (void)coverHeight;
-  return DashboardMetrics::homeCoverImageWidth;
+  return isGardenTheme() ? GardenMetrics::homeCoverImageWidth : DashboardMetrics::homeCoverImageWidth;
 }
 
 int dashboardHomeCoverHeight(int coverHeight) {
   (void)coverHeight;
-  return DashboardMetrics::homeCoverImageHeight;
+  return isGardenTheme() ? GardenMetrics::homeCoverImageHeight : DashboardMetrics::homeCoverImageHeight;
 }
 
 std::string dashboardHomeCoverPath(const RecentBook& book, int coverHeight) {

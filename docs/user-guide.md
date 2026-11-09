@@ -246,6 +246,9 @@ device model and build.
   - "Classic" - The original CrossInk theme
   - "Minimal" - A minimal theme with a large book cover
   - "Dashboard" - A dashboard-style home layout
+  - "Garden" - The dashboard home with a larger cover and a plant beside it that grows as you
+    read the book: progress sits at the top of the plant, and it fills its whole column at 100%.
+    Each book grows its own way. The book's stats sit in a table under the title
   - "Lyra" - A theme with simple icons featuring your current book
   - "Lyra Extended" - Lyra, but displays 3 books instead of 1 on the **[Home Screen](#31-home-screen)**
   - "Lyra Carousel" - A carousel-based Lyra home layout

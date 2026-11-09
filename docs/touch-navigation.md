@@ -6,7 +6,7 @@ nav_order: 2
 # Touch Navigation
 
 This guide covers the touchscreen shortcuts available from the **Lyra**,
-**Dashboard**, and **Minimal** Home screens. These themes use the same gestures
+**Dashboard**, **Garden**, and **Minimal** Home screens. These themes use the same gestures
 when they show one recent-book cover.
 
 ## Home-screen shortcuts
@@ -43,7 +43,7 @@ outside the panel to close the menu.
 ### Swipe left to switch recent books
 
 When at least two books are in your recent reading history, swipe left anywhere
-on a one-cover Lyra, Dashboard, or Minimal Home screen to switch to the other
+on a one-cover Lyra, Dashboard, Garden, or Minimal Home screen to switch to the other
 recent book.
 
 ## Cover Grid Home
