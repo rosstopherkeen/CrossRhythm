@@ -9,7 +9,8 @@
 // reached by p has grown, its leaves easing in just behind the front; the path tree is drawn as the
 // stems. Leaves are heart-shaped on short stalks, shade leaves in 50% Bayer and lit leaves white
 // with a black edge and midrib, in painter's order. From about 55% a few sites fruit (flower, bud,
-// small, large). A light, dotted kagome net sits in front.
+// small, large). In front sits a light perforated sheet: 1 px holes on a fine punch grid, open
+// along an asanoha (hemp leaf) pattern.
 //
 // Pure C++ (no Arduino or renderer types) so it runs in host tests. It draws through Canvas, one
 // pixel at a time, straight into the caller's framebuffer, so no column-sized buffer is needed.

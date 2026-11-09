@@ -271,6 +271,63 @@ TEST(GardenFruit, SpritesAreInkInsideMaskWithAnchorsInside) {
   }
 }
 
+// The net is a perforated sheet: at 0% (nothing grown above the ground) every ink pixel in the
+// column's upper part is a hole of the net, which stays inside [x - 2, x + w + 2) x [y, y + h),
+// is made of separate holes (no ink run longer than 5 px in any row or column) and
+// covers the whole column (every 40 x 40 window has some).
+TEST(GardenGrowth, NetIsPerforatedInsideTheColumnAndCoversIt) {
+  for (const auto& col : kColumns) {
+    garden::Plan plan;
+    ASSERT_TRUE(plan.build(col, garden::seedForPath("/The Robots of Dawn.epub")));
+    Frame f;
+    auto c = canvasFor(f, col);
+    ASSERT_TRUE(garden::draw(plan, 0.0f, c));
+    const int upperBottom = col.y + col.height / 2;  // the bare plant stays near the ground
+    auto black = [&](int x, int y) { return f.px[y * kW + x] == 0; };
+    for (int y = c.clipY0; y < upperBottom; ++y) {
+      for (int x = c.clipX0; x < c.clipX1; ++x) {
+        if (!black(x, y)) continue;
+        ASSERT_TRUE(x >= col.x - 2 && x < col.x + col.width + 2 && y >= col.y) << "net ink outside at " << x << "," << y;
+      }
+    }
+    for (int y = col.y; y < upperBottom; ++y) {
+      int run = 0;
+      for (int x = col.x - 2; x < col.x + col.width + 2; ++x) {
+        run = black(x, y) ? run + 1 : 0;
+        ASSERT_LE(run, 5) << "solid net line in row " << y;
+      }
+    }
+    for (int x = col.x - 2; x < col.x + col.width + 2; ++x) {
+      int run = 0;
+      for (int y = col.y; y < upperBottom; ++y) {
+        run = black(x, y) ? run + 1 : 0;
+        ASSERT_LE(run, 5) << "solid net line in column " << x;
+      }
+    }
+    // No dotted rule at the sides: the outer 10 px on each side carry less ink per pixel column
+    // than the interior does, so the sheet fades out instead of being framed.
+    auto inkInColumns = [&](int x0, int x1) {
+      int ink = 0;
+      for (int x = x0; x < x1; ++x) {
+        for (int y = col.y; y < upperBottom; ++y) ink += black(x, y);
+      }
+      return static_cast<double>(ink) / (x1 - x0);
+    };
+    const double interior = inkInColumns(col.x + 10, col.x + col.width - 10);
+    EXPECT_LT(inkInColumns(col.x - 2, col.x + 10), interior) << "left side framed";
+    EXPECT_LT(inkInColumns(col.x + col.width - 10, col.x + col.width + 2), interior) << "right side framed";
+    for (int wy = col.y; wy + 40 <= upperBottom; wy += 20) {
+      for (int wx = col.x; wx + 40 <= col.x + col.width; wx += 20) {
+        int ink = 0;
+        for (int y = wy; y < wy + 40; ++y) {
+          for (int x = wx; x < wx + 40; ++x) ink += black(x, y);
+        }
+        EXPECT_GT(ink, 0) << "net gap at " << wx << "," << wy;
+      }
+    }
+  }
+}
+
 TEST(GardenGrowth, DumpForVisualCheck) {
   const char* dir = std::getenv("GARDEN_DUMP_DIR");
   if (dir == nullptr) GTEST_SKIP() << "set GARDEN_DUMP_DIR to write PGM images";

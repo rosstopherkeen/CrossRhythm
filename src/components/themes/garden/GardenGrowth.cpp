@@ -16,7 +16,18 @@ constexpr float kPi = 3.14159265358979f;
 constexpr float kPitch = 13.0f;          // lattice spacing between leaf sites
 constexpr float kRowStep = kPitch * 0.87f;
 constexpr float kNeighbourDist = kPitch * 1.6f;
-constexpr int kNetSpacing = 18;          // kagome cell
+// The net is a perforated sheet: 1 px holes on one triangular punch grid of pitch kHolePitch, open
+// only where the asanoha lines run. Its triangles are kNetCells grid steps a side; with kNetCells a
+// multiple of 3 the triangle centres are grid points too, so every edge (holes kHolePitch apart)
+// and every spoke (kHolePitch * sqrt 3 apart) lands exactly on grid holes and lines meeting at a
+// star share holes instead of crowding.
+constexpr float kHolePitch = 3.0f;
+constexpr int kNetCells = 12;
+constexpr int kEdgeStride = 2;  // edges open every 2nd grid hole, about the spokes' spacing
+constexpr int kHoleSize = 1;    // holes are kHoleSize x kHoleSize px
+static_assert(kNetCells % 3 == 0, "triangle centres must be punch grid points");
+static_assert(kNetCells % kEdgeStride == 0, "edge holes must meet at the vertices");
+constexpr int kNetSideFade = 10;  // holes thin out over this many px at the column's sides
 constexpr int kMaxFruit = 8;
 
 constexpr uint8_t kBayer[4][4] = {{0, 8, 2, 10}, {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
@@ -165,9 +176,88 @@ void flower(Canvas& c, const int cx, const int cy) {
   put(c, cx, cy, true);
 }
 
-float positiveMod(const float v, const float m) {
-  const float r = std::fmod(v, m);
-  return r < 0 ? r + m : r;
+struct NetBox {
+  int x0, y0, x1, y1;  // exclusive
+};
+
+// The sheet fades out at the column's sides instead of stopping on a hard edge: a hole d px in
+// from the nearer side stays open for d of every kNetSideFade positions (a fixed hash of the pixel,
+// so the fade is stable and has no visible order).
+bool openAtSide(const NetBox& box, const int x, const int y) {
+  const int d = std::min(x - box.x0, box.x1 - 1 - x);
+  if (d >= kNetSideFade) return true;
+  const uint32_t hash = (static_cast<uint32_t>(x) * 73856093u) ^ (static_cast<uint32_t>(y) * 19349663u);
+  return static_cast<int>((hash >> 4) % kNetSideFade) < d;
+}
+
+// One perforation: a kHoleSize square hole centred on (x, y), kept inside the net's box.
+void hole(Canvas& c, const NetBox& box, const float x, const float y) {
+  const int x0 = static_cast<int>(std::floor(x - (kHoleSize - 1) * 0.5f));
+  const int y0 = static_cast<int>(std::floor(y - (kHoleSize - 1) * 0.5f));
+  for (int dy = 0; dy < kHoleSize; ++dy) {
+    for (int dx = 0; dx < kHoleSize; ++dx) {
+      const int px = x0 + dx, py = y0 + dy;
+      if (px >= box.x0 && px < box.x1 && py >= box.y0 && py < box.y1 && openAtSide(box, px, py)) {
+        put(c, px, py, true);
+      }
+    }
+  }
+}
+
+// Holes along a segment, `steps` grid pitches long, ends included (shared ends land on the same
+// grid point, so they punch the same hole). `openNearB` false leaves out the hole next to B: a
+// spoke's last hole before a star would sit at the same radius as the edges' first, and twelve
+// of them in a ring read as a dark circle.
+void perforate(Canvas& c, const NetBox& box, const float ax, const float ay, const float bx, const float by,
+               const int steps, const bool openNearB = true) {
+  for (int k = 0; k <= steps; ++k) {
+    if (!openNearB && k == steps - 1 && steps > 1) continue;
+    const float t = static_cast<float>(k) / static_cast<float>(steps);
+    hole(c, box, ax + (bx - ax) * t, ay + (by - ay) * t);
+  }
+}
+
+// Asanoha (hemp leaf): a triangle lattice with every triangle's centre joined to its corners, so
+// six-pointed stars meet at each lattice vertex. Each vertex A owns the edges to its right and
+// lower neighbours and the two triangles below it (one pointing up, one down), so every line and
+// triangle is drawn exactly once.
+void drawAsanohaNet(Canvas& c, const Column& col) {
+  const NetBox box{col.x, col.y, col.x + col.width, col.y + col.height};
+  const float side = kHolePitch * kNetCells;
+  const float h = side * 0.8660254f;
+  const int edgeSteps = kNetCells / kEdgeStride, spokeSteps = kNetCells / 3;
+  const int rows = static_cast<int>(col.height / h) + 1;
+  const int cols = static_cast<int>(col.width / side) + 3;
+  // Vertical lines (vertices and triangle centres) fall every side / 2. Centre the pattern on the
+  // column, shifted so the side edges land as far from a vertical line as the width allows; a
+  // line right on an edge frames the column with a dotted rule.
+  const float half = side / 2;
+  const float centre = col.x + col.width / 2.0f;
+  const float edgeOff = std::fmod(col.width / 2.0f, half);  // edge to nearest line, line on centre
+  const float shift = std::fabs(edgeOff - half / 2) <= std::fabs(std::fmod(edgeOff + half / 2, half) - half / 2)
+                          ? 0.0f
+                          : half / 2;
+  const float originX = centre + shift - std::ceil((centre + shift - col.x) / side) * side;
+  for (int j = 0; j <= rows; ++j) {
+    const float ay = col.y + j * h;
+    for (int i = -1; i <= cols; ++i) {
+      const float ax = originX + i * side + ((j & 1) ? side / 2 : 0.0f);
+      const float bx = ax + side;                                     // right neighbour
+      const float lx = ax - side / 2, rx = ax + side / 2, ly = ay + h;  // lower neighbours
+      perforate(c, box, ax, ay, bx, ay, edgeSteps);
+      perforate(c, box, ax, ay, lx, ly, edgeSteps);
+      perforate(c, box, ax, ay, rx, ly, edgeSteps);
+      // down-pointing triangle A, B, lower-right; up-pointing triangle A, lower-left, lower-right
+      const float dcx = rx, dcy = ay + h / 3;
+      perforate(c, box, dcx, dcy, ax, ay, spokeSteps, false);
+      perforate(c, box, dcx, dcy, bx, ay, spokeSteps, false);
+      perforate(c, box, dcx, dcy, rx, ly, spokeSteps, false);
+      const float ucx = ax, ucy = ay + 2 * h / 3;
+      perforate(c, box, ucx, ucy, ax, ay, spokeSteps, false);
+      perforate(c, box, ucx, ucy, lx, ly, spokeSteps, false);
+      perforate(c, box, ucx, ucy, rx, ly, spokeSteps, false);
+    }
+  }
 }
 
 }  // namespace
@@ -387,18 +477,8 @@ bool draw(const Plan& plan, float p, Canvas& canvas, const DrawOptions& options)
     }
   }
 
-  // the net: a light kagome lattice in front (0, 60 and 120 degrees, the third family offset half
-  // a cell), dotted
-  for (int y = col.y; y < col.y + col.height; ++y) {
-    for (int x = col.x - 2; x < col.x + col.width + 2; ++x) {
-      if ((x + y) % 3 != 0) continue;
-      const float u = static_cast<float>(x - col.x), v = static_cast<float>(y - col.y);
-      const bool on = (static_cast<int>(v) % kNetSpacing == 0) ||
-                      positiveMod(u * 0.866f + v * .5f, kNetSpacing) < 1 ||
-                      positiveMod(-u * 0.866f + v * .5f + kNetSpacing / 2.0f, kNetSpacing) < 1;
-      if (on) put(canvas, x, y, true);
-    }
-  }
+  // the net: a perforated sheet in front, its holes punched along an asanoha pattern
+  drawAsanohaNet(canvas, col);
   return true;
 }
 

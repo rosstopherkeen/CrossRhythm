@@ -519,16 +519,16 @@ void drawRightAnchoredFooterStat(const GfxRenderer& renderer, const int labelRig
 }
 
 // Vertical centre of the footer row; the garden's stats table hangs off it.
-int footerCenterY(const GfxRenderer& renderer, const Rect& coverRect) {
+int footerCenterY(const GfxRenderer& renderer, const Rect& coverRect, const int bottomGap = kFooterBottomGap) {
   const int buttonHintReserve = gpio.hasTouch() ? 0 : DashboardMetrics::values.buttonHintsHeight;
-  const int footerY = renderer.getScreenHeight() - buttonHintReserve - kFooterBottomGap;
+  const int footerY = renderer.getScreenHeight() - buttonHintReserve - bottomGap;
   return std::max(coverRect.y + coverRect.height + 120, footerY);
 }
 
 void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const GlobalReadingStats* globalStats,
-                     const bool inverted = false) {
+                     const bool inverted = false, const int bottomGap = kFooterBottomGap) {
   const int inset = contentInset(renderer);
-  const int centerY = footerCenterY(renderer, coverRect);
+  const int centerY = footerCenterY(renderer, coverRect, bottomGap);
 
   if (!halClock.isAvailable()) {
     char totalTime[40];
@@ -606,6 +606,9 @@ constexpr int kGardenColumnGap = 16;        // cover to plant column
 constexpr int kGardenMinColumnWidth = 100;  // narrower than this and the cover gives way
 constexpr int kGardenTitleTopGap = 18;
 constexpr int kGardenPlantTopOffset = 12;   // lattice starts this far below the cover top
+constexpr int kGardenProgressTopInset = 4;  // progress line ink top below the plant column's top
+constexpr int kGardenHaloR2 = 4;            // paper halo round the progress line: disc r^2 <= 4 (~1.5 px)
+constexpr int kGardenFooterBottomGap = 37;  // footer centre above the screen bottom (dashboard: 57)
 constexpr int kGardenTableFooterGap = 65;   // footer centre to the table's bottom rule
 constexpr int kGardenTableTextGap = 6;      // last text line to the table's top rule
 
@@ -624,7 +627,7 @@ int gardenTableHeight(const GfxRenderer& renderer) {
 }
 
 int gardenTableTop(const GfxRenderer& renderer, const Rect& coverRect) {
-  const int bottomRule = footerCenterY(renderer, coverRect) - kGardenTableFooterGap;
+  const int bottomRule = footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - kGardenTableFooterGap;
   return bottomRule - (gardenTableHeight(renderer) - 2);
 }
 
@@ -658,9 +661,9 @@ bool frontLeaf(void* ctx, const float x, const float y, const float size) {
          (static_cast<int>(x * 7 + y * 13) % 10) < 4;
 }
 
-// Plant column: the progress line at the top (its ink top on the cover's top edge, label left,
-// value right, one baseline), the plant behind it with a 1 px paper halo, then the few leaves that
-// come in front of it.
+// Plant column: the progress line top-aligned inside the column (label left, value right, one
+// baseline), the plant and net behind it with a ~1.5 px paper halo, then the few leaves that come
+// in front of it.
 void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const RecentBook& book,
                       const float progressPercent) {
   const int colX = coverRect.x + coverRect.width + kGardenColumnGap;
@@ -674,7 +677,8 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
     snprintf(value, sizeof(value), "-");
   }
   const auto bounds = renderer.getTextVerticalBounds(UI_12_FONT_ID, value);
-  const int valueY = coverRect.y - bounds.top;
+  const int textTop = coverRect.y + kGardenPlantTopOffset + kGardenProgressTopInset;
+  const int valueY = textTop - bounds.top;
   const int labelY = valueY + renderer.getFontAscenderSize(UI_12_FONT_ID) - renderer.getFontAscenderSize(SMALL_FONT_ID);
   const int valueW = renderer.getTextWidth(UI_12_FONT_ID, value, EpdFontFamily::BOLD);
   const std::string label = renderer.truncatedText(SMALL_FONT_ID, tr(STR_STATS_PROGRESS_LBL),
@@ -686,7 +690,7 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
   TextInk text;
   text.x0 = colX;
   text.x1 = colRight;
-  text.y0 = coverRect.y - 4;
+  text.y0 = textTop - 4;
   text.y1 = std::max(valueY + renderer.getLineHeight(UI_12_FONT_ID), labelY + renderer.getLineHeight(SMALL_FONT_ID));
   text.width = text.x1 - text.x0;
   text.height = text.y1 - text.y0;
@@ -725,12 +729,15 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
     LOG_ERR("HOME", "Garden: OOM drawing the plant");
   }
 
-  // 1 px paper halo around the text, then the text again from its own pixels.
+  // Paper halo around the text (a disc of r^2 <= 4: the old 3 x 3 square plus one more pixel on
+  // each axis, so about 1.5 px), then the text again from its own pixels.
   for (int y = text.y0; y < text.y1; ++y) {
     for (int x = text.x0; x < text.x1; ++x) {
       if (!text.ink(x, y)) continue;
-      for (int dy = -1; dy <= 1; ++dy) {
-        for (int dx = -1; dx <= 1; ++dx) renderer.drawPixel(x + dx, y + dy, false);
+      for (int dy = -2; dy <= 2; ++dy) {
+        for (int dx = -2; dx <= 2; ++dx) {
+          if (dx * dx + dy * dy <= kGardenHaloR2) renderer.drawPixel(x + dx, y + dy, false);
+        }
       }
     }
   }
@@ -746,7 +753,7 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
   front.leavesOnly = true;
   front.leafFilter = &frontLeaf;
   front.filterCtx = &band;
-  canvas.clipY0 = coverRect.y - 6;
+  canvas.clipY0 = coverRect.y;
   if (!garden::draw(plan, growth, canvas, front)) {
     LOG_ERR("HOME", "Garden: OOM drawing the front leaves");
   }
@@ -847,9 +854,12 @@ void drawGardenHome(GfxRenderer& renderer, const Rect& rect, const std::vector<R
   const bool showStats = showBookStatsForPath(book.path);
   const int tableTop = gardenTableTop(renderer, coverRect);
   drawGardenBookText(renderer, coverRect, book, currentChapterTitle,
-                     showStats ? tableTop - kGardenTableTextGap : footerCenterY(renderer, coverRect) - 60);
+                     showStats ? tableTop - kGardenTableTextGap
+                               : footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - 60);
   if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
-  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats);
+  if (SETTINGS.shouldTrackReadingStats()) {
+    drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
+  }
 }
 }  // namespace
 
