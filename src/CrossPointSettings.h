@@ -39,6 +39,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
     DASHBOARD_SLEEP = 11,
     // A scene picked by cityScapeScene, keyed by book progress (CROSSINK_APP_CAP_CHARGING_ANIMATION boards).
     CITY_SCAPES = 12,
+    // The Garden home (cover, growing plant, stats table) as a sleep screen.
+    GARDEN_SLEEP = 13,
     SLEEP_SCREEN_MODE_COUNT
   };
   enum SLEEP_SCREEN_COVER_MODE { FIT = 0, CROP = 1, SLEEP_SCREEN_COVER_MODE_COUNT };

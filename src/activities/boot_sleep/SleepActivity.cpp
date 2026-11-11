@@ -541,6 +541,7 @@ void SleepActivity::onEnter() {
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::MINIMAL_STATS_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP ||
+                                          sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::GARDEN_SLEEP ||
                                           sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES;
   const std::string& recentBookPath = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
   if (sleepScreenUsesRecentBooks && !recentBookPath.empty()) {
@@ -590,7 +591,9 @@ void SleepActivity::onEnter() {
       if (!BookStatsTracking::isEnabled(bookStatsCachePathFor(recentBookPath))) return renderMinimalSleepScreen();
       return renderMinimalStatsSleepScreen();
     case (CrossPointSettings::SLEEP_SCREEN_MODE::DASHBOARD_SLEEP):
-      return renderDashboardSleepScreen();
+      return renderDashboardSleepScreen(DashboardTheme::Layout::Dashboard);
+    case (CrossPointSettings::SLEEP_SCREEN_MODE::GARDEN_SLEEP):
+      return renderDashboardSleepScreen(DashboardTheme::Layout::Garden);
     case (CrossPointSettings::SLEEP_SCREEN_MODE::CITY_SCAPES):
       return renderCityScapeSleepScreen();
     default:
@@ -937,7 +940,7 @@ void SleepActivity::renderMinimalStatsSleepScreen() const {
   renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
 }
 
-void SleepActivity::renderDashboardSleepScreen() const {
+void SleepActivity::renderDashboardSleepScreen(const DashboardTheme::Layout layout) const {
   const std::string& path = currentBookPath.empty() ? APP_STATE.openEpubPath : currentBookPath;
   if (path.empty()) {
     return renderDefaultSleepScreen();
@@ -945,9 +948,16 @@ void SleepActivity::renderDashboardSleepScreen() const {
 
   RecentBook book = recentBookForPath(path);
   const std::string fallbackCoverPath = book.coverBmpPath;
-  book.coverBmpPath = SleepCoverAssets::cachedDashboardCoverPathFor(path);
-  if (book.coverBmpPath.empty() && SleepCoverAssets::prepareDashboardCoverForPath(path, &renderer)) {
-    book.coverBmpPath = SleepCoverAssets::cachedDashboardCoverPathFor(path);
+  const bool garden = layout == DashboardTheme::Layout::Garden;
+  const auto cachedCoverPath = [&path, garden]() {
+    return garden ? SleepCoverAssets::cachedGardenCoverPathFor(path)
+                  : SleepCoverAssets::cachedDashboardCoverPathFor(path);
+  };
+  book.coverBmpPath = cachedCoverPath();
+  if (book.coverBmpPath.empty() &&
+      (garden ? SleepCoverAssets::prepareGardenCoverForPath(path, &renderer)
+              : SleepCoverAssets::prepareDashboardCoverForPath(path, &renderer))) {
+    book.coverBmpPath = cachedCoverPath();
   }
   if (book.coverBmpPath.empty()) {
     book.coverBmpPath = fallbackCoverPath;
@@ -957,7 +967,7 @@ void SleepActivity::renderDashboardSleepScreen() const {
   const GlobalReadingStats globalStats = GlobalReadingStats::load();
   const float progressPercent = RecentBookProgress::loadPercent(book);
   const std::string chapterTitle = loadChapterTitleForPath(path);
-  DashboardTheme theme;
+  DashboardTheme theme(layout);
   theme.drawSleepScreen(renderer, book, &bookStats, &globalStats, progressPercent, chapterTitle.c_str(),
                         sleepCoverFilterInvertsGeneratedScreen());
   renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);

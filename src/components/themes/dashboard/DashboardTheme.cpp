@@ -900,10 +900,31 @@ void DashboardTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect, const
 void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBook& book, const BookReadingStats* stats,
                                      const GlobalReadingStats* globalStats, const float progressPercent,
                                      const char* currentChapterTitle, const bool inverted) const {
-  renderer.clearScreen(inverted ? 0xFF : 0x00);
-
   const Rect contentRect{0, DashboardMetrics::values.homeTopPadding, renderer.getScreenWidth(),
                          DashboardMetrics::values.homeCoverTileHeight};
+
+  if (layout_ == Layout::Garden) {
+    // The plant, its halo and the table are drawn black on paper, as on the home screen (the
+    // halo reads the progress line's own pixels back), then the screen is flipped for the dark
+    // variant. The cover goes on last so the flip never turns it into a negative.
+    renderer.clearScreen(0xFF);
+    const Rect coverRect = gardenCoverRect(renderer, contentRect);
+    drawGardenColumn(renderer, coverRect, book, progressPercent);
+    const bool showStats = showBookStatsForPath(book.path);
+    const int tableTop = gardenTableTop(renderer, coverRect);
+    drawGardenBookText(renderer, coverRect, book, currentChapterTitle,
+                       showStats ? tableTop - kGardenTableTextGap
+                                 : footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - 60);
+    if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
+    if (SETTINGS.shouldTrackReadingStats()) {
+      drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
+    }
+    if (!inverted) renderer.invertScreen();
+    drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
+    return;
+  }
+
+  renderer.clearScreen(inverted ? 0xFF : 0x00);
   const Rect coverRect = coverRectForScreen(renderer, contentRect);
   drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
   drawDashboardStats(renderer, coverRect, stats, progressPercent, showBookStatsForPath(book.path), inverted);

@@ -219,6 +219,7 @@ device model and build.
   - "Minimal" - A minimal sleep screen
   - "Minimal Stats" - A minimal stats sleep screen on supported devices; falls back to **Minimal** while tracking is off for the device or recent book
   - "Dashboard" - A dashboard-style sleep screen based on the Dashboard theme
+  - "Garden" - The Garden home as a sleep screen: the cover, the plant grown as far as you have read, and the book's stats
   - "Quick Resume" - Keeps the current content visible while sleeping
 
 - **Sleep Screen Cover Mode**: How to display the book cover when "Cover" sleep screen is selected:

@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "activities/Activity.h"
+#include "components/themes/dashboard/DashboardTheme.h"
 
 class Bitmap;
 
@@ -27,7 +28,7 @@ class SleepActivity final : public Activity {
   void renderReadingStatsSleepScreen() const;
   void renderMinimalSleepScreen() const;
   void renderMinimalStatsSleepScreen() const;
-  void renderDashboardSleepScreen() const;
+  void renderDashboardSleepScreen(DashboardTheme::Layout layout) const;
   bool renderBitmapSleepScreen(Bitmap& bitmap) const;
   void renderLastScreenSleepScreen() const;
   void renderBlankSleepScreen() const;

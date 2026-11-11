@@ -14,10 +14,12 @@ bool prepareFullCoverForPath(const std::string& bookPath, bool cropped, const Gf
                              bool imageLevels = false);
 bool prepareMinimalCoverForPath(const std::string& bookPath, const GfxRenderer* renderer = nullptr);
 bool prepareDashboardCoverForPath(const std::string& bookPath, const GfxRenderer* renderer = nullptr);
+bool prepareGardenCoverForPath(const std::string& bookPath, const GfxRenderer* renderer = nullptr);
 
 std::string reusableCoverPathFor(const std::string& bookPath);
 std::string cachedCoverPathFor(const std::string& bookPath, bool cropped, bool imageLevels = false);
 std::string cachedMinimalCoverPathFor(const std::string& bookPath);
 std::string cachedDashboardCoverPathFor(const std::string& bookPath);
+std::string cachedGardenCoverPathFor(const std::string& bookPath);
 
 }  // namespace SleepCoverAssets

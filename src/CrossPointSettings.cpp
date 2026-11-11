@@ -63,6 +63,7 @@ constexpr uint8_t SLEEP_SCREEN_STORAGE_ORDER[] = {
     static_cast<uint8_t>(CrossPointSettings::MINIMAL_STATS_SLEEP),
     static_cast<uint8_t>(CrossPointSettings::DASHBOARD_SLEEP),
     static_cast<uint8_t>(CrossPointSettings::CITY_SCAPES),
+    static_cast<uint8_t>(CrossPointSettings::GARDEN_SLEEP),
 };
 constexpr uint8_t SLEEP_SCREEN_STORAGE_ORDER_COUNT =
     sizeof(SLEEP_SCREEN_STORAGE_ORDER) / sizeof(SLEEP_SCREEN_STORAGE_ORDER[0]);
@@ -1236,6 +1237,7 @@ bool CrossPointSettings::verifySleepScreenMigrationContract() {
   constexpr uint8_t quickResumeStorageValue = 9;
   constexpr uint8_t minimalStatsStorageValue = 10;
   constexpr uint8_t dashboardSleepStorageValue = 11;
+  constexpr uint8_t gardenSleepStorageValue = 13;
   for (uint8_t storedValue = 0; storedValue < legacyModeCountBeforeMinimal; storedValue++) {
     if (sleepScreenStorageToMode(storedValue) != storedValue) {
       return false;
@@ -1250,6 +1252,8 @@ bool CrossPointSettings::verifySleepScreenMigrationContract() {
          sleepScreenModeToStorage(MINIMAL_STATS_SLEEP) == minimalStatsStorageValue &&
          sleepScreenStorageToMode(dashboardSleepStorageValue) == DASHBOARD_SLEEP &&
          sleepScreenModeToStorage(DASHBOARD_SLEEP) == dashboardSleepStorageValue &&
+         sleepScreenStorageToMode(gardenSleepStorageValue) == GARDEN_SLEEP &&
+         sleepScreenModeToStorage(GARDEN_SLEEP) == gardenSleepStorageValue &&
          sleepScreenStorageToMode(UINT8_MAX) == DARK;
 }
 #endif
