@@ -338,9 +338,6 @@ inline SettingInfo buildSleepScreenSetting() {
                          StrId::STR_COVER_CUSTOM, StrId::STR_PAGE_OVERLAY, StrId::STR_READING_STATS,
                          StrId::STR_THEME_MINIMAL, StrId::STR_THEME_MINIMAL_STATS, StrId::STR_THEME_DASHBOARD,
                          StrId::STR_THEME_GARDEN,
-#if CROSSINK_APP_CAP_CHARGING_ANIMATION
-                         StrId::STR_CITY_SCAPES,
-#endif
                          StrId::STR_QUICK_RESUME},
                         "sleepScreen", StrId::STR_CAT_DISPLAY);
   s.withEnumRawValues({
@@ -356,9 +353,6 @@ inline SettingInfo buildSleepScreenSetting() {
       static_cast<uint8_t>(CrossPointSettings::MINIMAL_STATS_SLEEP),
       static_cast<uint8_t>(CrossPointSettings::DASHBOARD_SLEEP),
       static_cast<uint8_t>(CrossPointSettings::GARDEN_SLEEP),
-#if CROSSINK_APP_CAP_CHARGING_ANIMATION
-      static_cast<uint8_t>(CrossPointSettings::CITY_SCAPES),
-#endif
       static_cast<uint8_t>(CrossPointSettings::QUICK_RESUME),
   });
   return s;

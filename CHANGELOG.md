@@ -26,6 +26,10 @@
 - Dashboard home: the footer now shows your reading streak as a big number with "day streak" beside it, and your reader type ("Morning reader" and so on) with a larger icon for that time of day. The labels use Bitter when it is your reading font (always on X3/X4) and the interface font otherwise.
 - Interface font is now Bricolage Grotesque (menus, lists, settings, dashboard), replacing Inter. Cyrillic, Greek and Hebrew come from GSans (Google Sans) behind it, and Arabic from Noto Sans Arabic, so every interface language still shows all its letters; the Hebrew maqaf and geresh and the Ukrainian apostrophe, which were missing before, now show too.
 
+### Removed
+
+- City Scapes is no longer a Sleep Screen option. A device that had it selected switches to the Garden sleep screen. The scenes still play as the charging animation.
+
 ### Fixed
 
 - Books Finished showed less reading time than the book's own Reading Stats: it kept the time from the moment the book was marked finished, without the rest of that session. It now updates when you leave the book, and opening Books Finished corrects books finished before this fix.

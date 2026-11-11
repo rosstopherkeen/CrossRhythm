@@ -473,11 +473,11 @@ class SimulatorSmokeTest {
     const auto findKey = [](const std::vector<SettingInfo>& page, const char* key) {
       return std::find_if(page.begin(), page.end(), [key](const SettingInfo& item) { return settingKeyIs(item, key); });
     };
-    // Wallpaper offers City Scapes.
+    // Wallpaper no longer offers City Scapes.
     const auto wallpaper = findKey(all, "sleepScreen");
     if (wallpaper == all.end() || std::find(wallpaper->enumValues.begin(), wallpaper->enumValues.end(),
-                                            StrId::STR_CITY_SCAPES) == wallpaper->enumValues.end())
-      fail("Wallpaper has no City Scapes option");
+                                            StrId::STR_CITY_SCAPES) != wallpaper->enumValues.end())
+      fail("Wallpaper still offers City Scapes");
     // With City Scapes selected, City Scape is the row right after Wallpaper; otherwise it is absent.
     const auto withCityScapes = buildDisplaySleepSettingsList(all);
     if (withCityScapes.size() < 2 || !settingKeyIs(withCityScapes[0], "sleepScreen") ||
@@ -495,13 +495,13 @@ class SimulatorSmokeTest {
       fail("City Scape / Charging Animation do not open an option list");
     if (cityScape->enumStringValues.empty() || cityScape->enumStringValues[0] != ChargingAnimation::builtinTitle())
       fail("City Scape does not offer the built-in scene first");
-    // City Scapes survives a save/load round trip.
+    // A saved City Scapes wallpaper loads as Garden.
     SETTINGS.sleepScreen = CrossPointSettings::CITY_SCAPES;
     JsonDocument saved;
     SETTINGS.toJson(saved);
     SETTINGS.sleepScreen = CrossPointSettings::DARK;
     SETTINGS.fromJson(saved.as<JsonVariantConst>());
-    if (SETTINGS.sleepScreen != CrossPointSettings::CITY_SCAPES) fail("City Scapes did not survive save/load");
+    if (SETTINGS.sleepScreen != CrossPointSettings::GARDEN_SLEEP) fail("Saved City Scapes did not load as Garden");
     SETTINGS.sleepScreen = savedSleepScreen;
 
     // The City Scape frame follows the percent the UI shows for the book: for every progress value,

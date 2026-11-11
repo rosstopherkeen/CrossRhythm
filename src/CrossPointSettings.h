@@ -38,6 +38,7 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
     MINIMAL_STATS_SLEEP = 10,
     DASHBOARD_SLEEP = 11,
     // A scene picked by cityScapeScene, keyed by book progress (CROSSINK_APP_CAP_CHARGING_ANIMATION boards).
+    // No longer offered in Settings; a saved value loads as GARDEN_SLEEP. Kept so storage value 12 stays reserved.
     CITY_SCAPES = 12,
     // The Garden home (cover, growing plant, stats table) as a sleep screen.
     GARDEN_SLEEP = 13,

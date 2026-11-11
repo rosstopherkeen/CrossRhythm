@@ -593,6 +593,11 @@ bool CrossPointSettings::fromJson(JsonVariantConst doc, bool importingCrossPoint
       const uint8_t storedValue = doc[info.key] | storedDefault;
       value = sleepScreenStorageToMode(storedValue);
       if (sleepScreenModeToStorage(value) != storedValue) needsResave = true;
+      // City Scapes is no longer offered as a wallpaper; Garden is its closest replacement.
+      if (value == CITY_SCAPES) {
+        value = GARDEN_SLEEP;
+        needsResave = true;
+      }
       this->*(info.valuePtr) = value;
       continue;
     }
