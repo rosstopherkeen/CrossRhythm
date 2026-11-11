@@ -34,11 +34,12 @@ class FinishedBooksIndex {
 
   static uint64_t keyForCachePath(const std::string& cachePath);
 
-  // Loads the index (falling back to .bak). When no index exists yet, or when
+  // Loads the index (falling back to .bak). When no index exists yet, when
   // completedBooksHint (GlobalReadingStats::completedBooks) says more books
-  // were finished than the index holds, it scans recent books and the
-  // /.crosspoint/epub_* caches once per boot and merges what it finds.
-  static std::vector<FinishedBookEntry> load(uint32_t completedBooksHint = 0);
+  // were finished than the index holds, or when syncWithBookStats is set (the
+  // Books Finished screen), it scans recent books and the /.crosspoint/epub_*
+  // caches once per boot and merges what it finds.
+  static std::vector<FinishedBookEntry> load(uint32_t completedBooksHint = 0, bool syncWithBookStats = false);
 
   // Adds, refreshes or (when stats.isCompleted is false) removes a book.
   static bool record(const std::string& cachePath, const std::string& title, const std::string& author,
@@ -49,8 +50,10 @@ class FinishedBooksIndex {
 
   // Sorts newest finish date first, ties by title (XPoint order).
   static void sortEntries(std::vector<FinishedBookEntry>& entries);
-  // Adds candidates whose key and title/author are not already present.
-  // Returns true when anything was added.
+  // Adds candidates whose key and title/author are not already present, and
+  // refreshes the reading time and dates of entries whose key matches a
+  // candidate (per-book stats are the source of truth). Returns true when
+  // anything changed.
   static bool mergeCandidates(std::vector<FinishedBookEntry>& entries, const std::vector<FinishedBookEntry>& found);
 
 #ifdef READING_RHYTHM_TEST

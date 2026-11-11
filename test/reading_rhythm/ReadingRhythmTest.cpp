@@ -391,6 +391,34 @@ TEST_F(RhythmTest, RescanMergesMissingBooksWithoutDuplicates) {
   EXPECT_EQ(books[1].title, "Known");
 }
 
+// The entry is written when the book is marked finished, before the finishing
+// session's minutes reach the book's stats. Opening Books Finished must bring
+// every lagging entry back in line with the per-book stats.
+TEST_F(RhythmTest, BooksFinishedScreenSyncsStaleTimesFromBookStats) {
+  const std::string cache = "/.crosspoint/epub_dawn";
+  ASSERT_TRUE(FinishedBooksIndex::record(cache, "The Robots of Dawn", "Author",
+                                         completedStats(26700, {2026, 11, 6}, {2026, 11, 11})));
+  FinishedBooksIndex::resetForTest();  // new boot
+
+  FinishedBookEntry current = entry(cache, "The Robots of Dawn", {2026, 11, 11});
+  current.totalReadingSeconds = 30420;  // 8h 27m in stats_v5.bin
+  current.startDate = {2026, 11, 6};
+  FinishedBooksIndex::setScanResultForTest({current});
+
+  // Without the sync request (count matches), the stale value stays.
+  EXPECT_EQ(FinishedBooksIndex::load(1)[0].totalReadingSeconds, 26700u);
+
+  const auto books = FinishedBooksIndex::load(1, /*syncWithBookStats=*/true);
+  ASSERT_EQ(books.size(), 1u);
+  EXPECT_EQ(books[0].totalReadingSeconds, 30420u);
+
+  // Persisted, and the scan runs only once per boot.
+  FinishedBooksIndex::setScanResultForTest({});
+  EXPECT_EQ(FinishedBooksIndex::load(1, true)[0].totalReadingSeconds, 30420u);
+  FinishedBooksIndex::resetForTest();
+  EXPECT_EQ(FinishedBooksIndex::load()[0].totalReadingSeconds, 30420u);
+}
+
 TEST_F(RhythmTest, MigrateCachePathFollowsMovedBook) {
   ASSERT_TRUE(FinishedBooksIndex::record("/.crosspoint/epub_old", "Moved", "A",
                                          completedStats(60, {2026, 1, 1}, {2026, 2, 1})));

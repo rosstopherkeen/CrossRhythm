@@ -786,6 +786,11 @@ void XtcReaderActivity::commitReadingStats() {
 void XtcReaderActivity::finalizeReadingStatsOnExit() {
   syncStatsTrackingState();
   commitReadingStats();
+  // The finished-books entry was written when the book was marked finished,
+  // before this session's time was committed; bring it up to date.
+  if (xtc && stats.isCompleted) {
+    FinishedBooksIndex::record(xtc->getCachePath(), xtc->getTitle(), xtc->getAuthor(), stats);
+  }
 }
 
 // The stats screen saves a preview that includes the pending session, so keep

@@ -27,6 +27,7 @@
 
 ### Fixed
 
+- Books Finished showed less reading time than the book's own Reading Stats: it kept the time from the moment the book was marked finished, without the rest of that session. It now updates when you leave the book, and opening Books Finished corrects books finished before this fix.
 - Indic text in file names, book titles and the reader footer now draws in the installed script font instead of replacement boxes.
 - Kannada, Tamil and Telugu words ending in a consonant with halant or pulli (such as ಕುಮಾರ್) now draw the joined final form instead of a separate mark, and Hindi letters written with a nukta (ज़, फ़, ड़) now draw as one letter. Copy the updated Noto Sans font folders to the SD card.
 - City Scapes now shows the final scene for a book shown as 100% read. The sleep screen rounded progress down (99.6% drew the 95% scene) while every progress label rounds to the nearest percent; both now use the same rounding.

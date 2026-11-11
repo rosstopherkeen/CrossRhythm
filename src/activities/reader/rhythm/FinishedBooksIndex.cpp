@@ -255,23 +255,40 @@ void FinishedBooksIndex::sortEntries(std::vector<FinishedBookEntry>& entries) {
 
 bool FinishedBooksIndex::mergeCandidates(std::vector<FinishedBookEntry>& entries,
                                          const std::vector<FinishedBookEntry>& found) {
-  bool added = false;
+  bool changed = false;
   for (const auto& candidate : found) {
     if (candidate.title.empty()) continue;
+    const auto sameKey = std::find_if(entries.begin(), entries.end(), [&candidate](const FinishedBookEntry& e) {
+      return e.pathKey == candidate.pathKey;
+    });
+    if (sameKey != entries.end()) {
+      // Entries written before the finishing session was committed lag the
+      // book's own stats; take its time and dates.
+      if (sameKey->totalReadingSeconds != candidate.totalReadingSeconds ||
+          compareReadingStatsDate(sameKey->startDate, candidate.startDate) != 0 ||
+          compareReadingStatsDate(sameKey->finishedDate, candidate.finishedDate) != 0) {
+        sameKey->totalReadingSeconds = candidate.totalReadingSeconds;
+        sameKey->startDate = candidate.startDate;
+        sameKey->finishedDate = candidate.finishedDate;
+        changed = true;
+      }
+      continue;
+    }
     const bool present = std::any_of(entries.begin(), entries.end(),
                                      [&candidate](const FinishedBookEntry& e) { return sameBook(e, candidate); });
     if (present) continue;
     entries.push_back(candidate);
-    added = true;
+    changed = true;
   }
-  if (added) {
+  if (changed) {
     sortEntries(entries);
     if (entries.size() > MAX_ENTRIES) entries.resize(MAX_ENTRIES);
   }
-  return added;
+  return changed;
 }
 
-std::vector<FinishedBookEntry> FinishedBooksIndex::load(const uint32_t completedBooksHint) {
+std::vector<FinishedBookEntry> FinishedBooksIndex::load(const uint32_t completedBooksHint,
+                                                        const bool syncWithBookStats) {
   std::vector<FinishedBookEntry> entries;
   LoadResult primary = loadPath(INDEX_PATH, &entries);
   LoadResult result = primary;
@@ -291,10 +308,10 @@ std::vector<FinishedBookEntry> FinishedBooksIndex::load(const uint32_t completed
 
   const bool noIndexYet = primary == LoadResult::Missing && result == LoadResult::Missing;
   const bool looksIncomplete = completedBooksHint > entries.size() && entries.size() < MAX_ENTRIES;
-  if (!s_scannedThisBoot && (noIndexYet || looksIncomplete)) {
+  if (!s_scannedThisBoot && (noIndexYet || looksIncomplete || syncWithBookStats)) {
     s_scannedThisBoot = true;
-    const bool added = mergeCandidates(entries, scanFinishedBooks());
-    if ((added || noIndexYet) && !writeIndex(entries)) {
+    const bool changed = mergeCandidates(entries, scanFinishedBooks());
+    if ((changed || noIndexYet) && !writeIndex(entries)) {
       LOG_ERR(LOG_TAG, "Could not persist finished-books scan");
     }
   }

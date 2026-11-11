@@ -330,7 +330,7 @@ void BookStatsActivity::showPage(const Page newPage) {
 }
 
 void BookStatsActivity::reloadFinishedBooks() {
-  finishedBooks = FinishedBooksIndex::load(globalStats.completedBooks);
+  finishedBooks = FinishedBooksIndex::load(globalStats.completedBooks, /*syncWithBookStats=*/true);
   const size_t maxTop = RhythmStatsView::finishedMaxTop(renderer, &mappedInput, finishedBooks);
   finishedTop = std::min(finishedTop, maxTop);
   if (finishedSelected >= static_cast<int>(finishedBooks.size())) {

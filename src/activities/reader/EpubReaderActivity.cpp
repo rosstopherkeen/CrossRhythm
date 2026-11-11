@@ -1542,6 +1542,11 @@ void EpubReaderActivity::finalizeReadingStatsOnExit() {
   if (statsTrackingActive || paceDirty || pendingStatsCommit || stats.estimatedTimeLeftSeconds != previousEstimate) {
     if (stats.save(epub->getCachePath()) && (statsTrackingActive || pendingStatsCommit)) globalStats.save();
   }
+  // The finished-books entry was written when the book was marked finished,
+  // before this session's time was committed; bring it up to date.
+  if (stats.isCompleted) {
+    FinishedBooksIndex::record(epub->getCachePath(), epub->getTitle(), epub->getAuthor(), stats);
+  }
 }
 
 void EpubReaderActivity::syncStatsTrackingState() {
