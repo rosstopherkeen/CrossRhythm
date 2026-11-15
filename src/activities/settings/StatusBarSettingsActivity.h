@@ -57,6 +57,8 @@ class StatusBarSettingsActivity final : public Activity {
   void openOptionPicker();
   void goBack();
   ReaderStatusBarPosition selectedPosition() const;
+  // Display context: the bar the current view edits (Top = status bar, Bottom = home bottom bar).
+  DisplayStatusBarConfig& displayBar() const;
   void refreshItemCount();
   int previewHeight() const;
   int topPreviewOriginY() const;

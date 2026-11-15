@@ -485,6 +485,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   }();
   uint8_t legacyXtcTopUsesBottom = 0;
   DisplayStatusBarConfig displayStatusBar;
+  // Battery / clock / date bar along the bottom of the home screen; off until configured.
+  DisplayStatusBarConfig homeBottomBar = DisplayStatusBarConfig::allEmpty();
   // Clock visibility mode (requires an RTC-backed clock).
   uint8_t hideClock = HIDE_CLOCK_ALWAYS;
   // Clock UTC offset in quarter-hour steps, biased by 48 so it fits in uint8_t.

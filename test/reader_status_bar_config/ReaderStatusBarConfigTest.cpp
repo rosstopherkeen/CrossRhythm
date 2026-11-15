@@ -341,3 +341,34 @@ TEST(DisplayStatusBarConfig, JsonRejectsClockAndDateWithoutRtcInEveryPosition) {
   EXPECT_EQ(display.slots[1], ReaderStatusBarItem::Empty);
   EXPECT_EQ(display.slots[2], ReaderStatusBarItem::Battery);
 }
+
+TEST(HomeBottomBar, DefaultsToOffSoExistingUsersSeeNoChange) {
+  const auto config = DisplayStatusBarConfig::allEmpty();
+  for (const auto slot : config.slots) EXPECT_EQ(slot, ReaderStatusBarItem::Empty);
+  EXPECT_FALSE(config.asReaderConfig().hasTextItems(true));
+  EXPECT_FALSE(config.asReaderConfig().hasTextItems(false));
+}
+
+TEST(HomeBottomBar, JsonRoundTripsAndMissingKeyLeavesItOff) {
+  JsonDocument doc;
+  JsonArray slots = doc["homeBottomBar"].to<JsonArray>();
+  slots.add(static_cast<int>(ReaderStatusBarItem::Date));
+  slots.add(static_cast<int>(ReaderStatusBarItem::Empty));
+  slots.add(static_cast<int>(ReaderStatusBarItem::Battery));
+  auto config = DisplayStatusBarConfig::allEmpty();
+  ASSERT_TRUE(readDisplayStatusBarJson(doc["homeBottomBar"], config, true));
+  EXPECT_EQ(config.slots[0], ReaderStatusBarItem::Date);
+  EXPECT_EQ(config.slots[2], ReaderStatusBarItem::Battery);
+
+  JsonDocument legacy;
+  auto untouched = DisplayStatusBarConfig::allEmpty();
+  EXPECT_FALSE(readDisplayStatusBarJson(legacy["homeBottomBar"], untouched, true));
+  for (const auto slot : untouched.slots) EXPECT_EQ(slot, ReaderStatusBarItem::Empty);
+}
+
+TEST(HomeBottomBar, MirrorsTheTopBarDistanceFromTheEdge) {
+  // Top bar text starts 12 px below the top; a 20 px lane on an 800 px screen ends 12 px above the bottom.
+  EXPECT_EQ(homeBottomBarTextTop(800, 0, 12, 20) + 20, 800 - 12);
+  // Button hints push it up by their reserve.
+  EXPECT_EQ(homeBottomBarTextTop(800, 40, 12, 20) + 20, 800 - 40 - 12);
+}

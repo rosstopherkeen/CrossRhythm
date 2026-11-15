@@ -112,7 +112,7 @@ const StrId percentageFormatNames[] = {StrId::STR_PERCENTAGE_FORMAT_WHOLE, StrId
 
 void StatusBarSettingsActivity::onEnter() {
   Activity::onEnter();
-  view = displayContext ? View::Top : View::Root;
+  view = View::Root;
   selectedIndex = 0;
   topIndex = 0;
   visibleRows = 1;
@@ -133,7 +133,7 @@ bool StatusBarSettingsActivity::handleHomeGesture() {
 }
 
 void StatusBarSettingsActivity::goBack() {
-  if (displayContext || view == View::Root) {
+  if (view == View::Root) {
     finishAfterBackPress();
   } else {
     view = View::Root;
@@ -145,12 +145,21 @@ void StatusBarSettingsActivity::goBack() {
   }
 }
 
+DisplayStatusBarConfig& StatusBarSettingsActivity::displayBar() const {
+  return view == View::Bottom ? SETTINGS.homeBottomBar : SETTINGS.displayStatusBar;
+}
+
 ReaderStatusBarPosition StatusBarSettingsActivity::selectedPosition() const {
   return view == View::Top ? ReaderStatusBarPosition::Top : ReaderStatusBarPosition::Bottom;
 }
 
 void StatusBarSettingsActivity::refreshItemCount() {
-  visibleItemCount = displayContext || view == View::Root ? 3 : PROGRESS_BAR_THICKNESS + 1;
+  // Display context: Root lists the two bars (top status bar, home bottom bar); each has 3 slots.
+  if (displayContext) {
+    visibleItemCount = view == View::Root ? 2 : 3;
+  } else {
+    visibleItemCount = view == View::Root ? 3 : PROGRESS_BAR_THICKNESS + 1;
+  }
   selectedIndex = std::clamp(selectedIndex, 0, visibleItemCount - 1);
 }
 
@@ -264,11 +273,11 @@ void StatusBarSettingsActivity::openOptionPicker() {
   const auto position = selectedPosition();
   const int item = selectedIndex;
   const auto config = SETTINGS.readerStatusBar(position);
-  const auto currentItem = displayContext ? SETTINGS.displayStatusBar.slots[item]
+  const auto currentItem = displayContext ? displayBar().slots[item]
                                           : config.slots[std::min(item, static_cast<int>(SLOT_RIGHT_3))];
   std::vector<std::string> options;
   std::vector<uint8_t> rawValues;
-  StrId titleId = displayContext      ? StrId::STR_STATUS_BAR
+  StrId titleId = displayContext      ? (view == View::Top ? StrId::STR_STATUS_BAR : StrId::STR_HOME_BOTTOM_BAR)
                   : view == View::Top ? StrId::STR_TOP_STATUS_BAR
                                       : StrId::STR_BOTTOM_STATUS_BAR;
   int currentIndex = 0;
@@ -305,7 +314,7 @@ void StatusBarSettingsActivity::openOptionPicker() {
   optionPopup.show(titleId, options, currentIndex, [this, position, item, rawValues](const int selected) {
     if (selected < 0 || static_cast<size_t>(selected) >= rawValues.size()) return;
     if (displayContext) {
-      SETTINGS.displayStatusBar.slots[item] = static_cast<ReaderStatusBarItem>(rawValues[selected]);
+      displayBar().slots[item] = static_cast<ReaderStatusBarItem>(rawValues[selected]);
       SETTINGS.saveToFile();
       requestUpdate();
       return;
@@ -368,9 +377,12 @@ void StatusBarSettingsActivity::buildSettingsScreen(UiApp::ScreenType& screen) {
   for (int i = 0; i < visibleItemCount; ++i) {
     fui::ListItem row;
     row.actionValue = static_cast<int16_t>(i);
-    if (displayContext) {
+    if (displayContext && view == View::Root) {
+      row.label = i == 0 ? tr(STR_TOP_STATUS_BAR) : tr(STR_HOME_BOTTOM_BAR);
+      row.value = ">";
+    } else if (displayContext) {
       row.label = i == 0 ? tr(STR_STATUS_BAR_LEFT) : i == 1 ? tr(STR_CENTER) : tr(STR_STATUS_BAR_RIGHT);
-      values[i] = itemLabel(SETTINGS.displayStatusBar.slots[i]);
+      values[i] = itemLabel(displayBar().slots[i]);
       row.value = values[i].c_str();
     } else if (view == View::Root) {
       row.label = i == 0 ? tr(STR_TOP_STATUS_BAR) : i == 1 ? tr(STR_BOTTOM_STATUS_BAR) : tr(STR_XTC_STATUS_BAR);
@@ -532,8 +544,10 @@ void StatusBarSettingsActivity::render(RenderLock&&) {
                          orientation == GfxRenderer::Orientation::LandscapeCounterClockwise;
   const int contentX = orientation == GfxRenderer::Orientation::LandscapeClockwise ? metrics.buttonHintsHeight : 0;
   const int contentWidth = pageWidth - (landscape ? metrics.buttonHintsHeight : 0);
-  const char* headerTitle = displayContext       ? tr(STR_STATUS_BAR)
-                            : view == View::Root ? tr(STR_STATUS_BARS)
+  const char* headerTitle = displayContext && view == View::Root     ? tr(STR_STATUS_BARS)
+                            : displayContext && view == View::Bottom ? tr(STR_HOME_BOTTOM_BAR)
+                            : displayContext                         ? tr(STR_STATUS_BAR)
+                            : view == View::Root                     ? tr(STR_STATUS_BARS)
                             : view == View::Top  ? tr(STR_TOP_STATUS_BAR)
                                                  : tr(STR_BOTTOM_STATUS_BAR);
   const auto labels =
@@ -575,8 +589,10 @@ void StatusBarSettingsActivity::render(RenderLock&&) {
     content.timeLeftChapter = "1h 20m";
     content.previewClock = "12:34";
     content.previewOriginY = previewOriginY;
-    const auto displayConfig = SETTINGS.displayStatusBar.asReaderConfig();
-    GUI.drawReaderStatusBar(renderer, position, content, displayContext ? &displayConfig : nullptr);
+    const auto displayConfig = displayContext ? displayBar().asReaderConfig() : ReaderStatusBarConfig{};
+    // Display bars (top and home bottom) both draw as top-style bars; only their placement differs.
+    GUI.drawReaderStatusBar(renderer, displayContext ? ReaderStatusBarPosition::Top : position, content,
+                            displayContext ? &displayConfig : nullptr);
   }
   renderer.displayBuffer();
 }

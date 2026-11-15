@@ -16,6 +16,7 @@
 - Cycle All for City Scape (X4 Pro): the last option in the City Scape list shows a different scene each time the device sleeps, going through Glass House and every scene on the SD card in turn.
 - Garden home (Settings > Display > UI Theme > Garden): the dashboard home with a larger cover and, beside it, a climbing plant that grows as you read the book. Your progress sits inside the top of the plant's column, haloed so it reads through the leaves; the plant roots at the foot of the cover, climbs behind a perforated asanoha (hemp leaf) screen and fills the whole column at 100%, flowering and fruiting near the end. Each book grows its own way, and the same book always grows the same way. The book's stats move into a table under the title.
 - Garden sleep screen (Settings > Display > Sleep Screen > Garden): the Garden home as a sleep screen, like the Dashboard option. It shows the latest book's cover, the plant grown to your progress, the title and chapter, the stats table and the footer, white on black (black on white with the inverted cover filter).
+- Home Bottom Bar (Settings > Display > Status Bar > Home Bottom Bar): battery, clock or date along the bottom of the home screen, in Left / Center / Right slots like the status bar, placed as a mirror image of it. Off until you pick items.
 - Six "Read Responsibly" reaction-diffusion wallpapers for the Page Overlay sleep screen, in `assets/page-overlays/`: copy them to `/.sleep/` on the SD card and set the sleep screen to Page Overlay.
 
 ### Changed

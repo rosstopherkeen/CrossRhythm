@@ -2119,6 +2119,7 @@ void HomeActivity::render(RenderLock&&) {
                             std::bind(&HomeActivity::storeCoverBuffer, this),
                             (isDashboardTheme() || hasAnyBookStats(currentBookStats)) ? &currentBookStats : nullptr,
                             currentBookProgressPercent, &globalStats, currentBookChapterTitle.c_str());
+    GUI.drawHomeBottomBar(renderer, showMinimalHomeButtonHints(mappedInput) ? metrics.buttonHintsHeight : 0);
 
     const int homeNavCount = minimalHomeNavCount(!recentBooks.empty());
     if (minimalHomeNavIndex >= homeNavCount) {

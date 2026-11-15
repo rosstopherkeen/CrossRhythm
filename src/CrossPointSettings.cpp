@@ -464,6 +464,8 @@ void CrossPointSettings::toJson(JsonDocument& doc) const {
 
   JsonArray displaySlots = doc["displayStatusBar"].to<JsonArray>();
   for (const auto item : displayStatusBar.slots) displaySlots.add(static_cast<uint8_t>(item));
+  JsonArray homeBottomSlots = doc["homeBottomBar"].to<JsonArray>();
+  for (const auto item : homeBottomBar.slots) homeBottomSlots.add(static_cast<uint8_t>(item));
 
   JsonObject bars = doc["readerStatusBars"].to<JsonObject>();
   bars["version"] = 1;
@@ -812,6 +814,11 @@ bool CrossPointSettings::fromJson(JsonVariantConst doc, bool importingCrossPoint
                                                                     : (doc["showClockOutsideReader"].as<int>() != 0);
     if (legacyClock) displayStatusBar.slots[1] = ReaderStatusBarItem::Clock;
     needsResave = true;
+  }
+  // Older settings files have no home bottom bar; it stays off. Same RTC rule as above: a saved
+  // clock or date survives a temporarily unavailable RTC.
+  if (!readDisplayStatusBarJson(doc["homeBottomBar"], homeBottomBar, true)) {
+    homeBottomBar = DisplayStatusBarConfig::allEmpty();
   }
   const JsonVariantConst bars = doc["readerStatusBars"];
   if (bars["version"] != 1) {

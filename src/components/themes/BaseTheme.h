@@ -318,6 +318,9 @@ class BaseTheme {
                                    const ReaderStatusBarContent& content,
                                    const ReaderStatusBarConfig* overrideConfig = nullptr) const;
   void drawDisplayStatusBar(const GfxRenderer& renderer, int topY) const;
+  // Home bottom bar (SETTINGS.homeBottomBar), mirrored from the top status bar. bottomReserve keeps
+  // it above button hints on devices without touch.
+  void drawHomeBottomBar(const GfxRenderer& renderer, int bottomReserve) const;
   virtual void drawHelpText(const GfxRenderer& renderer, Rect rect, const char* label) const;
   virtual void drawTextField(const GfxRenderer& renderer, Rect rect, const int textWidth, bool cursorMode = false,
                              int contentStartX = 0, int contentWidth = 0) const;

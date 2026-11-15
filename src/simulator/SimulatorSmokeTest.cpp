@@ -2192,8 +2192,10 @@ class SimulatorSmokeTest {
           RenderLock lock;
           captureStatusBarScreen("display-editor");
         }
+        // Root lists Top Status Bar / Home Bottom Bar: open the top bar, then its first slot's picker.
         inputScript = {press(MappedInputManager::Button::Confirm), release(MappedInputManager::Button::Confirm),
-                       render("Display status bar picker", 4)};
+                       render("Display status bar slots", 4), press(MappedInputManager::Button::Confirm),
+                       release(MappedInputManager::Button::Confirm), render("Display status bar picker", 4)};
         scriptIndex = 0;
         inputCompletionStep = SmokeStep::StatusBarPicker;
         step = SmokeStep::ReaderInput;

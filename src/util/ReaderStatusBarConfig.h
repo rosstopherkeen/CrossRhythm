@@ -79,6 +79,13 @@ struct DisplayStatusBarConfig {
   std::array<ReaderStatusBarItem, 3> slots{ReaderStatusBarItem::Empty, ReaderStatusBarItem::Empty,
                                            ReaderStatusBarItem::Battery};
 
+  // All three positions empty: the home bottom bar's default, so it stays off until configured.
+  static constexpr DisplayStatusBarConfig allEmpty() {
+    DisplayStatusBarConfig config;
+    config.slots = {ReaderStatusBarItem::Empty, ReaderStatusBarItem::Empty, ReaderStatusBarItem::Empty};
+    return config;
+  }
+
   ReaderStatusBarConfig asReaderConfig() const {
     ReaderStatusBarConfig config;
     config.progressBar = 2;
@@ -88,6 +95,14 @@ struct DisplayStatusBarConfig {
     return config;
   }
 };
+
+// Top of the home bottom bar's text lane. The lane is placed as a mirror image of the top status
+// bar: its text ends as far above the bottom edge (less any button-hint reserve) as the top bar's
+// text starts below the top edge.
+constexpr int homeBottomBarTextTop(const int screenHeight, const int bottomReserve, const int topBarTextTop,
+                                   const int laneHeight) {
+  return screenHeight - bottomReserve - topBarTextTop - laneHeight;
+}
 
 struct ReaderStatusBarsPayload {
   ReaderStatusBarConfig top;

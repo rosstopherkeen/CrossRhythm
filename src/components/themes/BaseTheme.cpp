@@ -1008,6 +1008,22 @@ void BaseTheme::drawDisplayStatusBar(const GfxRenderer& renderer, const int topY
   drawReaderStatusBar(renderer, ReaderStatusBarPosition::Top, content, &config);
 }
 
+void BaseTheme::drawHomeBottomBar(const GfxRenderer& renderer, const int bottomReserve) const {
+  const auto config = SETTINGS.homeBottomBar.asReaderConfig();
+  if (!config.hasTextItems(halClock.isAvailable())) return;
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  const int laneHeight = std::max(renderer.getLineHeight(SMALL_FONT_ID), metrics.batteryHeight);
+  const int topBarTextTop = UITheme::getTopStatusBarY(renderer) + ReaderStatusBarConfig::TOP_TEXT_INSET;
+  ReaderStatusBarContent content;
+  content.outsideReader = true;
+  // Drawn as a top-style bar (same item spacing, edges and battery glyph as the header), just
+  // placed at the mirrored height.
+  content.previewOriginY =
+      homeBottomBarTextTop(renderer.getScreenHeight(), bottomReserve, topBarTextTop, laneHeight) -
+      ReaderStatusBarConfig::TOP_TEXT_INSET;
+  drawReaderStatusBar(renderer, ReaderStatusBarPosition::Top, content, &config);
+}
+
 void BaseTheme::drawHelpText(const GfxRenderer& renderer, Rect rect, const char* label) const {
   const auto& metrics = UITheme::getInstance().getMetrics();
   auto truncatedLabel =
