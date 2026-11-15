@@ -421,25 +421,24 @@ const char* readerTypeLabel(const GlobalReadingStats* globalStats) {
   }
 }
 
-// lit: the footer ends up white on black on the panel, so use the variant whose ink is
-// the pictured shapes rather than the plate behind them. A plain polarity flip of the
-// plate icon would show a white plate with the picture punched out in black.
-const HomeFooterIcon& readerTypeIcon(const GlobalReadingStats* globalStats, const bool lit) {
+// The footer always uses the lit variant: its ink is the pictured shapes alone, so it reads
+// as a black picture on paper and, flipped, as a white picture on black (never a plate).
+const HomeFooterIcon& readerTypeIcon(const GlobalReadingStats* globalStats) {
   ReadingTimeBucket bucket = ReadingTimeBucket::Night;
   if (globalStats == nullptr || !dominantReaderTypeBucket(*globalStats, bucket)) {
-    return lit ? HomeFooterNewReaderLitIcon : HomeFooterNewReaderIcon;
+    return HomeFooterNewReaderLitIcon;
   }
 
   switch (bucket) {
     case ReadingTimeBucket::Morning:
-      return lit ? HomeFooterDawnLitIcon : HomeFooterDawnIcon;
+      return HomeFooterDawnLitIcon;
     case ReadingTimeBucket::Afternoon:
-      return lit ? HomeFooterDayLitIcon : HomeFooterDayIcon;
+      return HomeFooterDayLitIcon;
     case ReadingTimeBucket::Evening:
-      return lit ? HomeFooterDuskLitIcon : HomeFooterDuskIcon;
+      return HomeFooterDuskLitIcon;
     case ReadingTimeBucket::Night:
     default:
-      return lit ? HomeFooterTwilightLitIcon : HomeFooterTwilightIcon;
+      return HomeFooterTwilightLitIcon;
   }
 }
 
@@ -528,11 +527,9 @@ int footerCenterY(const GfxRenderer& renderer, const Rect& coverRect, const int 
 // black on paper while the reader sees it white on black.
 bool homeShownDark() { return SETTINGS.screenInverted != 0; }
 
-// inverted: draw white ink (the caller cleared to black). shownDark: the footer reaches
-// the reader white on black, whether by that or by a later screen/panel flip; it picks
-// the reader-type icon variant.
+// inverted: draw white ink (the caller cleared to black).
 void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const GlobalReadingStats* globalStats,
-                     const bool inverted, const bool shownDark, const int bottomGap = kFooterBottomGap) {
+                     const bool inverted, const int bottomGap = kFooterBottomGap) {
   const int inset = contentInset(renderer);
   const int centerY = footerCenterY(renderer, coverRect, bottomGap);
 
@@ -568,7 +565,7 @@ void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const G
   drawFooterLabel(renderer, tr(STR_STATS_DAY_STREAK_LBL), streakLabelX, baselineY, std::max(1, halfW - streakLabelX),
                   false, inverted);
 
-  const HomeFooterIcon& icon = readerTypeIcon(globalStats, shownDark);
+  const HomeFooterIcon& icon = readerTypeIcon(globalStats);
   const int iconX = HomeFooter::iconLeft(icon, contentRightEdge(renderer));
   drawHomeFooterBitmap(renderer, icon.bits, iconX, HomeFooter::iconTop(icon, baselineY), icon.width, icon.height,
                        inverted);
@@ -871,7 +868,7 @@ void drawGardenHome(GfxRenderer& renderer, const Rect& rect, const std::vector<R
                                : footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - 60);
   if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
   if (SETTINGS.shouldTrackReadingStats()) {
-    drawFooterStats(renderer, coverRect, globalStats, false, homeShownDark(), kGardenFooterBottomGap);
+    drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
   }
 }
 }  // namespace
@@ -907,7 +904,7 @@ void DashboardTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect, const
 
   drawDashboardStats(renderer, coverRect, stats, progressPercent, showBookStatsForPath(recentBooks[0].path));
   drawBookText(renderer, coverRect, recentBooks[0], currentChapterTitle);
-  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, false, homeShownDark());
+  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, false);
 }
 
 void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBook& book, const BookReadingStats* stats,
@@ -931,7 +928,7 @@ void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBo
     if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
     if (SETTINGS.shouldTrackReadingStats()) {
       // Drawn black on paper; the flip below is what makes it dark.
-      drawFooterStats(renderer, coverRect, globalStats, false, !inverted, kGardenFooterBottomGap);
+      drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
     }
     if (!inverted) renderer.invertScreen();
     drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
@@ -943,5 +940,5 @@ void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBo
   drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
   drawDashboardStats(renderer, coverRect, stats, progressPercent, showBookStatsForPath(book.path), inverted);
   drawBookText(renderer, coverRect, book, currentChapterTitle, inverted);
-  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, !inverted, !inverted);
+  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, !inverted);
 }

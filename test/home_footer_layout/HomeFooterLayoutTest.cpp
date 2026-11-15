@@ -48,8 +48,8 @@ const HomeFooterIcon* const kIcons[] = {&HomeFooterDawnIcon, &HomeFooterDayIcon,
                                         &HomeFooterTwilightIcon, &HomeFooterNewReaderIcon};
 
 struct IconPair {
-  const HomeFooterIcon* plate;  // black plate with the picture cut out (light home)
-  const HomeFooterIcon* lit;    // the picture alone as ink (dark home)
+  const HomeFooterIcon* plate;  // source art: black plate with the picture cut out
+  const HomeFooterIcon* lit;    // the picture alone as ink; what the footer draws
   const char* name;
 };
 const IconPair kIconPairs[] = {{&HomeFooterDawnIcon, &HomeFooterDawnLitIcon, "dawn"},
@@ -99,8 +99,8 @@ TEST(HomeFooterArt, LitIconsAreTightlyCroppedAndFitInsideTheirPlateIcon) {
 }
 
 TEST(HomeFooterArt, LitIconsLightThePictureNotThePlate) {
-  // The dark home must show the pictured shapes in white, not the plate turned white.
-  // So the lit ink has to be the plate icon's paper: at the best vertical alignment
+  // The footer shows the pictured shapes (black on paper, white in Night Mode), never the
+  // plate. So the lit ink has to be the plate icon's paper: at the best vertical alignment
   // nearly all of it lands off the plate's ink (the rest is the thin overhang outline).
   for (const IconPair& p : kIconPairs) {
     double best = 0.0;
