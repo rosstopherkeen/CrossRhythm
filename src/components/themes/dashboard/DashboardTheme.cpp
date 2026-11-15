@@ -421,26 +421,25 @@ const char* readerTypeLabel(const GlobalReadingStats* globalStats) {
   }
 }
 
-const HomeFooterIcon& readerTypeIcon(const GlobalReadingStats* globalStats) {
-  if (globalStats == nullptr) {
-    return HomeFooterNewReaderIcon;
-  }
-
+// lit: the footer ends up white on black on the panel, so use the variant whose ink is
+// the pictured shapes rather than the plate behind them. A plain polarity flip of the
+// plate icon would show a white plate with the picture punched out in black.
+const HomeFooterIcon& readerTypeIcon(const GlobalReadingStats* globalStats, const bool lit) {
   ReadingTimeBucket bucket = ReadingTimeBucket::Night;
-  if (!dominantReaderTypeBucket(*globalStats, bucket)) {
-    return HomeFooterNewReaderIcon;
+  if (globalStats == nullptr || !dominantReaderTypeBucket(*globalStats, bucket)) {
+    return lit ? HomeFooterNewReaderLitIcon : HomeFooterNewReaderIcon;
   }
 
   switch (bucket) {
     case ReadingTimeBucket::Morning:
-      return HomeFooterMorningIcon;
+      return lit ? HomeFooterDawnLitIcon : HomeFooterDawnIcon;
     case ReadingTimeBucket::Afternoon:
-      return HomeFooterAfternoonIcon;
+      return lit ? HomeFooterDayLitIcon : HomeFooterDayIcon;
     case ReadingTimeBucket::Evening:
-      return HomeFooterEveningIcon;
+      return lit ? HomeFooterDuskLitIcon : HomeFooterDuskIcon;
     case ReadingTimeBucket::Night:
     default:
-      return HomeFooterNightIcon;
+      return lit ? HomeFooterTwilightLitIcon : HomeFooterTwilightIcon;
   }
 }
 
@@ -525,8 +524,15 @@ int footerCenterY(const GfxRenderer& renderer, const Rect& coverRect, const int 
   return std::max(coverRect.y + coverRect.height + 120, footerY);
 }
 
+// Night Mode flips the whole panel (display.setInverted), so the home is still drawn
+// black on paper while the reader sees it white on black.
+bool homeShownDark() { return SETTINGS.screenInverted != 0; }
+
+// inverted: draw white ink (the caller cleared to black). shownDark: the footer reaches
+// the reader white on black, whether by that or by a later screen/panel flip; it picks
+// the reader-type icon variant.
 void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const GlobalReadingStats* globalStats,
-                     const bool inverted = false, const int bottomGap = kFooterBottomGap) {
+                     const bool inverted, const bool shownDark, const int bottomGap = kFooterBottomGap) {
   const int inset = contentInset(renderer);
   const int centerY = footerCenterY(renderer, coverRect, bottomGap);
 
@@ -562,7 +568,7 @@ void drawFooterStats(const GfxRenderer& renderer, const Rect& coverRect, const G
   drawFooterLabel(renderer, tr(STR_STATS_DAY_STREAK_LBL), streakLabelX, baselineY, std::max(1, halfW - streakLabelX),
                   false, inverted);
 
-  const HomeFooterIcon& icon = readerTypeIcon(globalStats);
+  const HomeFooterIcon& icon = readerTypeIcon(globalStats, shownDark);
   const int iconX = HomeFooter::iconLeft(icon, contentRightEdge(renderer));
   drawHomeFooterBitmap(renderer, icon.bits, iconX, HomeFooter::iconTop(icon, baselineY), icon.width, icon.height,
                        inverted);
@@ -608,7 +614,10 @@ constexpr int kGardenTitleTopGap = 18;
 constexpr int kGardenPlantTopOffset = 12;   // lattice starts this far below the cover top
 constexpr int kGardenProgressTopInset = 4;  // progress line ink top below the plant column's top
 constexpr int kGardenHaloR2 = 4;            // paper halo round the progress line: disc r^2 <= 4 (~1.5 px)
-constexpr int kGardenFooterBottomGap = 37;  // footer centre above the screen bottom (dashboard: 57)
+// Footer centre above the screen bottom. The footer baseline sits one header band
+// (homeTopPadding) above the screen bottom, so the space under the footer matches the status bar
+// band above the cover.
+constexpr int kGardenFooterBottomGap = DashboardMetrics::values.homeTopPadding + HomeFooter::kBaselineBelowCenter;
 constexpr int kGardenTableFooterGap = 65;   // footer centre to the table's bottom rule
 constexpr int kGardenTableTextGap = 6;      // last text line to the table's top rule
 
@@ -784,19 +793,19 @@ void drawGardenBookText(const GfxRenderer& renderer, const Rect& coverRect, cons
   }
 }
 
-// Stats as a 3 x 2 ruled table, columns as up/down pairs: time read / time left, pages per minute /
-// daily average, started / estimated finish (sessions / average session without a clock).
+// Stats as a 3 x 2 ruled table, columns as up/down pairs: started / estimated finish (sessions
+// without a clock), pages per minute / daily average (average session), time read / time left.
 void drawGardenStatsTable(const GfxRenderer& renderer, const Rect& coverRect, const BookReadingStats* stats,
                           const float progressPercent) {
   const BookReadingStats emptyStats{};
   StatValues v;
   computeStatValues(stats != nullptr ? *stats : emptyStats, progressPercent, v);
-  const char* values[2][3] = {{v.time, v.pagesPerMin, v.rtc ? v.started : v.sessions},
-                              {v.timeLeft, v.rtc ? v.dailyAvg : v.avgSession, v.rtc ? v.finish : nullptr}};
+  const char* values[2][3] = {{v.rtc ? v.started : v.sessions, v.pagesPerMin, v.time},
+                              {v.rtc ? v.finish : nullptr, v.rtc ? v.dailyAvg : v.avgSession, v.timeLeft}};
   const char* labels[2][3] = {
-      {tr(STR_STATS_TIME_LBL), tr(STR_STATS_PAGES_PER_MIN), v.rtc ? v.startedLabel : tr(STR_STATS_SESSIONS_LBL)},
-      {tr(STR_TIME_LEFT_SHORT), v.rtc ? tr(STR_STATS_DAILY_AVG_LBL) : tr(STR_STATS_AVG_SESSION_LBL),
-       v.rtc ? v.finishLabel : nullptr}};
+      {v.rtc ? v.startedLabel : tr(STR_STATS_SESSIONS_LBL), tr(STR_STATS_PAGES_PER_MIN), tr(STR_STATS_TIME_LBL)},
+      {v.rtc ? v.finishLabel : nullptr, v.rtc ? tr(STR_STATS_DAILY_AVG_LBL) : tr(STR_STATS_AVG_SESSION_LBL),
+       tr(STR_TIME_LEFT_SHORT)}};
 
   const int x0 = coverRect.x;
   const int x1 = contentRightEdge(renderer);
@@ -858,7 +867,7 @@ void drawGardenHome(GfxRenderer& renderer, const Rect& rect, const std::vector<R
                                : footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - 60);
   if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
   if (SETTINGS.shouldTrackReadingStats()) {
-    drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
+    drawFooterStats(renderer, coverRect, globalStats, false, homeShownDark(), kGardenFooterBottomGap);
   }
 }
 }  // namespace
@@ -894,7 +903,7 @@ void DashboardTheme::drawRecentBookCover(GfxRenderer& renderer, Rect rect, const
 
   drawDashboardStats(renderer, coverRect, stats, progressPercent, showBookStatsForPath(recentBooks[0].path));
   drawBookText(renderer, coverRect, recentBooks[0], currentChapterTitle);
-  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats);
+  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, false, homeShownDark());
 }
 
 void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBook& book, const BookReadingStats* stats,
@@ -917,7 +926,8 @@ void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBo
                                  : footerCenterY(renderer, coverRect, kGardenFooterBottomGap) - 60);
     if (showStats) drawGardenStatsTable(renderer, coverRect, stats, progressPercent);
     if (SETTINGS.shouldTrackReadingStats()) {
-      drawFooterStats(renderer, coverRect, globalStats, false, kGardenFooterBottomGap);
+      // Drawn black on paper; the flip below is what makes it dark.
+      drawFooterStats(renderer, coverRect, globalStats, false, !inverted, kGardenFooterBottomGap);
     }
     if (!inverted) renderer.invertScreen();
     drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
@@ -929,5 +939,5 @@ void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBo
   drawBookCover(renderer, coverRect, book, inverted ? Color::White : Color::Black);
   drawDashboardStats(renderer, coverRect, stats, progressPercent, showBookStatsForPath(book.path), inverted);
   drawBookText(renderer, coverRect, book, currentChapterTitle, inverted);
-  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, !inverted);
+  if (SETTINGS.shouldTrackReadingStats()) drawFooterStats(renderer, coverRect, globalStats, !inverted, !inverted);
 }

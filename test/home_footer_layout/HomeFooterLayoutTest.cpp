@@ -6,6 +6,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
@@ -43,8 +44,36 @@ void expectTightAndPadded(const uint8_t* bits, int w, int h, const char* what) {
   }
 }
 
-const HomeFooterIcon* const kIcons[] = {&HomeFooterMorningIcon, &HomeFooterAfternoonIcon, &HomeFooterEveningIcon,
-                                        &HomeFooterNightIcon, &HomeFooterNewReaderIcon};
+const HomeFooterIcon* const kIcons[] = {&HomeFooterDawnIcon, &HomeFooterDayIcon, &HomeFooterDuskIcon,
+                                        &HomeFooterTwilightIcon, &HomeFooterNewReaderIcon};
+
+struct IconPair {
+  const HomeFooterIcon* plate;  // black plate with the picture cut out (light home)
+  const HomeFooterIcon* lit;    // the picture alone as ink (dark home)
+  const char* name;
+};
+const IconPair kIconPairs[] = {{&HomeFooterDawnIcon, &HomeFooterDawnLitIcon, "dawn"},
+                               {&HomeFooterDayIcon, &HomeFooterDayLitIcon, "day"},
+                               {&HomeFooterDuskIcon, &HomeFooterDuskLitIcon, "dusk"},
+                               {&HomeFooterTwilightIcon, &HomeFooterTwilightLitIcon, "twilight"},
+                               {&HomeFooterNewReaderIcon, &HomeFooterNewReaderLitIcon, "new reader"}};
+
+// Share of the lit icon's ink that lands on the plate icon's paper (or outside it)
+// when both are right-aligned and the lit icon is dy rows below the plate's top.
+double litInkOnPlatePaper(const IconPair& p, const int dy) {
+  int ink = 0, onPaper = 0;
+  const int dx = p.plate->width - p.lit->width;
+  for (int y = 0; y < p.lit->height; ++y) {
+    for (int x = 0; x < p.lit->width; ++x) {
+      if (!black(p.lit->bits, p.lit->width, p.lit->height, x, y)) continue;
+      ++ink;
+      const int px = x + dx, py = y + dy;
+      const bool inside = px >= 0 && px < p.plate->width && py >= 0 && py < p.plate->height;
+      if (!inside || !black(p.plate->bits, p.plate->width, p.plate->height, px, py)) ++onPaper;
+    }
+  }
+  return ink == 0 ? 0.0 : static_cast<double>(onPaper) / ink;
+}
 
 int digitCount(int v) { return v >= 100 ? 3 : v >= 10 ? 2 : 1; }
 
@@ -56,6 +85,28 @@ TEST(HomeFooterArt, EveryBitmapIsTightlyCroppedInDrawIconLayout) {
     expectTightAndPadded(g.bits, g.width, g.height, "digit");
   }
   for (const HomeFooterIcon* icon : kIcons) expectTightAndPadded(icon->bits, icon->width, icon->height, "icon");
+}
+
+TEST(HomeFooterArt, LitIconsAreTightlyCroppedAndFitInsideTheirPlateIcon) {
+  for (const IconPair& p : kIconPairs) {
+    expectTightAndPadded(p.lit->bits, p.lit->width, p.lit->height, p.name);
+    EXPECT_LE(p.lit->width, p.plate->width) << p.name;
+    EXPECT_LE(p.lit->height, p.plate->height) << p.name;
+    // Same right-edge and baseline anchoring as the plate icons.
+    EXPECT_EQ(HomeFooter::iconLeft(*p.lit, 460) + p.lit->width, 460) << p.name;
+    EXPECT_EQ(HomeFooter::iconTop(*p.lit, kBaseline) + p.lit->height, kBaseline) << p.name;
+  }
+}
+
+TEST(HomeFooterArt, LitIconsLightThePictureNotThePlate) {
+  // The dark home must show the pictured shapes in white, not the plate turned white.
+  // So the lit ink has to be the plate icon's paper: at the best vertical alignment
+  // nearly all of it lands off the plate's ink (the rest is the thin overhang outline).
+  for (const IconPair& p : kIconPairs) {
+    double best = 0.0;
+    for (int dy = 0; dy <= p.plate->height - p.lit->height; ++dy) best = std::max(best, litInkOnPlatePaper(p, dy));
+    EXPECT_GE(best, 0.85) << p.name << " lit icon overlaps the plate's ink";
+  }
 }
 
 TEST(HomeFooterArt, DigitsShareOneHeightOnTheBaseline) {
