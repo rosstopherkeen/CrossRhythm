@@ -70,6 +70,13 @@ struct DrawOptions {
   bool leavesOnly = false;
   bool (*leafFilter)(void* ctx, float x, float y, float size) = nullptr;
   void* filterCtx = nullptr;
+  // The caller's frame is shown polarity-flipped (Night Mode flips the panel, the dark Garden
+  // sleep screen flips the frame), so paper ends up black. A plain flip would turn the white
+  // leaves into black shapes with white outlines. With this set, leaves, fruit and flowers are
+  // written in the opposite polarity so they still reach the reader white with a dark edge, on
+  // black ground; stems and the net stay as they are and come out white. The net is then drawn
+  // under the leaves rather than over them, so its dots show on the ground only.
+  bool darkGround = false;
 };
 
 // Draws the plant at progress p (0..1). False if memory ran out (nothing partial is left unsafe:

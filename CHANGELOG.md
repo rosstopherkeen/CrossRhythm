@@ -21,7 +21,7 @@
 
 ### Changed
 
-- Reader types are now Dawn, Day, Dusk and Twilight Reader, with new illustrated icons on the Dashboard and Garden home. In Night Mode and on the dark Dashboard and Garden sleep screens the icon shows its picture in white on black, instead of a white block with the picture cut out. On the Garden home the stats table puts Started / Est. Finish on the left and Reading Time / Time Left on the right, and the footer sits higher so the space below it matches the status bar band.
+- Reader types are now Dawn, Day, Dusk and Twilight Reader, with new illustrated icons on the Dashboard and Garden home. In Night Mode and on the dark Dashboard and Garden sleep screens the icon shows its picture in white on black, instead of a white block with the picture cut out. The Garden plant follows the same rule there: leaves and fruit stay white on a black ground instead of turning into black shapes with white outlines. On the Garden home the stats table puts Started / Est. Finish on the left and Reading Time / Time Left on the right, and the footer sits higher so the space below it matches the status bar band.
 - Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
 - Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
 - Settings shows the firmware as `CrossRhythm vX.Y.Z`.

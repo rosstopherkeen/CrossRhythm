@@ -29,6 +29,8 @@ static_assert(kNetCells % 3 == 0, "triangle centres must be punch grid points");
 static_assert(kNetCells % kEdgeStride == 0, "edge holes must meet at the vertices");
 constexpr int kNetSideFade = 10;  // holes thin out over this many px at the column's sides
 constexpr int kMaxFruit = 8;
+constexpr int kFruitHalo = 3;    // paper moat round a fruit sprite, px
+constexpr int kFruitHaloR2 = 10;  // disc r^2: 3 px on the axes, corners rounded off
 
 constexpr uint8_t kBayer[4][4] = {{0, 8, 2, 10}, {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
 
@@ -143,16 +145,19 @@ bool bit(const uint8_t* plane, const int w, const int x, const int y) {
   return (plane[y * ((w + 7) / 8) + x / 8] >> (7 - (x % 8))) & 1;
 }
 
-// A sprite with a 1-px paper halo, so fruit reads against the leaves.
-void stamp(Canvas& c, const GardenFruit::Sprite& s, const int X, const int Y) {
+// A sprite with a moat of bare ground round it (a disc of kFruitHaloR2 around every sprite
+// pixel), so fruit stands clear of the leaves instead of sinking into them. The moat goes on
+// `ground` (paper, which a dark-ground frame shows black) and the sprite on `c`.
+void stamp(Canvas& ground, Canvas& c, const GardenFruit::Sprite& s, const int X, const int Y) {
   const int ox = X - s.ax, oy = Y - s.ay;
   for (int y = 0; y < s.height; ++y) {
     for (int x = 0; x < s.width; ++x) {
       if (!bit(s.mask, s.width, x, y)) continue;
-      put(c, ox + x + 1, oy + y, false);
-      put(c, ox + x - 1, oy + y, false);
-      put(c, ox + x, oy + y + 1, false);
-      put(c, ox + x, oy + y - 1, false);
+      for (int dy = -kFruitHalo; dy <= kFruitHalo; ++dy) {
+        for (int dx = -kFruitHalo; dx <= kFruitHalo; ++dx) {
+          if (dx * dx + dy * dy <= kFruitHaloR2) put(ground, ox + x + dx, oy + y + dy, false);
+        }
+      }
     }
   }
   for (int y = 0; y < s.height; ++y) {
@@ -178,6 +183,15 @@ void flower(Canvas& c, const int cx, const int cy) {
 
 struct NetBox {
   int x0, y0, x1, y1;  // exclusive
+};
+
+// Writes through to another canvas in the opposite polarity (DrawOptions::darkGround).
+struct Flipped {
+  Canvas* target;
+  static void set(void* ctx, const int x, const int y, const bool black) {
+    Canvas* t = static_cast<Flipped*>(ctx)->target;
+    t->setPixel(t->ctx, x, y, !black);
+  }
 };
 
 // The sheet fades out at the column's sides instead of stopping on a hard edge: a hole d px in
@@ -394,6 +408,13 @@ bool draw(const Plan& plan, float p, Canvas& canvas, const DrawOptions& options)
   const Column& col = plan.column();
   const uint32_t seed = plan.seed();
   const int n = plan.count();
+  // Leaves, fruit and flowers go through `figure`: the canvas itself, or its flipped twin.
+  Flipped flipped{&canvas};
+  Canvas figure = canvas;
+  if (options.darkGround) {
+    figure.ctx = &flipped;
+    figure.setPixel = &Flipped::set;
+  }
 
   // stems: the growth tree; older (earlier) stems are thicker
   if (!options.leavesOnly) {
@@ -408,6 +429,10 @@ bool draw(const Plan& plan, float p, Canvas& canvas, const DrawOptions& options)
       line(canvas, roundi(from.x), roundi(from.y), roundi(s.x), roundi(s.y), std::max(1, roundi(2.2f - 1.4f * s.t)));
     }
   }
+
+  // On dark ground the net goes under the figure: its holes are ground-coloured ink, and over a
+  // flipped leaf they would be invisible or, punched as light, would eat the leaf.
+  if (options.darkGround && !options.leavesOnly) drawAsanohaNet(canvas, col);
 
   // leaves: 2-3 per grown site, easing in just behind the growth front; shade first, then lit
   int live = 0;
@@ -435,7 +460,7 @@ bool draw(const Plan& plan, float p, Canvas& canvas, const DrawOptions& options)
   std::sort(leaves.get(), leaves.get() + count, [](const Leaf& a, const Leaf& b) {
     return a.lit != b.lit ? !a.lit : a.key < b.key;
   });
-  for (int i = 0; i < count; ++i) drawLeaf(canvas, leaves[i]);
+  for (int i = 0; i < count; ++i) drawLeaf(figure, leaves[i]);
   if (options.leavesOnly) return true;
 
   // fruit: a few late sites, flower -> bud -> small -> large
@@ -467,18 +492,18 @@ bool draw(const Plan& plan, float p, Canvas& canvas, const DrawOptions& options)
                            GardenFruit::kKindCount];
     const int X = static_cast<int>(s.x), Y = static_cast<int>(s.y);
     if (p >= s0 + .33f) {
-      stamp(canvas, GardenFruit::large(kind), X, Y);
+      stamp(canvas, figure, GardenFruit::large(kind), X, Y);
     } else if (p >= s0 + .22f) {
-      stamp(canvas, GardenFruit::small(kind), X, Y);
+      stamp(canvas, figure, GardenFruit::small(kind), X, Y);
     } else if (p >= s0 + .11f) {
-      stamp(canvas, GardenFruit::bud(), X, Y);
+      stamp(canvas, figure, GardenFruit::bud(), X, Y);
     } else if (p >= s0) {
-      flower(canvas, X, Y);
+      flower(figure, X, Y);
     }
   }
 
   // the net: a perforated sheet in front, its holes punched along an asanoha pattern
-  drawAsanohaNet(canvas, col);
+  if (!options.darkGround) drawAsanohaNet(canvas, col);
   return true;
 }
 

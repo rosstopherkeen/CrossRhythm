@@ -672,9 +672,10 @@ bool frontLeaf(void* ctx, const float x, const float y, const float size) {
 
 // Plant column: the progress line top-aligned inside the column (label left, value right, one
 // baseline), the plant and net behind it with a ~1.5 px paper halo, then the few leaves that come
-// in front of it.
+// in front of it. shownDark: the frame reaches the reader polarity-flipped (Night Mode, dark
+// sleep screen), so the plant is drawn to stay white-leaved on black ground after the flip.
 void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const RecentBook& book,
-                      const float progressPercent) {
+                      const float progressPercent, const bool shownDark) {
   const int colX = coverRect.x + coverRect.width + kGardenColumnGap;
   const int colRight = contentRightEdge(renderer);
   if (colRight - colX < kGardenMinColumnWidth / 2) return;
@@ -734,7 +735,9 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
   canvas.clipX1 = renderer.getScreenWidth() - 6;
   canvas.clipY0 = coverRect.y;  // tips above the cover's top edge are trimmed
   canvas.clipY1 = coverRect.y + coverRect.height + 2;
-  if (!garden::draw(plan, growth, canvas)) {
+  garden::DrawOptions whole;
+  whole.darkGround = shownDark;
+  if (!garden::draw(plan, growth, canvas, whole)) {
     LOG_ERR("HOME", "Garden: OOM drawing the plant");
   }
 
@@ -762,6 +765,7 @@ void drawGardenColumn(const GfxRenderer& renderer, const Rect& coverRect, const 
   front.leavesOnly = true;
   front.leafFilter = &frontLeaf;
   front.filterCtx = &band;
+  front.darkGround = shownDark;
   canvas.clipY0 = coverRect.y;
   if (!garden::draw(plan, growth, canvas, front)) {
     LOG_ERR("HOME", "Garden: OOM drawing the front leaves");
@@ -854,7 +858,7 @@ void drawGardenHome(GfxRenderer& renderer, const Rect& rect, const std::vector<R
     // The plant only changes with progress, so it is drawn once with the cover and kept in the
     // cached cover buffer; later frames restore it instead of growing it again.
     drawBookCover(renderer, coverRect, book, Color::White);
-    drawGardenColumn(renderer, coverRect, book, progressPercent);
+    drawGardenColumn(renderer, coverRect, book, progressPercent, homeShownDark());
     coverBufferStored = storeCoverBuffer();
     coverRendered = coverBufferStored;
   }
@@ -918,7 +922,7 @@ void DashboardTheme::drawSleepScreen(const GfxRenderer& renderer, const RecentBo
     // variant. The cover goes on last so the flip never turns it into a negative.
     renderer.clearScreen(0xFF);
     const Rect coverRect = gardenCoverRect(renderer, contentRect);
-    drawGardenColumn(renderer, coverRect, book, progressPercent);
+    drawGardenColumn(renderer, coverRect, book, progressPercent, !inverted);
     const bool showStats = showBookStatsForPath(book.path);
     const int tableTop = gardenTableTop(renderer, coverRect);
     drawGardenBookText(renderer, coverRect, book, currentChapterTitle,

@@ -245,6 +245,84 @@ TEST(GardenGrowth, FrontLeavesOnlyComeFromTheFilteredBand) {
   EXPECT_GT(touched, 0);
 }
 
+// Dark ground: the frame is shown polarity-flipped, so "white on the panel" is a black pixel here.
+// A plain flip of the light drawing would turn every white leaf black; these hold for every
+// column, book and progress so the dark plant keeps white leaves on black ground.
+TEST(GardenGrowth, DarkGroundKeepsLeavesWhiteAndGroundBlackOnThePanel) {
+  garden::DrawOptions dark;
+  dark.darkGround = true;
+  int leafPixels = 0;
+  for (const auto& col : kColumns) {
+    for (const std::string& path : bookPaths()) {
+      garden::Plan plan;
+      ASSERT_TRUE(plan.build(col, garden::seedForPath(path.c_str())));
+      for (const float p : {0.0f, 0.2f, 0.6f, 1.0f}) {
+        Frame light, flipped;
+        auto cl = canvasFor(light, col);
+        auto cd = canvasFor(flipped, col);
+        ASSERT_TRUE(garden::draw(plan, p, cl));
+        ASSERT_TRUE(garden::draw(plan, p, cd, dark));
+        EXPECT_EQ(flipped.outside, 0);
+        int figure = 0, figureDark = 0, groundLit = 0;
+        for (size_t i = 0; i < light.px.size(); ++i) {
+          if (light.px[i] != 255) continue;
+          if (light.white[i]) {
+            // leaf or fruit paper in the light drawing: lit on the panel, so black in this frame
+            ++figure;
+            figureDark += flipped.px[i] != 0;
+          } else {
+            // bare ground: black on the panel, so still paper in this frame
+            groundLit += flipped.px[i] != 255;
+          }
+        }
+        leafPixels += figure;
+        ASSERT_EQ(groundLit, 0) << path << " at " << p;
+        // The only figure-white pixels allowed to go dark are the moats round the fruit, which
+        // are bare ground in both drawings: a few hundred pixels each, eight fruit at most.
+        ASSERT_LE(figureDark, 8 * 450) << path << " at " << p;
+        if (p < 0.5f) ASSERT_EQ(figureDark, 0) << path << " at " << p << ": no fruit yet";
+        // At the start only the roots have sprouted, so the column's upper half is bare net:
+        // the same holes in both frames (they come out as white dots on the dark panel).
+        if (p == 0.0f) {
+          int holes = 0;
+          for (int y = col.y; y < col.y + col.height / 2; ++y) {
+            for (int x = 0; x < kW; ++x) {
+              ASSERT_EQ(light.px[y * kW + x], flipped.px[y * kW + x]) << path;
+              holes += light.px[y * kW + x] == 0;
+            }
+          }
+          EXPECT_GT(holes, 100);
+        }
+      }
+    }
+  }
+  EXPECT_GT(leafPixels, 100000);
+}
+
+TEST(GardenGrowth, DarkGroundFrontLeavesAreTheLightOnesFlipped) {
+  const auto& col = kColumns[0];
+  garden::Plan plan;
+  ASSERT_TRUE(plan.build(col, garden::seedForPath("/front.epub")));
+  garden::DrawOptions opts;
+  opts.leavesOnly = true;
+  Frame light, flipped;
+  auto cl = canvasFor(light, col);
+  auto cd = canvasFor(flipped, col);
+  ASSERT_TRUE(garden::draw(plan, 1.0f, cl, opts));
+  opts.darkGround = true;
+  ASSERT_TRUE(garden::draw(plan, 1.0f, cd, opts));
+  int touched = 0;
+  for (size_t i = 0; i < light.px.size(); ++i) {
+    const bool lightTouched = light.px[i] == 0 || light.white[i];
+    const bool darkTouched = flipped.px[i] == 0 || flipped.white[i];
+    ASSERT_EQ(lightTouched, darkTouched);
+    if (!lightTouched) continue;
+    ++touched;
+    ASSERT_EQ(flipped.px[i], 255 - light.px[i]);
+  }
+  EXPECT_GT(touched, 1000);
+}
+
 TEST(GardenFruit, SpritesAreInkInsideMaskWithAnchorsInside) {
   ASSERT_EQ(GardenFruit::kSpriteCount, 2 * GardenFruit::kKindCount + 1);
   for (int i = 0; i < GardenFruit::kSpriteCount; ++i) {
@@ -343,6 +421,20 @@ TEST(GardenGrowth, DumpForVisualCheck) {
     ASSERT_NE(out, nullptr);
     std::fprintf(out, "P5\n%d %d\n255\n", kW, kH);
     std::fwrite(f.px.data(), 1, f.px.size(), out);
+    std::fclose(out);
+
+    // The dark-ground variant as the reader sees it (frame flipped).
+    Frame d;
+    auto dc = canvasFor(d, col);
+    garden::DrawOptions dark;
+    dark.darkGround = true;
+    ASSERT_TRUE(garden::draw(plan, pct / 100.0f, dc, dark));
+    for (auto& v : d.px) v = 255 - v;
+    const std::string darkPath = std::string(dir) + "/garden-dark-" + std::to_string(pct) + ".pgm";
+    out = std::fopen(darkPath.c_str(), "wb");
+    ASSERT_NE(out, nullptr);
+    std::fprintf(out, "P5\n%d %d\n255\n", kW, kH);
+    std::fwrite(d.px.data(), 1, d.px.size(), out);
     std::fclose(out);
   }
 }
