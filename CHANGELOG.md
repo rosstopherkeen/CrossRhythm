@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [v1.0.1] - 2026-11-23
+
 ### Added
 
 - Garden home (Settings > Display > UI Theme > Garden): the dashboard home with a larger cover and, beside it, a climbing plant that grows as you read the book. Your progress sits inside the top of the plant's column, haloed so it reads through the leaves; the plant roots at the foot of the cover, climbs behind a perforated asanoha (hemp leaf) screen and fills the whole column at 100%, flowering and fruiting near the end. Each book grows its own way, and the same book always grows the same way. The book's stats move into a table under the title.
