@@ -2,29 +2,13 @@
 
 ### Added
 
-- Reading Rhythm page in Reading Stats: recent activity dot grid, weekly reading time bars, and reading days per month for the last 12 months. Ported from XPoint.
-- Books Finished page in Reading Stats: totals plus a scrollable list (with scroll bar) of finished books with start and finish dates and time spent. Tap a book, or select it and press Confirm, to open its stats. Ported from XPoint. Finished books that dropped out of Recent Books are found by scanning existing book caches.
-- Book detail view from Books Finished: an Overview page (that book's stats, time of day and day of week) and a Book Rhythm page (reading days across the book's span, daily or weekly reading time, days read, average per day, longest streak). Per-book daily minutes are now recorded; earlier days are estimated and shown lighter. The same book view opens from a book's Reading Stats action in the Library and File Browser long-press menu.
-- First Day of Week setting (Settings > System > Device): start the Reading Stats calendars, weekly totals and day-of-week bars on Monday or Sunday.
-- New CrossRhythm boot screen.
-- Daily reading minutes are now recorded for the Reading Rhythm screen. Minutes for days read before updating are estimated once from each book's reading time and shown lighter.
-- Kannada book support: install the Noto Sans Kannada font folder and Kannada text renders automatically, in any book, without changing your reading font. Conjuncts stack, vowel signs join the letter they belong to, and arkavattu sits where it should, so Kannada reads as Kannada rather than as separate letters. Books in your usual font keep using it, and only the Kannada parts switch.
-- Indic book support beyond Kannada: Telugu, Tamil, Malayalam, Odia, Devanagari (Hindi and Marathi) and Bengali. Copy the matching Noto Sans font folder to the SD card and text in that script renders correctly, without changing your reading font or anything in the firmware; install several and each script is routed to its own. Two-part vowel signs are split and placed around the letter as they should be. Needs an ESP32-S3 reader (X4 Pro, Sticky): the shaping data is held in PSRAM.
-- Charging animation on the sleep screen (X4 Pro): Settings > Display > Charging Animation > Glass House. While the device sleeps on the charger, Lalbagh's Glass House garden is planted as the battery fills, with a plaque that marks each 25%: the beds come into flower, a Gandaberunda topiary grows through its wire frame, and visitors come and go, more of them every 5% step. The screen updates within about five minutes of each 5% step, and unplugging brings back your usual sleep screen.
-- Scenes on the SD card (X4 Pro): copy a `.rhythmscene` file from the releases (Lalbagh, KR Market and State Library so far) to `/.scenes/` or `/scenes/` and it appears in the Charging Animation list (and, before City Scapes was removed, the City Scape list). Each scene's plaque gives the landmark and, under it, the place (Namma Metro / Lalbagh, City Market / KR Market). Glass House stays built in as the default; a missing or damaged scene file falls back to it.
-- City Scapes wallpaper (X4 Pro): Settings > Display > Sleep Screen > Wallpaper > City Scapes. A City Scape row then appears below Wallpaper to pick the view; Glass House is the first: the sleep screen shows the garden grown as far as you have read in your latest book, with the plain plaque (no charge stops).
-- Cycle All for City Scape (X4 Pro): the last option in the City Scape list shows a different scene each time the device sleeps, going through Glass House and every scene on the SD card in turn.
 - Garden home (Settings > Display > UI Theme > Garden): the dashboard home with a larger cover and, beside it, a climbing plant that grows as you read the book. Your progress sits inside the top of the plant's column, haloed so it reads through the leaves; the plant roots at the foot of the cover, climbs behind a perforated asanoha (hemp leaf) screen and fills the whole column at 100%, flowering and fruiting near the end. Each book grows its own way, and the same book always grows the same way. The book's stats move into a table under the title.
 - Garden sleep screen (Settings > Display > Sleep Screen > Garden): the Garden home as a sleep screen, like the Dashboard option. It shows the latest book's cover, the plant grown to your progress, the title and chapter, the stats table and the footer, white on black (black on white with the inverted cover filter).
 - Home Bottom Bar (Settings > Display > Status Bar > Home Bottom Bar): battery, clock or date along the bottom of the home screen, in Left / Center / Right slots like the status bar, placed as a mirror image of it. Off until you pick items.
-- Six "Read Responsibly" reaction-diffusion wallpapers for the Page Overlay sleep screen, in `assets/page-overlays/`: copy them to `/.sleep/` on the SD card and set the sleep screen to Page Overlay.
 
 ### Changed
 
 - Reader types are now Dawn, Day, Dusk and Twilight Reader, with new illustrated icons on the Dashboard and Garden home. The icon is drawn as the picture alone, with no block behind it: black on paper, and white on black in Night Mode and on the dark Dashboard and Garden sleep screens. The Garden plant follows the same rule there: leaves and fruit stay white on a black ground instead of turning into black shapes with white outlines. On the Garden home the stats table puts Started / Est. Finish on the left and Reading Time / Time Left on the right, and the footer sits higher so the space below it matches the status bar band.
-- Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
-- Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
-- Settings shows the firmware as `CrossRhythm vX.Y.Z`.
 - Dashboard home: the footer now shows your reading streak as a big number with "day streak" beside it, and your reader type (Dawn, Day, Dusk or Twilight Reader) with a larger icon for that time of day. The labels use Bitter when it is your reading font (always on X3/X4) and the interface font otherwise.
 - Interface font is now Bricolage Grotesque (menus, lists, settings, dashboard), replacing Inter. Cyrillic, Greek and Hebrew come from GSans (Google Sans) behind it, and Arabic from Noto Sans Arabic, so every interface language still shows all its letters; the Hebrew maqaf and geresh and the Ukrainian apostrophe, which were missing before, now show too.
 
@@ -35,6 +19,33 @@
 ### Fixed
 
 - Books Finished showed less reading time than the book's own Reading Stats: it kept the time from the moment the book was marked finished, without the rest of that session. It now updates when you leave the book, and opening Books Finished corrects books finished before this fix.
+
+## [v1.0.0] - 2026-11-02
+
+### Added
+
+- Reading Rhythm page in Reading Stats: recent activity dot grid, weekly reading time bars, and reading days per month for the last 12 months. Ported from XPoint.
+- Books Finished page in Reading Stats: totals plus a scrollable list (with scroll bar) of finished books with start and finish dates and time spent. Tap a book, or select it and press Confirm, to open its stats. Ported from XPoint. Finished books that dropped out of Recent Books are found by scanning existing book caches.
+- Book detail view from Books Finished: an Overview page (that book's stats, time of day and day of week) and a Book Rhythm page (reading days across the book's span, daily or weekly reading time, days read, average per day, longest streak). Per-book daily minutes are now recorded; earlier days are estimated and shown lighter. The same book view opens from a book's Reading Stats action in the Library and File Browser long-press menu.
+- First Day of Week setting (Settings > System > Device): start the Reading Stats calendars, weekly totals and day-of-week bars on Monday or Sunday.
+- New CrossRhythm boot screen.
+- Daily reading minutes are now recorded for the Reading Rhythm screen. Minutes for days read before updating are estimated once from each book's reading time and shown lighter.
+- Kannada book support: install the Noto Sans Kannada font folder and Kannada text renders automatically, in any book, without changing your reading font. Conjuncts stack, vowel signs join the letter they belong to, and arkavattu sits where it should, so Kannada reads as Kannada rather than as separate letters. Books in your usual font keep using it, and only the Kannada parts switch.
+- Indic book support beyond Kannada: Telugu, Tamil, Malayalam, Odia, Devanagari (Hindi and Marathi) and Bengali. Copy the matching Noto Sans font folder to the SD card and text in that script renders correctly, without changing your reading font or anything in the firmware; install several and each script is routed to its own. Two-part vowel signs are split and placed around the letter as they should be. Needs an ESP32-S3 reader (X4 Pro, Sticky): the shaping data is held in PSRAM.
+- Charging animation on the sleep screen (X4 Pro): Settings > Display > Charging Animation > Glass House. While the device sleeps on the charger, Lalbagh's Glass House garden is planted as the battery fills, with a plaque that marks each 25%: the beds come into flower, a Gandaberunda topiary grows through its wire frame, and visitors come and go, more of them every 5% step. The screen updates within about five minutes of each 5% step, and unplugging brings back your usual sleep screen.
+- Scenes on the SD card (X4 Pro): copy a `.rhythmscene` file from the releases (Lalbagh, KR Market and State Library so far) to `/.scenes/` or `/scenes/` and it appears in both the Charging Animation and City Scape lists. Each scene's plaque gives the landmark and, under it, the place (Namma Metro / Lalbagh, City Market / KR Market). Glass House stays built in as the default; a missing or damaged scene file falls back to it.
+- City Scapes wallpaper (X4 Pro): Settings > Display > Sleep Screen > Wallpaper > City Scapes. A City Scape row then appears below Wallpaper to pick the view; Glass House is the first: the sleep screen shows the garden grown as far as you have read in your latest book, with the plain plaque (no charge stops).
+- Cycle All for City Scape (X4 Pro): the last option in the City Scape list shows a different scene each time the device sleeps, going through Glass House and every scene on the SD card in turn.
+- Six "Read Responsibly" reaction-diffusion wallpapers for the Page Overlay sleep screen, in `assets/page-overlays/`: copy them to `/.sleep/` on the SD card and set the sleep screen to Page Overlay.
+
+### Changed
+
+- Reading Rhythm and Book Rhythm dots now use five levels (<30 min, 30 min, 1h, 2h, 4h+) instead of topping out at 30 minutes, with a legend under the grid. 4h+ days get an outer ring; today (and a book's first and last day) are marked with a square frame around the dot.
+- Over-the-air updates now check this fork's releases (rosstopherkeen/CrossRhythm).
+- Settings shows the firmware as `CrossRhythm vX.Y.Z`.
+
+### Fixed
+
 - Indic text in file names, book titles and the reader footer now draws in the installed script font instead of replacement boxes.
 - Kannada, Tamil and Telugu words ending in a consonant with halant or pulli (such as ಕುಮಾರ್) now draw the joined final form instead of a separate mark, and Hindi letters written with a nukta (ज़, फ़, ड़) now draw as one letter. Copy the updated Noto Sans font folders to the SD card.
 - City Scapes now shows the final scene for a book shown as 100% read. The sleep screen rounded progress down (99.6% drew the 95% scene) while every progress label rounds to the nearest percent; both now use the same rounding.
