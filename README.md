@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-Website: [crossrhythm.prajwalb.com](https://crossrhythm.prajwalb.com).
+Website: [crossrhythm.dev](https://crossrhythm.dev).
 
 Apart from the interface font and the additions below, everything is stock CrossInk: the same reading fonts, themes, reader features, settings and SD card layout. Your existing stats files are never changed, so you can flash stock CrossInk back at any time.
 
