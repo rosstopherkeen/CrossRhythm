@@ -6,6 +6,8 @@ name: Release
 # creating the release also creates the tag). Version: the manual input, else the latest vX.Y.Z
 # tag with the patch number +1 (1.0.0 for the first release). `version` in
 # platformio.ini tracks the CrossInk base and is not the release number.
+# Notes come from CHANGELOG's [vX.Y.Z] section, else [Unreleased]; in the latter case the run then
+# commits CHANGELOG with [Unreleased] renamed to [vX.Y.Z] - <date> and a fresh empty [Unreleased].
 on:
   workflow_dispatch:
     inputs:
@@ -138,7 +140,11 @@ jobs:
           }
           CHANGES="$(section "v${RELEASE_VERSION}")"
           [ -n "$CHANGES" ] || CHANGES="$(section "${RELEASE_VERSION}")"
-          [ -n "$CHANGES" ] || CHANGES="$(section "Unreleased")"
+          if [ -z "$CHANGES" ]; then
+            CHANGES="$(section "Unreleased")"
+            # Tells "Cut CHANGELOG section" to turn [Unreleased] into this version once published.
+            echo "CHANGELOG_FROM_UNRELEASED=1" >> "$GITHUB_ENV"
+          fi
           if [ -z "$CHANGES" ]; then
             echo "::error::no CHANGELOG section for ${RELEASE_VERSION} or Unreleased"
             exit 1
@@ -196,3 +202,25 @@ jobs:
           body_path: release-notes.md
           fail_on_unmatched_files: true
           files: release-files/*
+
+      - name: Cut CHANGELOG section
+        # After publishing from [Unreleased], file those entries under the new version and leave an
+        # empty [Unreleased] above them, so the next release's notes only list what is new.
+        if: env.CHANGELOG_FROM_UNRELEASED == '1' && github.ref_type == 'branch'
+        run: |
+          set -euo pipefail
+          # The build step rewrote platformio.ini's version; that must not be committed.
+          git checkout -- platformio.ini
+          awk -v v="$RELEASE_VERSION" -v d="$(date -u +%F)" '
+            !done && /^## \[Unreleased\]/ { print; print ""; print "## [v" v "] - " d; done = 1; next }
+            { print }
+          ' CHANGELOG.md > CHANGELOG.md.tmp
+          mv CHANGELOG.md.tmp CHANGELOG.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "docs: changelog for v${RELEASE_VERSION}"
+          # The branch may have moved while the release built.
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase "origin/$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
