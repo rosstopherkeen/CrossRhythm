@@ -10,6 +10,7 @@
 
 - Reader types are now Dawn, Day, Dusk and Twilight Reader, with new illustrated icons on the Dashboard and Garden home. The icon is drawn as the picture alone, with no block behind it: black on paper, and white on black in Night Mode and on the dark Dashboard and Garden sleep screens. The Garden plant follows the same rule there: leaves and fruit stay white on a black ground instead of turning into black shapes with white outlines. On the Garden home the stats table puts Started / Est. Finish on the left and Reading Time / Time Left on the right, and the footer sits higher so the space below it matches the status bar band.
 - Dashboard home: the footer now shows your reading streak as a big number with "day streak" beside it, and your reader type (Dawn, Day, Dusk or Twilight Reader) with a larger icon for that time of day. The labels use Bitter when it is your reading font (always on X3/X4) and the interface font otherwise.
+- The file transfer web page now shows the CrossRhythm logo and name in its header, browser tab titles and footer, instead of CrossInk's.
 - Interface font is now Bricolage Grotesque (menus, lists, settings, dashboard), replacing Inter. Cyrillic, Greek and Hebrew come from GSans (Google Sans) behind it, and Arabic from Noto Sans Arabic, so every interface language still shows all its letters; the Hebrew maqaf and geresh and the Ukrainian apostrophe, which were missing before, now show too.
 
 ### Removed

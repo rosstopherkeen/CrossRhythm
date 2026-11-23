@@ -3,7 +3,7 @@ const currentPath = decodeURIComponent(new URLSearchParams(window.location.searc
 
 if (currentPath !== "/") {
   const leaf = currentPath.split("/").filter(Boolean).pop();
-  if (leaf) document.title = leaf + " - Files - CrossInk Reader";
+  if (leaf) document.title = leaf + " - Files - CrossRhythm";
 }
 
 // Network status monitoring
