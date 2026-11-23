@@ -7,7 +7,7 @@
 
 <p align="center">
   A personal fork of <a href="https://github.com/uxjulia/CrossInk">CrossInk</a> for the <b>Xteink X4 Pro</b>:
-  reading-habit stats, Indic books, and sleep screens that change as you read and charge.
+  reading-habit stats, a home screen with a plant that grows as you read, Indic books, and a charging animation.
 </p>
 
 <table>
@@ -29,14 +29,16 @@
 
 Website: [crossrhythm.prajwalb.com](https://crossrhythm.prajwalb.com).
 
-Everything else is stock CrossInk: the same fonts, themes, reader features, settings and SD card layout. Your existing stats files are never changed, so you can flash stock CrossInk back at any time.
+Apart from the interface font and the additions below, everything is stock CrossInk: the same reading fonts, themes, reader features, settings and SD card layout. Your existing stats files are never changed, so you can flash stock CrossInk back at any time.
 
 ## What it adds
 
 - **[Reading stats](#reading-stats)**: two new pages at the end of Reading Stats, Reading Rhythm and Books Finished, and a detail view for every finished book.
+- **[Garden home](#garden-home)**: a home screen where a plant climbs beside the cover as you read the book, with your reading streak and reader type in the footer. It is also available as a sleep screen.
 - **[Indic books](#indic-books)**: Kannada, Tamil, Malayalam, Telugu, Marathi, Sanskrit and Hindi (Bengali and Odia experimental) render correctly once the matching font folder is on the SD card, in books and in file names, titles and chapter lists.
-- **[Charging animation and City Scapes](#charging-animation-and-city-scapes)**: illustrated Bengaluru scenes that build up as the battery charges, or as you get through your book.
+- **[Charging animation](#charging-animation)**: illustrated Bengaluru scenes that build up as the battery charges.
 - **[Page Overlay wallpapers](#page-overlay-wallpapers)**: six reaction-diffusion wallpapers for CrossInk's Page Overlay sleep screen.
+- **[Interface font](#interface-font)**: Bricolage Grotesque for menus, lists and settings, in place of Inter.
 - **[Boot screen](#boot-screen)**: a CrossRhythm boot screen, and **CrossRhythm v&lt;version&gt;** in Settings.
 
 Screenshots are from an X4 Pro.
@@ -97,6 +99,34 @@ Weeks start on Monday; set **Settings › System › Device › First Day of Wee
 
 ---
 
+## Garden home
+
+Set **Settings › Display › UI Theme** to **Garden**. It is the Dashboard home with a larger cover and, beside it, a climbing plant that grows as you read the book.
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <img src="./docs/images/garden/garden-home.png" width="200" alt="Garden home at 18%: a low plant at the foot of the column beside the cover, the stats table under the title, and the streak and reader type in the footer" /><br/>
+      <sub>18% read</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="./docs/images/garden/garden-home-finished.png" width="200" alt="Garden home at 100%: the plant fills the whole column beside the cover, with fruit among the leaves" /><br/>
+      <sub>Finished</sub>
+    </td>
+  </tr>
+</table>
+
+- **The plant** roots at the foot of the cover and climbs behind a perforated asanoha (hemp leaf) screen, filling the whole column at 100% and flowering and fruiting near the end. Each book grows its own way, and the same book always grows the same way. Your progress sits at the top of the column.
+- **The stats table** under the title shows Started and Est. Finish Date (Finished Date once you finish) on the left, pages per minute and daily average in the middle, and Reading Time and Time Left on the right.
+- **The footer** shows your reading streak as a big number and your reader type with its icon. The reader type is the time of day you read most: **Dawn**, **Day**, **Dusk** or **Twilight Reader**. The Dashboard theme gets the same footer.
+- **Night Mode** draws the plant and the icon in white on black.
+
+**Garden sleep screen**: set **Settings › Display › Sleep Screen** to **Garden** to show the same screen while the device sleeps, with your latest book's cover, the plant grown to your progress, the title and chapter, the stats table and the footer. It is white on black, or black on white with the inverted cover filter.
+
+**Home Bottom Bar**: **Settings › Display › Status Bar › Home Bottom Bar** puts battery, clock or date along the bottom of the home screen, in Left, Center and Right slots like the status bar (the date in the screenshots above). It is off until you pick items.
+
+---
+
 ## Indic books
 
 Copy a script's font folder to the SD card and its text renders correctly in any book, without changing your reading font: a mostly-English book keeps its usual font and only the Indic parts switch. Install several scripts and each is routed to its own font. The same fonts also draw Indic file names, book titles, chapter names and the reader footer.
@@ -145,7 +175,7 @@ When updating, replace the whole folder rather than single files: the `.cpfont` 
 
 ---
 
-## Charging animation and City Scapes
+## Charging animation
 
 *X4 Pro only.* A scene is a 1-bit illustration of a Bengaluru landmark that builds up in 21 steps, one per 5%.
 
@@ -175,12 +205,9 @@ When updating, replace the whole folder rather than single files: the `.cpfont` 
 - **KR Market**: City Market rising from a cleared site to its full roof.
 - **State Library**: Cubbon Park's reading hall, from boxes in an empty hall to full shelves and a crowd of readers.
 
-Two settings use them:
+Pick one in **Settings › Display › Charging Animation**. While the device sleeps on the charger, it shows the scene for the battery level, with four stops under the name filling at 25/50/75/100%. It updates within about five minutes of each 5% step; unplugging brings back your usual sleep screen.
 
-- **Settings › Display › Charging Animation**: while the device sleeps on the charger, it shows the scene for the battery level, with four stops under the name filling at 25/50/75/100%. It updates within about five minutes of each 5% step; unplugging brings back your usual sleep screen.
-- **Settings › Display › Sleep Screen › Wallpaper › City Scapes**: the sleep screen shows the scene for how far you are in your latest book. Pick the scene in the **City Scape** row below Wallpaper, or **Cycle All** for a different one each time the device sleeps.
-
-Glass House is built into the firmware and is the default for both. To add the others, download their `.rhythmscene` files from the [releases](https://github.com/rosstopherkeen/CrossRhythm/releases) and copy them to `/.scenes/` (or `/scenes/`) on the SD card; they then appear in both lists. Scenes live on the card, so they don't use firmware space, and a missing or damaged scene falls back to Glass House. The file format is in [docs/file-formats.md](./docs/file-formats.md).
+Glass House is built into the firmware and is the default. To add the others, download their `.rhythmscene` files from the [releases](https://github.com/rosstopherkeen/CrossRhythm/releases) and copy them to `/.scenes/` (or `/scenes/`) on the SD card; they then appear in the Charging Animation list. Scenes live on the card, so they don't use firmware space, and a missing or damaged scene falls back to Glass House. The file format is in [docs/file-formats.md](./docs/file-formats.md).
 
 ---
 
@@ -203,6 +230,12 @@ Six "Read Responsibly" wallpapers for CrossInk's **Page Overlay** sleep screen, 
 2. Set **Settings › Display › Sleep Screen › Wallpaper** to **Page Overlay**.
 
 They are 480×800 images for the X4 and X4 Pro, and need no firmware change: Page Overlay is stock CrossInk.
+
+---
+
+## Interface font
+
+Menus, lists, settings and the Dashboard and Garden homes use **Bricolage Grotesque** instead of Inter. Cyrillic, Greek and Hebrew come from GSans (Google Sans) behind it, and Arabic from Noto Sans Arabic, so every interface language still shows all its letters. Your reading font is unchanged.
 
 ---
 
@@ -290,6 +323,7 @@ For general CrossInk development docs, see [Getting Started](./docs/development/
 - **[CrossInk](https://github.com/uxjulia/CrossInk)** by uxjulia, the firmware this fork is built on. For CrossInk's own features (fonts, themes, Focus Reading, button remapping, stats sync and more), see its [README](https://github.com/uxjulia/CrossInk#readme) and [crossink.dev](https://www.crossink.dev). Please support CrossInk directly via its [Ko-fi](https://ko-fi.com/Q5Q01M6S7).
 - **[XPoint](https://github.com/Belphemur/XPoint)** (MIT License, Copyright (c) 2025 CrossPoint Reader organization), where the Reading Rhythm and Books Finished screens and the finished-books file format come from: `ReadingRhythmActivity`, `FinishedBooksActivity`, `FinishedBooksIndex`, and `renderReadingRhythmPage` / `renderFinishedBooksPage` from `BookStatsView.cpp`.
 - **[CrossPoint Reader](https://github.com/crosspoint-reader/crosspoint-reader)**, the upstream firmware for both.
+- **[Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque)** and **GSans**, instanced from [Google Sans](https://github.com/google/fonts/tree/main/ofl/googlesans) (both SIL Open Font License 1.1), the interface fonts.
 - The **[Noto Sans](https://fonts.google.com/noto)** Indic families (SIL Open Font License 1.1) and **[HarfBuzz](https://harfbuzz.github.io/)**, used at build time to work out the shaping tables.
 - The **Lalbagh** and **KR Market** scenes are drawn from map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, available under the Open Database License (ODbL).
 
